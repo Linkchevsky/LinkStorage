@@ -10,12 +10,12 @@ public enum UnitTypeEnum
 public struct SpecificationsUnit
 {
     #region[Инф поля]
-    public UnitTypeEnum unitType;
+    public UnitTypeEnum UnitType;
 
-    public float unitMaxEnergy;
-    public float unitCurrentEnergy;
+    public float UnitMaxEnergy;
+    public float UnitCurrentEnergy;
 
-    public float unitSpeed;
+    public float UnitSpeed;
     #endregion
 
     public static readonly SpecificationsUnit StaticClassicUnit = new SpecificationsUnit(UnitTypeEnum.ClassicUnit, 100, 5);
@@ -23,10 +23,10 @@ public struct SpecificationsUnit
 
     public SpecificationsUnit(UnitTypeEnum unitType, float MaxEnergy, float Speed)
     {
-        this.unitType = unitType;
-        unitMaxEnergy = MaxEnergy;
-        unitCurrentEnergy = MaxEnergy;
-        unitSpeed = Speed;
+        this.UnitType = unitType;
+        UnitMaxEnergy = MaxEnergy;
+        UnitCurrentEnergy = MaxEnergy;
+        UnitSpeed = Speed;
     }
 
     public static SpecificationsUnit GetUnitData(UnitTypeEnum unitClass, GameObject theCallingObject)

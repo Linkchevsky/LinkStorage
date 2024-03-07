@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMoveControl : MonoCache
 {
-    [SerializeField] private Vector2 _direction;
+    private Vector2 _direction;
     [SerializeField] private float _playerSpeed = 5f;
 
     private void Awake()

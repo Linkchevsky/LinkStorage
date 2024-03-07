@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class MainHeadquarters : NetworkBehaviour, BuildInterface
 {
-    public SpecificationsBuild thisBuildSpecifications;
+    private SpecificationsBuild _thisBuildSpecifications;
 
     [SerializeField] private Transform _buildSpawnPoint;
 
-    public readonly List<string> listOfSpawnUnits = new List<string>() { "ClassicUnit", "WarriorUnit" };
+    public readonly List<string> ListOfSpawnUnits = new List<string>() { "ClassicUnit", "WarriorUnit" };
 
-    private void Start() => thisBuildSpecifications = SpecificationsBuild.GetBuildData(BuildTypeEnum.mainHeadquarters, gameObject);
+    private void Start() => _thisBuildSpecifications = SpecificationsBuild.GetBuildData(BuildTypeEnum.mainHeadquarters, gameObject);
 
-    public void Interaction() => CanvasControl.Instance.UsingTheBuildCanvas(thisBuildSpecifications, listOfSpawnUnits, _buildSpawnPoint);
+    public void Interaction() => CanvasControl.Instance.UsingTheBuildCanvas(_thisBuildSpecifications, ListOfSpawnUnits, _buildSpawnPoint);
 }

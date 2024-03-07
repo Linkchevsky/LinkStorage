@@ -6,8 +6,8 @@ public class Storage : MonoBehaviour
 {
     public static Storage Instance;
 
-    public GameObject classicUnitPrefab;
-    public GameObject warriorUnitPrefab;
+    public GameObject ClassicUnitPrefab;
+    public GameObject WarriorUnitPrefab;
 
     private void Awake() //объявляю синглтон
     {

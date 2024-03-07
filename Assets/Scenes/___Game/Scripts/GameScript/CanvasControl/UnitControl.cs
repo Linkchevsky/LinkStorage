@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class UnitControl : MonoBehaviour
 {
-    public List<GameObject> _allUnits = new List<GameObject>();
+    private List<GameObject> _allUnits = new List<GameObject>();
     public List<GameObject> AllUnits => _allUnits;
 
-    public List<GameObject> SelectedUnits = new List<GameObject>();
+    [HideInInspector] public List<GameObject> SelectedUnits = new List<GameObject>();
+
+    [HideInInspector] public string CurrentFormationType = "Line";
 
     public static Action s_cancelingUnitSelection;
-
-    public string CurrentFormationType = "Line";
     public static UnitControl Instance;
     private void Awake() //объявляю синглтон
     {

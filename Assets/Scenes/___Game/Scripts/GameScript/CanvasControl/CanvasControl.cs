@@ -52,8 +52,8 @@ public class CanvasControl : MonoBehaviour
     {
         _mainPanelGO.SetActive(true);
 
-        _objectNameText.text = unitStats.unitType.ToString();
-        _infoText.text = $"Energy = {unitStats.unitCurrentEnergy}/{unitStats.unitMaxEnergy}";
+        _objectNameText.text = unitStats.UnitType.ToString();
+        _infoText.text = $"Energy = {unitStats.UnitCurrentEnergy}/{unitStats.UnitMaxEnergy}";
     }
 
     public void UsingTheUnitsCanvas(List<GameObject> selectedUnits)
