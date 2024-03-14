@@ -11,11 +11,14 @@ public class CanvasControl : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _infoText;
     [Space]
     [SerializeField] private GameObject _spawnMenuButton;
-    [SerializeField] private GameObject _spawnMenuButtonListGO;
+    [SerializeField] private GameObject _spawnMenuButtonGOList;
     [SerializeField] private SpawnMenu _spawnMenuScript;
     [Space]
-    [SerializeField] private GameObject _formationsButtonListGO;
+    [SerializeField] private GameObject _formationsButtonGOList;
     [SerializeField] private UnitControl _unitControlScript;
+    [Space]
+    [SerializeField] private Construction _constructionScript;
+    [SerializeField] private GameObject _constructionsButtonGOList;
 
     public static CanvasControl Instance;
     private void Awake()
@@ -44,26 +47,34 @@ public class CanvasControl : MonoBehaviour
         }
     }
 
-    public void UsingTheSpawnMenuButton() => _spawnMenuButtonListGO.SetActive(!_spawnMenuButtonListGO.activeSelf);
+    public void UsingTheSpawnMenuButton() => _spawnMenuButtonGOList.SetActive(!_spawnMenuButtonGOList.activeSelf);
     #endregion
 
     #region[unit]
-    public void UsingTheUnitCanvas(SpecificationsUnit unitStats, GameObject selectedUnit)
+    public void UsingTheUnitCanvas(SpecificationsUnit unitStats, List<string> listOfConstructions = null)
     {
         _mainPanelGO.SetActive(true);
 
         _objectNameText.text = unitStats.UnitType.ToString();
         _infoText.text = $"Energy = {unitStats.UnitCurrentEnergy}/{unitStats.UnitMaxEnergy}";
+
+        switch(unitStats.UnitType.ToString())
+        {
+            case "ClassicUnit":
+                _constructionScript.ButtonPlacement(listOfConstructions);
+                _constructionsButtonGOList.SetActive(true);
+                return;
+        }
     }
 
-    public void UsingTheUnitsCanvas(List<GameObject> selectedUnits)
+    public void UsingTheUnitsCanvas(List<GameObject> selectedUnits, List<string> listOfSpawnUnits = null)
     {
         _mainPanelGO.SetActive(true);
 
         _objectNameText.text = "Выделена группа";
         _infoText.text = $"Кол-во юнитов = {selectedUnits.Count}";
 
-        _formationsButtonListGO.SetActive(true);
+        _formationsButtonGOList.SetActive(true);
     }
 
     #endregion
@@ -71,9 +82,10 @@ public class CanvasControl : MonoBehaviour
     public void CloseAllCanvasMenu()
     {
         _spawnMenuButton.SetActive(false);
-        _spawnMenuButtonListGO.SetActive(false);
+        _spawnMenuButtonGOList.SetActive(false);
 
-        _formationsButtonListGO.SetActive(false);
+        _formationsButtonGOList.SetActive(false);
+        _constructionsButtonGOList.SetActive(false);
 
         _mainPanelGO.SetActive(false);
     }

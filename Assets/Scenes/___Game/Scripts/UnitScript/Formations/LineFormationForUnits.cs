@@ -10,7 +10,7 @@ struct LineFormationForUnits : FormationsInterface
         center += new Vector3(0.5f, -0.5f, 0);
         angle *= Mathf.Deg2Rad;
 
-        float _distanceBetweenPoints = 1f;
+        float _distanceBetweenPoints = 0.7f;
         float diameter = 2 + radius;
 
 

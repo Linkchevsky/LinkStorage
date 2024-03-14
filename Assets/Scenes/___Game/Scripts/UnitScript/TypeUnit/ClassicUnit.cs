@@ -1,5 +1,6 @@
 using Mirror;
 using Pathfinding;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ClassicUnit : NetworkBehaviour, UnitInterface
@@ -8,10 +9,17 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
 
     [SerializeField] private AIDestinationSetter _AIDestinationSetter;
     [SerializeField] private Transform _target;
+    [SerializeField] private CircleCollider2D _mainCollider;
+
+    public readonly List<string> ListOfConstructions = new List<string>() { "MainHeadquarters", "TestBuild" };
 
     private void Start()
     {
-        if (!isOwned) return;
+        if (!isOwned)
+        {
+            _mainCollider.isTrigger = false;
+            return;
+        }
         UnitControl.Instance.AllUnits.Add(this.gameObject);
         thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.ClassicUnit, this.gameObject);
     }
@@ -19,6 +27,8 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
     public void Interaction()
     {
         UnitControl.Instance.AddUnitInSelectedList(this.gameObject);
+        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitSpecifications(), ListOfConstructions);
+
         transform.GetChild(0).gameObject.SetActive(true);
         UnitControl.s_cancelingUnitSelection += Deselect;
     }

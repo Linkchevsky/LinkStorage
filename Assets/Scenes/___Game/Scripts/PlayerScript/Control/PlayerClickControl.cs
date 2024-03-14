@@ -120,11 +120,7 @@ public class PlayerClickControl : MonoCache
             CanvasControl.Instance.UsingTheUnitsCanvas(UnitControl.Instance.SelectedUnits);
     }
 
-    private void PerformingAHitOnAUnit(Transform _hitTransform) 
-    {
-        CanvasControl.Instance.UsingTheUnitCanvas(_hitTransform.GetComponent<UnitInterface>().GetUnitSpecifications(), this.gameObject);
-        _hitTransform.GetComponent<UnitInterface>().Interaction(); 
-    }
+    private void PerformingAHitOnAUnit(Transform _hitTransform) => _hitTransform.GetComponent<UnitInterface>().Interaction(); 
 
     private void PerformingAHitOnABuilding(Transform _hitTransform) => _hitTransform.GetComponent<BuildInterface>().Interaction();
 

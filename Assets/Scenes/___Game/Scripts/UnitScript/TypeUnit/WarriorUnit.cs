@@ -8,10 +8,15 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
 
     [SerializeField] private AIDestinationSetter _AIDestinationSetter;
     [SerializeField] private Transform _target;
+    [SerializeField] private BoxCollider2D _mainCollider;
 
     private void Start()
     {
-        if (!isOwned) return;
+        if (!isOwned)
+        {
+            _mainCollider.isTrigger = false;
+            return; 
+        }
         UnitControl.Instance.AllUnits.Add(this.gameObject);
         thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.WarriorUnit, this.gameObject);
     }
@@ -19,6 +24,8 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
     public void Interaction()
     {
         UnitControl.Instance.AddUnitInSelectedList(this.gameObject);
+        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitSpecifications());
+
         transform.GetChild(0).gameObject.SetActive(true);
         UnitControl.s_cancelingUnitSelection += Deselect;
     }
