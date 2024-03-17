@@ -17,15 +17,6 @@ public class Construction : MonoBehaviour
         Instance = this;
     }
 
-    public void ChoseABuilding() => EventPlayerControl.s_playerRightClick += RightClick;
-    private void OnDisable() => EventPlayerControl.s_playerRightClick -= RightClick;
-    private void OnDestroy() => EventPlayerControl.s_playerRightClick -= RightClick;
-
-    private void RightClick(InputAction.CallbackContext context)
-    {
-        Debug.Log("Нажал");
-    }
-
 
 
     private List<GameObject> _buttonsUsed = new List<GameObject>();
@@ -63,5 +54,16 @@ public class Construction : MonoBehaviour
     {
         _mainHeadquartersButton.SetActive(false);
         _testBuildingButton.SetActive(false);
+    }
+
+
+    public void MainHeadquartersButtonClick()
+    {
+        
+    }
+
+    public void TestBuildingButtonClick()
+    {
+
     }
 }

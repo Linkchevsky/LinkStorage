@@ -31,9 +31,12 @@ public class PlayerClickControl : MonoCache
     private bool _isSelecting = false;
 
     private bool _choiceTheRotation = false;
-    List<Vector3> _unitsPositions = new List<Vector3>();
-    List<Transform> _unitTargetTransforms = new List<Transform>();
+    private List<Vector3> _unitsPositions = new List<Vector3>();
+    private List<Transform> _unitTargetTransforms = new List<Transform>();
     private Vector3 _theCenterOfTheFormation;
+
+    public string CurrentMode = "Movement"; // Movement , Construction
+    private Transform _buildTransform;
 
     public void OnLeftClick(InputAction.CallbackContext context)
     {
@@ -42,15 +45,14 @@ public class PlayerClickControl : MonoCache
         switch(context.phase.ToString())
         {
             case "Started":
-                if (context.started)
-                _startPos = Input.mousePosition;
-                _isSelecting = true;
-
                 //проверка на ui в позиции курсора
                 List<RaycastResult> results = new List<RaycastResult>();
                 EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current) { position = Input.mousePosition }, results);
                 if (results.Count > 0)
                     return;
+
+                _startPos = Input.mousePosition;
+                _isSelecting = true;
 
                 RaycastHit2D _hit = ReturnOfTheHit();
 
@@ -128,41 +130,57 @@ public class PlayerClickControl : MonoCache
     public void OnRightClick(InputAction.CallbackContext context) 
     {
         if (!isLocalPlayer) return;
-        switch (context.phase.ToString())
+
+        if (CurrentMode == "Movement")
         {
-            case "Started":
-                foreach (GameObject unit in UnitControl.Instance.SelectedUnits)
-                    _unitTargetTransforms.Add(unit.GetComponent<UnitInterface>().GetUnitTarget());
+            switch (context.phase.ToString())
+            {
+                case "Started":
+                    foreach (GameObject unit in UnitControl.Instance.SelectedUnits)
+                        _unitTargetTransforms.Add(unit.GetComponent<UnitInterface>().GetUnitTarget());
 
-                _theCenterOfTheFormation = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                if (UnitControl.Instance.SelectedUnits.Count == 1)
-                {
-                    PlacementByUnitPositions("Point", _theCenterOfTheFormation);
+                    _theCenterOfTheFormation = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    if (UnitControl.Instance.SelectedUnits.Count == 1)
+                    {
+                        PlacementByUnitPositions("Point", _theCenterOfTheFormation);
+                        return;
+                    }
+                    else if (UnitControl.Instance.SelectedUnits.Count > 1)
+                    {
+                        PlacementByUnitPositions(UnitControl.Instance.CurrentFormationType, _theCenterOfTheFormation);
+                        _choiceTheRotation = true;
+                    }
                     return;
-                }
-                else if (UnitControl.Instance.SelectedUnits.Count > 1)
-                {
-                    PlacementByUnitPositions(UnitControl.Instance.CurrentFormationType, _theCenterOfTheFormation);
-                    _choiceTheRotation = true;
-                }
-                return;
 
-            case "Canceled":
-                if (UnitControl.Instance.SelectedUnits.Count == 1)
-                {
-                    _choiceTheRotation = false;
-                    _unitTargetTransforms.Clear();
-                    UnitControl.Instance.UnitSetDestination(_unitsPositions[0]);
+                case "Canceled":
+                    if (UnitControl.Instance.SelectedUnits.Count == 1)
+                    {
+                        _choiceTheRotation = false;
+                        _unitTargetTransforms.Clear();
+                        UnitControl.Instance.UnitSetDestination(_unitsPositions[0]);
+                        return;
+                    }
+                    else
+                    {
+                        _choiceTheRotation = false;
+                        _unitTargetTransforms.Clear();
+                        UnitControl.Instance.UnitsSetDestination(_unitsPositions);
+                        return;
+                    }
+            }
+            return;
+        }
+
+        if (CurrentMode == "Construction")
+        {
+            switch (context.phase.ToString())
+            {
+                case "Canceled":
+
                     return;
-                }
-                else
-                {
-                    _choiceTheRotation = false;
-                    _unitTargetTransforms.Clear();
-                    UnitControl.Instance.UnitsSetDestination(_unitsPositions);
-                    return;
-                }
-        } 
+            }
+            return;
+        }
     }
 
     public override void OnTick() => Allocation();
@@ -171,21 +189,32 @@ public class PlayerClickControl : MonoCache
     {
         if (!isLocalPlayer) return;
 
-        if (_choiceTheRotation)
+        switch(CurrentMode)
         {
-            Vector3 _currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            case "Movement":
+                if (_choiceTheRotation)
+                {
+                    Vector3 _currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            Vector3 _direction = _currentPosition - _theCenterOfTheFormation;
+                    Vector3 _direction = _currentPosition - _theCenterOfTheFormation;
 
-            float _distance = Vector2.Distance(_theCenterOfTheFormation, _currentPosition);
-            float _angle;
+                    float _distance = Vector2.Distance(_theCenterOfTheFormation, _currentPosition);
+                    float _angle;
 
-            if (_distance > 0.5f)
-                _angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
-            else
-                _angle = 0;
+                    if (_distance > 0.5f)
+                    _angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+                    else
+                    _angle = 0;
 
-            PlacementByUnitPositions(UnitControl.Instance.CurrentFormationType, _theCenterOfTheFormation, _angle, _distance);
+                    PlacementByUnitPositions(UnitControl.Instance.CurrentFormationType, _theCenterOfTheFormation, _angle, _distance);
+                }
+
+                return;
+
+
+            case "Construction":
+                _buildTransform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                return;
         }
     }
 
@@ -218,5 +247,7 @@ public class PlayerClickControl : MonoCache
     { 
         CanvasControl.Instance.CloseAllCanvasMenu();
         UnitControl.Instance.ClearSelectedUnitList();
+
+        CurrentMode = "Movement";
     }
 }

@@ -461,6 +461,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  CurrentMode: Movement
 --- !u!114 &4995533147236465893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1136,7 +1137,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2312245269274198943
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1145,17 +1146,17 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4310056928098427006}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -1.242828}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2124316189030991898}
   - {fileID: 5474876405680793484}
-  m_Father: {fileID: 7158845332026667871}
+  m_Father: {fileID: 9099292053937085658}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 859.93335, y: -407.46527}
+  m_AnchoredPosition: {x: -151.55518, y: -188.42422}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4664139518546355550
@@ -1939,6 +1940,53 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &6923106143738206820
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9099292053937085658}
+  - component: {fileID: 4242879027770716733}
+  m_Layer: 0
+  m_Name: ConstructionControl
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9099292053937085658
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6923106143738206820}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1011.4884, y: -219.04105, z: 1.242828}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2312245269274198943}
+  m_Father: {fileID: 5707066370635499130}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4242879027770716733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6923106143738206820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb5767b1f756d4948bb1b852b5479373, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainHeadquartersButton: {fileID: 7849091487065102764}
+  _testBuildingButton: {fileID: 9060447176558872124}
 --- !u!1 &6983347208787010252
 GameObject:
   m_ObjectHideFlags: 0
@@ -2090,7 +2138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7863923039977244329
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2293,7 +2341,6 @@ GameObject:
   - component: {fileID: 7158845332026667871}
   - component: {fileID: 1898604373392745877}
   - component: {fileID: 4552363339730413936}
-  - component: {fileID: 1552537577707236547}
   m_Layer: 5
   m_Name: UnitControl
   m_TagString: Untagged
@@ -2314,7 +2361,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8387367319663319875}
-  - {fileID: 2312245269274198943}
   m_Father: {fileID: 5707066370635499130}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
@@ -2344,20 +2390,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SelectedUnits: []
   CurrentFormationType: Line
---- !u!114 &1552537577707236547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7722759685530044424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb5767b1f756d4948bb1b852b5479373, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _mainHeadquartersButton: {fileID: 7849091487065102764}
-  _testBuildingButton: {fileID: 9060447176558872124}
 --- !u!1 &7849091487065102764
 GameObject:
   m_ObjectHideFlags: 0
@@ -2479,9 +2511,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2161691077623958548}
-        m_TargetAssemblyTypeName: SpawnMenu, Assembly-CSharp
-        m_MethodName: SpawnClassicUnitButton
+      - m_Target: {fileID: 4242879027770716733}
+        m_TargetAssemblyTypeName: Construction, Assembly-CSharp
+        m_MethodName: MainHeadquartersButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2601,6 +2633,7 @@ RectTransform:
   - {fileID: 7863923039977244329}
   - {fileID: 3802923021458966735}
   - {fileID: 7158845332026667871}
+  - {fileID: 9099292053937085658}
   m_Father: {fileID: 2806375202300057542}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2691,7 +2724,7 @@ MonoBehaviour:
   _spawnMenuScript: {fileID: 2161691077623958548}
   _formationsButtonGOList: {fileID: 3635411776470518209}
   _unitControlScript: {fileID: 4552363339730413936}
-  _constructionScript: {fileID: 1552537577707236547}
+  _constructionScript: {fileID: 0}
   _constructionsButtonGOList: {fileID: 4310056928098427006}
 --- !u!1 &8788508941589817531
 GameObject:
@@ -2948,9 +2981,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2161691077623958548}
-        m_TargetAssemblyTypeName: SpawnMenu, Assembly-CSharp
-        m_MethodName: SpawnWarriorUnitButton
+      - m_Target: {fileID: 4242879027770716733}
+        m_TargetAssemblyTypeName: Construction, Assembly-CSharp
+        m_MethodName: TestBuildingButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
