@@ -462,6 +462,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   CurrentMode: Movement
+  BuildTransform: {fileID: 0}
 --- !u!114 &4995533147236465893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1985,8 +1986,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5767b1f756d4948bb1b852b5479373, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerClickControl: {fileID: 288814810514269217}
   _mainHeadquartersButton: {fileID: 7849091487065102764}
   _testBuildingButton: {fileID: 9060447176558872124}
+  _mainHeadquartersWorkPiece: {fileID: 9131755322731065389, guid: 8b08764d371db8d478500cbdc052c7fc, type: 3}
+  _testBuildingWorkPiece: {fileID: 4170511931008127834, guid: a704cb71ce818314ca6640df5abd8fb5, type: 3}
 --- !u!1 &6983347208787010252
 GameObject:
   m_ObjectHideFlags: 0
@@ -2724,7 +2728,7 @@ MonoBehaviour:
   _spawnMenuScript: {fileID: 2161691077623958548}
   _formationsButtonGOList: {fileID: 3635411776470518209}
   _unitControlScript: {fileID: 4552363339730413936}
-  _constructionScript: {fileID: 0}
+  _constructionScript: {fileID: 4242879027770716733}
   _constructionsButtonGOList: {fileID: 4310056928098427006}
 --- !u!1 &8788508941589817531
 GameObject:

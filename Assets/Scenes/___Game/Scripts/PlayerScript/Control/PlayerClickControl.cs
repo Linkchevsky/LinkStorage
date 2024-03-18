@@ -36,7 +36,7 @@ public class PlayerClickControl : MonoCache
     private Vector3 _theCenterOfTheFormation;
 
     public string CurrentMode = "Movement"; // Movement , Construction
-    private Transform _buildTransform;
+    public Transform BuildTransform;
 
     public void OnLeftClick(InputAction.CallbackContext context)
     {
@@ -86,7 +86,7 @@ public class PlayerClickControl : MonoCache
         RaycastHit2D Hit = Physics2D.Raycast(_MousePosition, Vector2.zero);
 
         return Hit;
-    }   
+    }
 
     private void OnGUI()
     {
@@ -95,10 +95,10 @@ public class PlayerClickControl : MonoCache
         if (_isSelecting)
         {
             _selectionRect = new Rect(Mathf.Min(Input.mousePosition.x, _startPos.x),
-                            Screen.height - Mathf.Max(Input.mousePosition.y, _startPos.y),
-                            Mathf.Max(Input.mousePosition.x, _startPos.x) - Mathf.Min(Input.mousePosition.x, _startPos.x),
-                            Mathf.Max(Input.mousePosition.y, _startPos.y) - Mathf.Min(Input.mousePosition.y, _startPos.y)
-                            );
+                   Screen.height - Mathf.Max(Input.mousePosition.y, _startPos.y),
+                   Mathf.Max(Input.mousePosition.x, _startPos.x) - Mathf.Min(Input.mousePosition.x, _startPos.x),
+                   Mathf.Max(Input.mousePosition.y, _startPos.y) - Mathf.Min(Input.mousePosition.y, _startPos.y)
+                   );
 
             Texture2D texture = new Texture2D(1, 1);
             texture.SetPixel(0, 0, new Color(0f, 1f, 0f, 0.5f)); //установка зелёного цвета
@@ -106,6 +106,7 @@ public class PlayerClickControl : MonoCache
 
             GUI.Box(_selectionRect, texture);
         }
+        return;
     }
 
     private void PerformingAHitOnAUnitsInRect()
@@ -189,16 +190,17 @@ public class PlayerClickControl : MonoCache
     {
         if (!isLocalPlayer) return;
 
-        switch(CurrentMode)
+        Vector3 _currentMousePosition;
+        switch (CurrentMode)
         {
             case "Movement":
                 if (_choiceTheRotation)
                 {
-                    Vector3 _currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    _currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-                    Vector3 _direction = _currentPosition - _theCenterOfTheFormation;
+                    Vector3 _direction = _currentMousePosition - _theCenterOfTheFormation;
 
-                    float _distance = Vector2.Distance(_theCenterOfTheFormation, _currentPosition);
+                    float _distance = Vector2.Distance(_theCenterOfTheFormation, _currentMousePosition);
                     float _angle;
 
                     if (_distance > 0.5f)
@@ -208,12 +210,12 @@ public class PlayerClickControl : MonoCache
 
                     PlacementByUnitPositions(UnitControl.Instance.CurrentFormationType, _theCenterOfTheFormation, _angle, _distance);
                 }
-
                 return;
 
 
             case "Construction":
-                _buildTransform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                _currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                BuildTransform.position = new Vector3(_currentMousePosition.x, _currentMousePosition.y, 0);
                 return;
         }
     }
