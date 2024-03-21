@@ -11,13 +11,7 @@ public class StartPlayer : NetworkBehaviour
 
     private void Start()
     {
-        if (!isLocalPlayer)
-        {
-            Destroy(transform.GetChild(0).gameObject);
-            return; 
-        }
-
-        transform.GetChild(0).gameObject.SetActive(true);
+        if (!isLocalPlayer) return;
 
         GameObject CameraGO = GameObject.FindWithTag("MainCamera");
 
@@ -25,13 +19,15 @@ public class StartPlayer : NetworkBehaviour
         CameraGO.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
         CameraGO.GetComponent<CinemachineVirtualCamera>().Follow = this.transform;
 
+        Construction.Instance._playerClickControl = this.GetComponent<PlayerClickControl>();
+
         CmdStartSpawnBuilds();
     }
 
     [Command]
     private void CmdStartSpawnBuilds()
     {
-        GameObject TheCreatedGO = Instantiate(_theMainHeadquarters, transform.position, Quaternion.identity);
+        GameObject TheCreatedGO = Instantiate(Storage.Instance.MainHeadquartersPrefab, transform.position, Quaternion.identity);
         NetworkServer.Spawn(TheCreatedGO, _networkIdentity.connectionToClient);
 
         StartSpawnBuilds();

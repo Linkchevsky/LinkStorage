@@ -48,9 +48,6 @@ public class SpawnMenu : NetworkBehaviour
     }
 
     #region[спавн]
-    //вся эта срань нужна из-за особенностей Mirror
-    [SerializeField] private GameObject _classicUnitPrefabForSpawn;
-    [SerializeField] private GameObject _warriorUnitPrefabForSpawn;
     private void UnitSpawning(UnitTypeEnum typeUnit)
     {
         switch (typeUnit)
@@ -65,21 +62,21 @@ public class SpawnMenu : NetworkBehaviour
         }
     }
 
-    [Command]
-    private void CmdClassicUnitSpawnedInNetwork(Vector3 spawnPoint)
+    [Command(requiresAuthority = false)]
+    private void CmdClassicUnitSpawnedInNetwork(Vector3 spawnPoint, NetworkConnectionToClient conn = null)
     {
-        GameObject _createdUnit = Instantiate(_classicUnitPrefabForSpawn, spawnPoint, Quaternion.identity);
-        NetworkServer.Spawn(_createdUnit, _networkIdentity.connectionToClient);
+        GameObject _createdUnit = Instantiate(Storage.Instance.ClassicUnitPrefab, spawnPoint, Quaternion.identity);
+        NetworkServer.Spawn(_createdUnit, conn);
     }
 
-    [Command]
-    private void CmdWarriorUnitSpawnedInNetwork(Vector3 spawnPoint)
+    [Command(requiresAuthority = false)]
+    private void CmdWarriorUnitSpawnedInNetwork(Vector3 spawnPoint, NetworkConnectionToClient conn = null)
     {
-        GameObject _createdUnit = Instantiate(_warriorUnitPrefabForSpawn, spawnPoint, Quaternion.identity);
-        NetworkServer.Spawn(_createdUnit, _networkIdentity.connectionToClient);
+        GameObject _createdUnit = Instantiate(Storage.Instance.WarriorUnitPrefab, spawnPoint, Quaternion.identity);
+        NetworkServer.Spawn(_createdUnit, conn);
     }
-    #endregion
 
     public void SpawnClassicUnitButton() => UnitSpawning(UnitTypeEnum.ClassicUnit);
     public void SpawnWarriorUnitButton() => UnitSpawning(UnitTypeEnum.WarriorUnit);
+    #endregion
 }

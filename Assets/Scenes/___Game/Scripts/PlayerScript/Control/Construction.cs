@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Construction : MonoBehaviour
+public class Construction : NetworkBehaviour
 {
     public static Construction Instance;
     private void Awake()
@@ -22,13 +22,12 @@ public class Construction : MonoBehaviour
 
     private List<GameObject> _buttonsUsed = new List<GameObject>();
 
-    [SerializeField] private PlayerClickControl _playerClickControl;
+    [HideInInspector] public PlayerClickControl _playerClickControl;
     [Space]
     [SerializeField] private GameObject _mainHeadquartersButton;
     [SerializeField] private GameObject _testBuildingButton;
     [Space]
-    [SerializeField] private GameObject _mainHeadquartersWorkPiece;
-    [SerializeField] private GameObject _testBuildingWorkPiece;
+    [SerializeField] private NetworkIdentity _networkIdentity;
     public void ButtonPlacement(List<string> listOfConstructions)
     {
         _buttonsUsed.Clear();
@@ -63,8 +62,8 @@ public class Construction : MonoBehaviour
     }
 
 
-    public void MainHeadquartersButtonClick() => SpawnWorkPiece(_mainHeadquartersWorkPiece);
-    public void TestBuildingButtonClick() => SpawnWorkPiece(_testBuildingWorkPiece);
+    public void MainHeadquartersButtonClick() => SpawnWorkPiece(Storage.Instance.MainHeadquartersPrefab);
+    public void TestBuildingButtonClick() => SpawnWorkPiece(Storage.Instance.TestBuildingPrefab);
 
     private void SpawnWorkPiece(GameObject workPiece)
     {
@@ -72,36 +71,13 @@ public class Construction : MonoBehaviour
         _playerClickControl.CurrentMode = "Construction";
     }
 
-    /*#region[спавн]
-    //вся эта срань нужна из-за особенностей Mirror
-    [SerializeField] private GameObject _classicUnitPrefabForSpawn;
-    [SerializeField] private GameObject _warriorUnitPrefabForSpawn;
-    private void UnitSpawning(UnitTypeEnum typeUnit)
-    {
-        switch (typeUnit)
-        {
-            case UnitTypeEnum.ClassicUnit:
-                CmdClassicUnitSpawnedInNetwork(_buildingSpawnPoint.position);
-                break;
+    public void UnitSpawning(Vector3 spawnPoint) => SpawnedInNetwork(spawnPoint);
 
-            case UnitTypeEnum.WarriorUnit:
-                CmdWarriorUnitSpawnedInNetwork(_buildingSpawnPoint.position);
-                break;
-        }
+    [Command(requiresAuthority = false)]
+    private void SpawnedInNetwork(Vector3 spawnPoint, NetworkConnectionToClient conn = null)
+    {
+        GameObject _createdUnit = Instantiate(Storage.Instance.MainHeadquartersPrefab, spawnPoint, Quaternion.identity);
+        NetworkServer.Spawn(_createdUnit, conn);
     }
 
-    [Command]
-    private void CmdClassicUnitSpawnedInNetwork(Vector3 spawnPoint)
-    {
-        GameObject _createdUnit = Instantiate(_classicUnitPrefabForSpawn, spawnPoint, Quaternion.identity);
-        NetworkServer.Spawn(_createdUnit, _networkIdentity.connectionToClient);
-    }
-
-    [Command]
-    private void CmdWarriorUnitSpawnedInNetwork(Vector3 spawnPoint)
-    {
-        GameObject _createdUnit = Instantiate(_warriorUnitPrefabForSpawn, spawnPoint, Quaternion.identity);
-        NetworkServer.Spawn(_createdUnit, _networkIdentity.connectionToClient);
-    }
-    #endregion*/
 }

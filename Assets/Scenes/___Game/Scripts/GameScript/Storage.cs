@@ -8,6 +8,10 @@ public class Storage : MonoBehaviour
 
     public GameObject ClassicUnitPrefab;
     public GameObject WarriorUnitPrefab;
+    [Space]
+    public GameObject MainHeadquartersPrefab;
+    public GameObject TestBuildingPrefab;
+
 
     private void Awake() //объявляю синглтон
     {

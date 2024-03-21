@@ -177,7 +177,8 @@ public class PlayerClickControl : MonoCache
             switch (context.phase.ToString())
             {
                 case "Canceled":
-
+                    Vector3 mousePositio = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    Construction.Instance.UnitSpawning(new Vector3(mousePositio.x, mousePositio.y, 0));
                     return;
             }
             return;
