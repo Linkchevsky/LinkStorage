@@ -19,7 +19,6 @@ public class Construction : NetworkBehaviour
     }
 
 
-
     private List<GameObject> _buttonsUsed = new List<GameObject>();
 
     [HideInInspector] public PlayerClickControl _playerClickControl;
@@ -27,7 +26,8 @@ public class Construction : NetworkBehaviour
     [SerializeField] private GameObject _mainHeadquartersButton;
     [SerializeField] private GameObject _testBuildingButton;
     [Space]
-    [SerializeField] private NetworkIdentity _networkIdentity;
+    [SerializeField] private SpriteRenderer _workPieceSpriteRenderer;
+
     public void ButtonPlacement(List<string> listOfConstructions)
     {
         _buttonsUsed.Clear();
@@ -62,16 +62,39 @@ public class Construction : NetworkBehaviour
     }
 
 
-    public void MainHeadquartersButtonClick() => SpawnWorkPiece(Storage.Instance.MainHeadquartersPrefab);
-    public void TestBuildingButtonClick() => SpawnWorkPiece(Storage.Instance.TestBuildingPrefab);
+    public void MainHeadquartersButtonClick() => SpawnWorkPiece("MainHeaquarters");
+    public void TestBuildingButtonClick() => SpawnWorkPiece("TestBuilding");
 
-    private void SpawnWorkPiece(GameObject workPiece)
+    private void SpawnWorkPiece(string workPieceType)
     {
-        _playerClickControl.BuildTransform = Instantiate(workPiece).transform;
+        _workPieceSpriteRenderer.gameObject.SetActive(true);
+
+        switch (workPieceType)
+        {
+            case "MainHeaquarters":
+                _workPieceSpriteRenderer.transform.localScale = new Vector3(2, 2, 0);
+                _workPieceSpriteRenderer.color = Color.green;
+                break;
+            case "TestBuilding":
+                _workPieceSpriteRenderer.transform.localScale = new Vector3(2, 1, 0);
+                _workPieceSpriteRenderer.color = Color.green;
+                break;
+        }
+
+        _playerClickControl.BuildTransform = _workPieceSpriteRenderer.transform;
         _playerClickControl.CurrentMode = "Construction";
     }
 
-    public void UnitSpawning(Vector3 spawnPoint) => SpawnedInNetwork(spawnPoint);
+    public void UnitSpawning(Vector3 spawnPoint) 
+    {
+        if (_workPieceSpriteRenderer.color == Color.green)
+        {
+            _playerClickControl.CurrentMode = "Movement";
+            _playerClickControl.OnCloseClick();
+
+            SpawnedInNetwork(spawnPoint);
+        }
+    }
 
     [Command(requiresAuthority = false)]
     private void SpawnedInNetwork(Vector3 spawnPoint, NetworkConnectionToClient conn = null)
@@ -80,4 +103,5 @@ public class Construction : NetworkBehaviour
         NetworkServer.Spawn(_createdUnit, conn);
     }
 
+    public void OnCloseClick() => _workPieceSpriteRenderer.gameObject.SetActive(false);
 }

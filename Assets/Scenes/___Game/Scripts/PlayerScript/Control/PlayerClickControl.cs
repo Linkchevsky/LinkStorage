@@ -56,8 +56,7 @@ public class PlayerClickControl : MonoCache
 
                 RaycastHit2D _hit = ReturnOfTheHit();
 
-                CanvasControl.Instance.CloseAllCanvasMenu();
-                UnitControl.Instance.ClearSelectedUnitList();
+                OnCloseClick();
 
                 if (_hit)
                 {
@@ -177,8 +176,8 @@ public class PlayerClickControl : MonoCache
             switch (context.phase.ToString())
             {
                 case "Canceled":
-                    Vector3 mousePositio = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    Construction.Instance.UnitSpawning(new Vector3(mousePositio.x, mousePositio.y, 0));
+                    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    Construction.Instance.UnitSpawning(new Vector3(mousePosition.x, mousePosition.y, 0));
                     return;
             }
             return;
@@ -251,6 +250,7 @@ public class PlayerClickControl : MonoCache
         CanvasControl.Instance.CloseAllCanvasMenu();
         UnitControl.Instance.ClearSelectedUnitList();
 
+        Construction.Instance.OnCloseClick();
         CurrentMode = "Movement";
     }
 }
