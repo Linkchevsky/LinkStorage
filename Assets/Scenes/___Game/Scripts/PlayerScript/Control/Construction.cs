@@ -21,8 +21,10 @@ public class Construction : NetworkBehaviour
 
     private List<GameObject> _buttonsUsed = new List<GameObject>();
 
+    private string _buildType;
+
     [HideInInspector] public PlayerClickControl _playerClickControl;
-    [Space]
+
     [SerializeField] private GameObject _mainHeadquartersButton;
     [SerializeField] private GameObject _testBuildingButton;
     [Space]
@@ -62,20 +64,22 @@ public class Construction : NetworkBehaviour
     }
 
 
-    public void MainHeadquartersButtonClick() => SpawnWorkPiece("MainHeaquarters");
-    public void TestBuildingButtonClick() => SpawnWorkPiece("TestBuilding");
+    public void MainHeadquartersButtonClick() => UseWorkPiece("MainHeadquarters");
+    public void TestBuildingButtonClick() => UseWorkPiece("TestBuild");
 
-    private void SpawnWorkPiece(string workPieceType)
+    private void UseWorkPiece(string workPieceType)
     {
         _workPieceSpriteRenderer.gameObject.SetActive(true);
 
         switch (workPieceType)
         {
-            case "MainHeaquarters":
+            case "MainHeadquarters":
+                _buildType = "MainHeadquarters";
                 _workPieceSpriteRenderer.transform.localScale = new Vector3(2, 2, 0);
                 _workPieceSpriteRenderer.color = Color.green;
                 break;
-            case "TestBuilding":
+            case "TestBuild":
+                _buildType = "TestBuild";
                 _workPieceSpriteRenderer.transform.localScale = new Vector3(2, 1, 0);
                 _workPieceSpriteRenderer.color = Color.green;
                 break;
@@ -92,14 +96,26 @@ public class Construction : NetworkBehaviour
             _playerClickControl.CurrentMode = "Movement";
             _playerClickControl.OnCloseClick();
 
-            SpawnedInNetwork(spawnPoint);
+            SpawnedInNetwork(spawnPoint, _buildType);
         }
     }
 
     [Command(requiresAuthority = false)]
-    private void SpawnedInNetwork(Vector3 spawnPoint, NetworkConnectionToClient conn = null)
+    private void SpawnedInNetwork(Vector3 spawnPoint, string buildType, NetworkConnectionToClient conn = null)
     {
-        GameObject _createdUnit = Instantiate(Storage.Instance.MainHeadquartersPrefab, spawnPoint, Quaternion.identity);
+        GameObject _createdUnit = null;
+        switch (buildType)
+        {
+            case "MainHeadquarters":
+                _createdUnit = Instantiate(Storage.Instance.MainHeadquartersPrefab, spawnPoint, Quaternion.identity);
+                _createdUnit.GetComponent<WaitingForEnergy>().Started(buildType);
+                break;
+
+            case "TestBuild":
+                _createdUnit = Instantiate(Storage.Instance.TestBuildingPrefab, spawnPoint, Quaternion.identity);
+                _createdUnit.GetComponent<WaitingForEnergy>().Started(buildType, true);
+                break;
+        }
         NetworkServer.Spawn(_createdUnit, conn);
     }
 

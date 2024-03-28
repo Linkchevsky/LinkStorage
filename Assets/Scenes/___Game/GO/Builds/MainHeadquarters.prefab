@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 1810367078811076562}
   - component: {fileID: 6582367446421008586}
   - component: {fileID: 6796534311562144235}
-  - component: {fileID: 8075821453187131722}
+  - component: {fileID: 5878762678195047941}
   - component: {fileID: 5458207274407014543}
   m_Layer: 3
   m_Name: MainHeadquarters
@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 9131755322731065389}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.737581, y: -7.8199162, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -182,7 +182,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &8075821453187131722
+--- !u!114 &5878762678195047941
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -191,13 +191,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 9131755322731065389}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: caacc8346a17ed14896e9bd060325700, type: 3}
+  m_Script: {fileID: 11500000, guid: 68c6d59f750af164baf6948342574fee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _buildSpawnPoint: {fileID: 305880093234926202}
+  _currentEnergy: 0
+  _requiredEnergy: 0
 --- !u!50 &5458207274407014543
 Rigidbody2D:
   serializedVersion: 4

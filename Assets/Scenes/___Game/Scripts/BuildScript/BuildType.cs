@@ -11,18 +11,18 @@ public struct SpecificationsBuild
     #region[Инф поля]
     public BuildTypeEnum buildType;
 
-    public float buildMaxEnergy;
-    public float buildCurrentEnergy;
+    public int BuildMaxEnergy;
+    public int BuildCurrentEnergy;
     #endregion
 
     private static readonly SpecificationsBuild StaticMainHeadquartersBuild = new SpecificationsBuild(BuildTypeEnum.mainHeadquarters, 1000);
 
-    public SpecificationsBuild(BuildTypeEnum buildTypeName, float maxEnergy)
+    public SpecificationsBuild(BuildTypeEnum buildTypeName, int maxEnergy)
     {
         buildType = buildTypeName;
 
-        buildMaxEnergy = maxEnergy;
-        buildCurrentEnergy = maxEnergy;
+        BuildMaxEnergy = maxEnergy;
+        BuildCurrentEnergy = maxEnergy;
     }
 
     public static SpecificationsBuild GetBuildData(BuildTypeEnum buildClass, GameObject theCallingObject)

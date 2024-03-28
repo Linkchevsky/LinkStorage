@@ -30,8 +30,13 @@ public class StartPlayer : NetworkBehaviour
         GameObject TheCreatedGO = Instantiate(Storage.Instance.MainHeadquartersPrefab, transform.position, Quaternion.identity);
         NetworkServer.Spawn(TheCreatedGO, _networkIdentity.connectionToClient);
 
+        RpcStartSpawnBuilds(TheCreatedGO);
+
         StartSpawnBuilds();
     }
+
+    [ClientRpc]
+    private void RpcStartSpawnBuilds(GameObject TheCreatedGO) => TheCreatedGO.GetComponent<WaitingForEnergy>().Started("MainHeadquarters", true);
 
     private void StartSpawnBuilds() => AstarPath.active.Scan();
 }
