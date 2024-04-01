@@ -3,49 +3,93 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaitingForEnergy : MonoBehaviour
+public class WaitingForEnergy : NetworkBehaviour, BuildInterface
 {
+    [SyncVar]
+    public int _currentUnits;
+    [SyncVar]
+    private int _requiredUnits;
+
+    [SerializeField] private BoxCollider2D _boxCollider;
+
+
+    private bool _owned = false;
+
+    [SyncVar]
     private string _buildType;
 
-    public int _currentEnergy = 0;
-    public int _requiredEnergy;
+    [SyncVar(hook = nameof(IsReadyChange))]
+    public bool _isReady = false;
+
+    private void IsReadyChange(bool oldValue, bool newValue) 
+    {
+        if (!_owned)
+            AddComponent(); 
+    }
 
     public void Started(string buildType, bool isReady = false)
     {
+        _owned = true;
+
         _buildType = buildType;
-        Debug.Log(1);
-        Debug.Log(_buildType);
+        _isReady = isReady;
+
+        if (isReady)
+        {
+            AddComponent();
+            return;
+        }
+
         switch (_buildType)
         {
             case "MainHeadquarters":
-                _requiredEnergy = SpecificationsBuild.GetBuildData(BuildTypeEnum.mainHeadquarters, gameObject).BuildMaxEnergy;
+                _requiredUnits = SpecificationsBuild.GetBuildData(BuildTypeEnum.mainHeadquarters, gameObject).BuildMaxEnergy / 100;
                 break;
 
             case "TestBuild":
-                _requiredEnergy = SpecificationsBuild.GetBuildData(BuildTypeEnum.mainHeadquarters, gameObject).BuildMaxEnergy;
+                _requiredUnits = SpecificationsBuild.GetBuildData(BuildTypeEnum.mainHeadquarters, gameObject).BuildMaxEnergy / 100;
+                break;
+        }
+    }
+
+    public void GetUnit()
+    {
+        _currentUnits++;
+        if (_currentUnits >= _requiredUnits)
+            AddComponent();
+    }
+
+    private void AddComponent()
+    {
+        switch (_buildType)
+        {
+            case "MainHeadquarters":
+                gameObject.AddComponent<MainHeadquarters>();
+                break;
+
+            case "TestBuild":
+                gameObject.AddComponent<MainHeadquarters>();
                 break;
         }
 
-        if (isReady)
-            GetEnergy(_requiredEnergy);
+
+        _isReady = true;
+        Destroy(this.GetComponent<WaitingForEnergy>());
     }
 
-    public void GetEnergy(int energy)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if ((_currentEnergy += energy) >= _requiredEnergy)
+        if (collision.tag == "Unit")
         {
-            switch(_buildType)
+            UnitInterface unitInterface = collision.GetComponent<UnitInterface>();
+            if (_boxCollider.bounds.Contains(unitInterface.GetUnitTarget().position))
             {
-                case "MainHeadquarters":
-                    gameObject.AddComponent<MainHeadquarters>();
-                    break;
-
-                case "TestBuild":
-                    gameObject.AddComponent<MainHeadquarters>();
-                    break;
+                unitInterface.DestroyThisUnit();
+                GetUnit();
             }
-
-            Destroy(this.GetComponent<WaitingForEnergy>());
         }
     }
+
+
+    public void Interaction() => CanvasControl.Instance.UsingWaitingForEnergyCanvas(_buildType, _currentUnits, _requiredUnits);
 }

@@ -31,7 +31,7 @@ public class PlayerClickControl : MonoCache
     private bool _isSelecting = false;
 
     private bool _choiceTheRotation = false;
-    private List<Vector3> _unitsPositions = new List<Vector3>();
+    private List<Vector3> _unitsFuturePositions = new List<Vector3>();
     private List<Transform> _unitTargetTransforms = new List<Transform>();
     private Vector3 _theCenterOfTheFormation;
 
@@ -54,37 +54,44 @@ public class PlayerClickControl : MonoCache
                 _startPos = Input.mousePosition;
                 _isSelecting = true;
 
-                RaycastHit2D _hit = ReturnOfTheHit();
-
                 OnCloseClick();
 
-                if (_hit)
+                RaycastHit2D[] hits = ReturnOfTheHits();
+                foreach (RaycastHit2D hit in hits)
                 {
-                    switch (_hit.transform.gameObject.tag)
+                    switch (hit.transform.gameObject.tag)
                     {
                         case "Unit":
-                            PerformingAHitOnAUnit(_hit.transform);
+                            PerformingAHitOnAUnit(hit.transform);
                             return;
                         case "Build":
-                            PerformingAHitOnABuilding(_hit.transform);
-                            return;
+                            if (!hit.collider.isTrigger)
+                            {
+                                _isSelecting = false;
+                                PerformingAHitOnABuilding(hit.transform);
+                                return;
+                            }
+                            break;
                     }
                 }
                 return;
 
             case "Canceled":
-                PerformingAHitOnAUnitsInRect();
-                _isSelecting = false;
+                if (_isSelecting)
+                {
+                    PerformingAHitOnAUnitsInRect();
+                    _isSelecting = false;
+                }
                 return;
         }
     }
 
-    private RaycastHit2D ReturnOfTheHit()
+    private RaycastHit2D[] ReturnOfTheHits()
     {
         Vector2 _MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D Hit = Physics2D.Raycast(_MousePosition, Vector2.zero);
+        RaycastHit2D[] Hits = Physics2D.RaycastAll(_MousePosition, Vector2.zero);
 
-        return Hit;
+        return Hits;
     }
 
     private void OnGUI()
@@ -147,6 +154,24 @@ public class PlayerClickControl : MonoCache
                     }
                     else if (UnitControl.Instance.SelectedUnits.Count > 1)
                     {
+                        RaycastHit2D[] hits = ReturnOfTheHits();
+                        if (hits.Length > 0)
+                        {
+                            foreach (RaycastHit2D hit in hits)
+                            {
+                                if (!hit.collider.isTrigger && hit.collider.tag == "Build")
+                                {
+                                    List<Vector3> temporaryList = new List<Vector3>();
+                                    for (int i = 0; i < UnitControl.Instance.SelectedUnits.Count; i++)
+                                        temporaryList.Add(new Vector3(_theCenterOfTheFormation.x, _theCenterOfTheFormation.y, 0));
+
+                                    _unitsFuturePositions = temporaryList;
+
+                                    return;
+                                }
+                            }
+                        }
+
                         PlacementByUnitPositions(UnitControl.Instance.CurrentFormationType, _theCenterOfTheFormation);
                         _choiceTheRotation = true;
                     }
@@ -157,14 +182,14 @@ public class PlayerClickControl : MonoCache
                     {
                         _choiceTheRotation = false;
                         _unitTargetTransforms.Clear();
-                        UnitControl.Instance.UnitSetDestination(_unitsPositions[0]);
+                        UnitControl.Instance.UnitSetDestination(_unitsFuturePositions[0]);
                         return;
                     }
                     else
                     {
                         _choiceTheRotation = false;
                         _unitTargetTransforms.Clear();
-                        UnitControl.Instance.UnitsSetDestination(_unitsPositions);
+                        UnitControl.Instance.UnitsSetDestination(_unitsFuturePositions);
                         return;
                     }
             }
@@ -225,20 +250,20 @@ public class PlayerClickControl : MonoCache
         switch (formationType)
         {
             case "Point":
-                _unitsPositions = new List<Vector3>() { new Vector3(theCenterOfTheFormation.x, theCenterOfTheFormation.y, 0) };
-                _unitTargetTransforms[0].position = _unitsPositions[0];
+                _unitsFuturePositions = new List<Vector3>() { new Vector3(theCenterOfTheFormation.x, theCenterOfTheFormation.y, 0) };
+                _unitTargetTransforms[0].position = _unitsFuturePositions[0];
                 return;
 
             case "Circle":
-                _unitsPositions = new CircleFormationForUnits().GetPositions(UnitControl.Instance.SelectedUnits.Count, theCenterOfTheFormation, angle, radius);
+                _unitsFuturePositions = new CircleFormationForUnits().GetPositions(UnitControl.Instance.SelectedUnits.Count, theCenterOfTheFormation, angle, radius);
                 for (int i = 0; i < _unitTargetTransforms.Count; i++)
-                    _unitTargetTransforms[i].position = _unitsPositions[i];
+                    _unitTargetTransforms[i].position = _unitsFuturePositions[i];
                 return;
 
             case "Line":
-                _unitsPositions = new LineFormationForUnits().GetPositions(UnitControl.Instance.SelectedUnits.Count, theCenterOfTheFormation, angle, radius);
+                _unitsFuturePositions = new LineFormationForUnits().GetPositions(UnitControl.Instance.SelectedUnits.Count, theCenterOfTheFormation, angle, radius);
                 for (int i = 0; i < _unitTargetTransforms.Count; i++)
-                    _unitTargetTransforms[i].position = _unitsPositions[i];
+                    _unitTargetTransforms[i].position = _unitsFuturePositions[i];
                 return;
         }
     }

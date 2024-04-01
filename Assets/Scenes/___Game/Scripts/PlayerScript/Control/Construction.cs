@@ -1,6 +1,8 @@
 using Mirror;
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
+using Telepathy;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -94,7 +96,6 @@ public class Construction : NetworkBehaviour
         if (_workPieceSpriteRenderer.color == Color.green)
         {
             _playerClickControl.CurrentMode = "Movement";
-            _playerClickControl.OnCloseClick();
 
             SpawnedInNetwork(spawnPoint, _buildType);
         }
@@ -103,21 +104,26 @@ public class Construction : NetworkBehaviour
     [Command(requiresAuthority = false)]
     private void SpawnedInNetwork(Vector3 spawnPoint, string buildType, NetworkConnectionToClient conn = null)
     {
-        GameObject _createdUnit = null;
+        GameObject _createdBuild = null;
         switch (buildType)
         {
             case "MainHeadquarters":
-                _createdUnit = Instantiate(Storage.Instance.MainHeadquartersPrefab, spawnPoint, Quaternion.identity);
-                _createdUnit.GetComponent<WaitingForEnergy>().Started(buildType);
+                _createdBuild = Instantiate(Storage.Instance.MainHeadquartersPrefab, spawnPoint, Quaternion.identity);
+                _createdBuild.GetComponent<WaitingForEnergy>().Started(buildType);
                 break;
 
             case "TestBuild":
-                _createdUnit = Instantiate(Storage.Instance.TestBuildingPrefab, spawnPoint, Quaternion.identity);
-                _createdUnit.GetComponent<WaitingForEnergy>().Started(buildType, true);
+                _createdBuild = Instantiate(Storage.Instance.TestBuildingPrefab, spawnPoint, Quaternion.identity);
+                _createdBuild.GetComponent<WaitingForEnergy>().Started(buildType, true);
                 break;
         }
-        NetworkServer.Spawn(_createdUnit, conn);
+        NetworkServer.Spawn(_createdBuild, conn);
+
+        UpdateMovemedMap();
     }
+
+    [ClientRpc]
+    private void UpdateMovemedMap() => AstarPath.active.Scan();
 
     public void OnCloseClick() => _workPieceSpriteRenderer.gameObject.SetActive(false);
 }

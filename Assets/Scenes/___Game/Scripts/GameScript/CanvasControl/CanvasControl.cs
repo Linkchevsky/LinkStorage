@@ -1,4 +1,5 @@
 using Mirror;
+using NSubstitute.ReceivedExtensions;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -47,6 +48,14 @@ public class CanvasControl : MonoBehaviour
         }
     }
 
+    public void UsingWaitingForEnergyCanvas(string buildType, int currentUnitsCount, int requiredQuantityUnits)
+    {
+        _mainPanelGO.SetActive(true);
+
+        _objectNameText.text = buildType;
+        _infoText.text = $"В процессе постройки\nКол-во юнитов = {currentUnitsCount}/{requiredQuantityUnits}";
+    }
+
     public void UsingTheSpawnMenuButton() => _spawnMenuButtonGOList.SetActive(!_spawnMenuButtonGOList.activeSelf);
     #endregion
 
@@ -67,7 +76,7 @@ public class CanvasControl : MonoBehaviour
         }
     }
 
-    public void UsingTheUnitsCanvas(List<GameObject> selectedUnits, List<string> listOfSpawnUnits = null)
+    public void UsingTheUnitsCanvas(List<GameObject> selectedUnits)
     {
         _mainPanelGO.SetActive(true);
 

@@ -7,4 +7,6 @@ public interface UnitInterface
 
     SpecificationsUnit GetUnitSpecifications();
     Transform GetUnitTarget();
+
+    void DestroyThisUnit();
 }

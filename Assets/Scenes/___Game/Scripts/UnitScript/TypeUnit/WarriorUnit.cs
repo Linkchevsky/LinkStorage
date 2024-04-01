@@ -7,8 +7,9 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
     private SpecificationsUnit thisUnitSpecifications;
 
     [SerializeField] private AIDestinationSetter _AIDestinationSetter;
-    [SerializeField] private Transform _target;
     [SerializeField] private BoxCollider2D _mainCollider;
+
+    public Transform _target;
 
     private void Start()
     {
@@ -45,6 +46,19 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
     {
         _target.position = new Vector3(coordinate.x, coordinate.y, 0);
         _AIDestinationSetter.target = _target;
+    }
+
+
+    public void DestroyThisUnit() => CmdDestroyThisUnit();
+
+    [Command]
+    private void CmdDestroyThisUnit() => RpcDestroyThisUnit();
+
+    [ClientRpc]
+    private void RpcDestroyThisUnit()
+    {
+        UnitControl.Instance.RemoveUnitFromAllUnits(this.gameObject);
+        Destroy(this.gameObject);
     }
 
 

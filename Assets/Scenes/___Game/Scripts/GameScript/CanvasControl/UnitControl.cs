@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnitControl : MonoBehaviour
 {
-    private List<GameObject> _allUnits = new List<GameObject>();
+    [SerializeField]private List<GameObject> _allUnits = new List<GameObject>();
     public List<GameObject> AllUnits => _allUnits;
 
     [HideInInspector] public List<GameObject> SelectedUnits = new List<GameObject>();
@@ -29,6 +29,10 @@ public class UnitControl : MonoBehaviour
         s_cancelingUnitSelection?.Invoke();
         SelectedUnits.Clear();
     }
+
+    public void RemoveUnitFromAllUnits(GameObject unit) => _allUnits.Remove(unit);
+
+
 
     public void AddUnitInSelectedList(GameObject _unitGO) => SelectedUnits.Add(_unitGO);
 

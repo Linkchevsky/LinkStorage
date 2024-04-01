@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4960822470698575222}
   - component: {fileID: 6560591981216686557}
   - component: {fileID: 4315506081971387381}
+  - component: {fileID: -6463678912881872083}
   - component: {fileID: 4991073198873306973}
   - component: {fileID: -5446268282927118524}
-  - component: {fileID: -6463678912881872083}
   m_Layer: 3
   m_Name: TestBuild
   m_TagString: Build
@@ -134,6 +134,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &-6463678912881872083
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4170511931008127834}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!114 &4991073198873306973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,35 +190,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68c6d59f750af164baf6948342574fee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentEnergy: 0
-  _requiredEnergy: 0
---- !u!50 &-6463678912881872083
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4170511931008127834}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _currentUnits: 0
+  _requiredUnits: 0
+  _boxCollider: {fileID: 4315506081971387381}
+  _isReady: 0
 --- !u!1 &6679514883814689185
 GameObject:
   m_ObjectHideFlags: 0

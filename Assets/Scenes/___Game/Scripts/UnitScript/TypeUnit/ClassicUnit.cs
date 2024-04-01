@@ -8,7 +8,7 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
     private SpecificationsUnit thisUnitSpecifications;
 
     [SerializeField] private AIDestinationSetter _AIDestinationSetter;
-    [SerializeField] private Transform _target;
+    [SerializeField] public Transform _target;
     [SerializeField] private CircleCollider2D _mainCollider;
 
     public readonly List<string> ListOfConstructions = new List<string>() { "MainHeadquarters", "TestBuild" };
@@ -38,16 +38,42 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
         UnitControl.s_cancelingUnitSelection -= Deselect;
     }
 
+
     public void UnitSetDestination(Vector3 coordinate) => CmdUnitSetDestination(coordinate);
 
     [Command]
-    public void CmdUnitSetDestination(Vector3 coordinate) => RpcUnitSetDestination(coordinate);
+    private void CmdUnitSetDestination(Vector3 coordinate) => RpcUnitSetDestination(coordinate);
 
     [ClientRpc]
-    public void RpcUnitSetDestination(Vector3 coordinate)
+    private void RpcUnitSetDestination(Vector3 coordinate)
     {
         _target.position = new Vector3(coordinate.x, coordinate.y, 0);
         _AIDestinationSetter.target = _target;
+    }
+
+
+    public void DestroyThisUnit() => CmdDestroyThisUnit();
+
+    [Command(requiresAuthority = false)]
+    private void CmdDestroyThisUnit() => RpcDestroyThisUnit();
+
+    [ClientRpc]
+    private void RpcDestroyThisUnit()
+    { 
+        if (UnitControl.Instance.SelectedUnits.Contains(this.gameObject))
+        {
+            Deselect();
+            UnitControl.Instance.SelectedUnits.Remove(this.gameObject);
+
+            if (UnitControl.Instance.SelectedUnits.Count > 0)
+                CanvasControl.Instance.UsingTheUnitsCanvas(UnitControl.Instance.SelectedUnits);
+            else
+                CanvasControl.Instance.CloseAllCanvasMenu();
+        }
+
+        UnitControl.Instance.RemoveUnitFromAllUnits(this.gameObject);
+
+        Destroy(this.gameObject);
     }
 
 

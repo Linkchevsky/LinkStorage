@@ -52,6 +52,9 @@ MonoBehaviour:
   syncInterval: 0
   CurrentMode: Movement
   BuildTransform: {fileID: 0}
+  layerToIgnore:
+    serializedVersion: 2
+    m_Bits: 4
 --- !u!114 &4995533147236465893
 MonoBehaviour:
   m_ObjectHideFlags: 0

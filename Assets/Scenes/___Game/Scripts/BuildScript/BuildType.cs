@@ -12,17 +12,21 @@ public struct SpecificationsBuild
     public BuildTypeEnum buildType;
 
     public int BuildMaxEnergy;
-    public int BuildCurrentEnergy;
+    public int BuildCurrentEnergy; //главное чтобы делилось на 100
+
+    public int NumberOfUnitsToBuild;
     #endregion
 
-    private static readonly SpecificationsBuild StaticMainHeadquartersBuild = new SpecificationsBuild(BuildTypeEnum.mainHeadquarters, 1000);
+    private static readonly SpecificationsBuild StaticMainHeadquartersBuild = new SpecificationsBuild(BuildTypeEnum.mainHeadquarters, 1000, 4);
 
-    public SpecificationsBuild(BuildTypeEnum buildTypeName, int maxEnergy)
+    public SpecificationsBuild(BuildTypeEnum buildTypeName, int maxEnergy, int numberOfUnitsToBuild)
     {
         buildType = buildTypeName;
 
         BuildMaxEnergy = maxEnergy;
         BuildCurrentEnergy = maxEnergy;
+
+        NumberOfUnitsToBuild = numberOfUnitsToBuild;
     }
 
     public static SpecificationsBuild GetBuildData(BuildTypeEnum buildClass, GameObject theCallingObject)
