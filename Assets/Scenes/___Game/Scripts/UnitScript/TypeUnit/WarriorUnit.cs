@@ -57,7 +57,19 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
     [ClientRpc]
     private void RpcDestroyThisUnit()
     {
+        if (UnitControl.Instance.SelectedUnits.Contains(this.gameObject))
+        {
+            Deselect();
+            UnitControl.Instance.SelectedUnits.Remove(this.gameObject);
+
+            if (UnitControl.Instance.SelectedUnits.Count > 0)
+                CanvasControl.Instance.UsingTheUnitsCanvas(UnitControl.Instance.SelectedUnits);
+            else
+                CanvasControl.Instance.CloseAllCanvasMenu();
+        }
+
         UnitControl.Instance.RemoveUnitFromAllUnits(this.gameObject);
+
         Destroy(this.gameObject);
     }
 

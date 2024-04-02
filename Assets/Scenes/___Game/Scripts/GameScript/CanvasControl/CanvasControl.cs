@@ -48,8 +48,12 @@ public class CanvasControl : MonoBehaviour
         }
     }
 
+
+    [HideInInspector] public bool usedWaitingForEnergyCanvas = false;
     public void UsingWaitingForEnergyCanvas(string buildType, int currentUnitsCount, int requiredQuantityUnits)
     {
+        usedWaitingForEnergyCanvas = true;
+
         _mainPanelGO.SetActive(true);
 
         _objectNameText.text = buildType;
@@ -90,6 +94,8 @@ public class CanvasControl : MonoBehaviour
 
     public void CloseAllCanvasMenu()
     {
+        usedWaitingForEnergyCanvas = false;
+
         _spawnMenuButton.SetActive(false);
         _spawnMenuButtonGOList.SetActive(false);
 

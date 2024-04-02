@@ -86,6 +86,9 @@ public class WaitingForEnergy : NetworkBehaviour, BuildInterface
             {
                 unitInterface.DestroyThisUnit();
                 GetUnit();
+
+                if (CanvasControl.Instance.usedWaitingForEnergyCanvas)
+                    Interaction();
             }
         }
     }
