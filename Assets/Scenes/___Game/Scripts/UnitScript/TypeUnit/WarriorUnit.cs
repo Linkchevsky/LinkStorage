@@ -18,7 +18,8 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
             _mainCollider.isTrigger = false;
             return; 
         }
-        UnitControl.Instance.AllUnits.Add(this.gameObject);
+
+        UnitControl.Instance.AddUnitInAllUnit(this.gameObject);
         thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.WarriorUnit, this.gameObject);
     }
 
@@ -60,12 +61,7 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
         if (UnitControl.Instance.SelectedUnits.Contains(this.gameObject))
         {
             Deselect();
-            UnitControl.Instance.SelectedUnits.Remove(this.gameObject);
-
-            if (UnitControl.Instance.SelectedUnits.Count > 0)
-                CanvasControl.Instance.UsingTheUnitsCanvas(UnitControl.Instance.SelectedUnits);
-            else
-                CanvasControl.Instance.CloseAllCanvasMenu();
+            UnitControl.Instance.RemoveUnitFromSelectedUnits(this.gameObject);
         }
 
         UnitControl.Instance.RemoveUnitFromAllUnits(this.gameObject);

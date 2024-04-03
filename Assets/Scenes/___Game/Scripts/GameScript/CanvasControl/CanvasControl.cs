@@ -1,5 +1,3 @@
-using Mirror;
-using NSubstitute.ReceivedExtensions;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -34,8 +32,11 @@ public class CanvasControl : MonoBehaviour
     }
 
     #region[build]
+    [HideInInspector] public bool UsedTheBuildCanvas = false;
     public void UsingTheBuildCanvas(SpecificationsBuild buildStats, List<string> listOfSpawnUnits = null, Transform buildSpawnPoint = null)
     {
+        UsedTheBuildCanvas = true;
+
         _mainPanelGO.SetActive(true);
 
         _objectNameText.text = buildStats.buildType.ToString();
@@ -49,10 +50,12 @@ public class CanvasControl : MonoBehaviour
     }
 
 
-    [HideInInspector] public bool usedWaitingForEnergyCanvas = false;
-    public void UsingWaitingForEnergyCanvas(string buildType, int currentUnitsCount, int requiredQuantityUnits)
+    [HideInInspector] public bool UsedWaitingForEnergyCanvas = false;
+    [HideInInspector] public GameObject UsedWaitingForEnergyCanvasGO = null;
+    public void UsingWaitingForEnergyCanvas(string buildType, int currentUnitsCount, int requiredQuantityUnits, GameObject buildGO = null)
     {
-        usedWaitingForEnergyCanvas = true;
+        UsedWaitingForEnergyCanvasGO = buildGO;
+        UsedWaitingForEnergyCanvas = true;
 
         _mainPanelGO.SetActive(true);
 
@@ -64,8 +67,11 @@ public class CanvasControl : MonoBehaviour
     #endregion
 
     #region[unit]
-    public void UsingTheUnitCanvas(SpecificationsUnit unitStats, List<string> listOfConstructions = null)
+    [HideInInspector] public bool UsedTheUnitCanvas = false;
+    public void UsingTheUnitCanvas(SpecificationsUnit unitStats)
     {
+        UsedTheUnitCanvas = true;
+
         _mainPanelGO.SetActive(true);
 
         _objectNameText.text = unitStats.UnitType.ToString();
@@ -74,14 +80,17 @@ public class CanvasControl : MonoBehaviour
         switch(unitStats.UnitType.ToString())
         {
             case "ClassicUnit":
-                _constructionScript.ButtonPlacement(listOfConstructions);
+                _constructionScript.ButtonPlacement(unitStats.UnitType.ToString());
                 _constructionsButtonGOList.SetActive(true);
                 return;
         }
     }
 
+    [HideInInspector] public bool UsedTheUnitsCanvas = false;
     public void UsingTheUnitsCanvas(List<GameObject> selectedUnits)
     {
+        UsedTheUnitsCanvas = true;
+
         _mainPanelGO.SetActive(true);
 
         _objectNameText.text = "Выделена группа";
@@ -94,7 +103,10 @@ public class CanvasControl : MonoBehaviour
 
     public void CloseAllCanvasMenu()
     {
-        usedWaitingForEnergyCanvas = false;
+        UsedTheBuildCanvas = false;
+        UsedWaitingForEnergyCanvas = false;
+        UsedTheUnitCanvas = false;
+        UsedTheUnitsCanvas = false;
 
         _spawnMenuButton.SetActive(false);
         _spawnMenuButtonGOList.SetActive(false);

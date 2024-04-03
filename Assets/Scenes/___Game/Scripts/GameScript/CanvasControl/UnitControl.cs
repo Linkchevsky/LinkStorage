@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class UnitControl : MonoBehaviour
 {
-    [SerializeField]private List<GameObject> _allUnits = new List<GameObject>();
+    private List<GameObject> _allUnits = new List<GameObject>();
     public List<GameObject> AllUnits => _allUnits;
 
-    [HideInInspector] public List<GameObject> SelectedUnits = new List<GameObject>();
+
+    private List<GameObject> _selectedUnits = new List<GameObject>();
+    public List<GameObject> SelectedUnits => _selectedUnits;
 
     [HideInInspector] public string CurrentFormationType = "Line";
 
@@ -24,25 +26,50 @@ public class UnitControl : MonoBehaviour
         Instance = this;
     }
 
+    #region[All]
+    public void AddUnitInAllUnit(GameObject unit) => _allUnits.Add(unit);
+
+    public void RemoveUnitFromAllUnits(GameObject unit) => _allUnits.Remove(unit);
+    #endregion
+
+
+    #region[Selected]
+    public void AddUnitInSelectedList(GameObject _unitGO) 
+    { 
+        _selectedUnits.Add(_unitGO);
+
+        if (CanvasControl.Instance.UsedTheUnitsCanvas)
+            CanvasControl.Instance.UsingTheUnitsCanvas(_selectedUnits);
+    }
+
+    public void RemoveUnitFromSelectedUnits(GameObject unit)
+    {
+        _selectedUnits.Remove(unit);
+        CanvasControl.Instance.CloseAllCanvasMenu();
+
+        if (_selectedUnits.Count > 1)
+            CanvasControl.Instance.UsingTheUnitsCanvas(_selectedUnits);
+        else if (_selectedUnits.Count == 1)
+            CanvasControl.Instance.UsingTheUnitCanvas(_selectedUnits[0].GetComponent<UnitInterface>().GetUnitSpecifications());
+    }
+
     public void ClearSelectedUnitList()
     {
         s_cancelingUnitSelection?.Invoke();
-        SelectedUnits.Clear();
+        _selectedUnits.Clear();
+
+        CanvasControl.Instance.CloseAllCanvasMenu();
     }
-
-    public void RemoveUnitFromAllUnits(GameObject unit) => _allUnits.Remove(unit);
-
+    #endregion
 
 
-    public void AddUnitInSelectedList(GameObject _unitGO) => SelectedUnits.Add(_unitGO);
-
-    public void UnitSetDestination(Vector3 coordinates) => SelectedUnits[0].GetComponent<UnitInterface>().UnitSetDestination(coordinates);
+    public void UnitSetDestination(Vector3 coordinates) => _selectedUnits[0].GetComponent<UnitInterface>().UnitSetDestination(coordinates);
 
     public void UnitsSetDestination(List<Vector3> unitsPositions)
     {
-        for (int i = 0; i < SelectedUnits.Count; i++)
+        for (int i = 0; i < _selectedUnits.Count; i++)
         {
-            SelectedUnits[i].GetComponent<UnitInterface>().UnitSetDestination(unitsPositions[i]);
+            _selectedUnits[i].GetComponent<UnitInterface>().UnitSetDestination(unitsPositions[i]);
         }
     }
 

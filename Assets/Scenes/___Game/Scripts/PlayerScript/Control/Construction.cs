@@ -32,24 +32,29 @@ public class Construction : NetworkBehaviour
     [Space]
     [SerializeField] private SpriteRenderer _workPieceSpriteRenderer;
 
-    public void ButtonPlacement(List<string> listOfConstructions)
+    public readonly List<string> ListOfConstructions = new List<string>() { "MainHeadquarters", "TestBuild" };
+
+    public void ButtonPlacement(string unitType)
     {
         _buttonsUsed.Clear();
         TurningOffAllButtons();
 
-        foreach (string UnitName in listOfConstructions)
+        if (unitType == "ClassicUnit")
         {
-            switch (UnitName)
+            foreach (string buildName in ListOfConstructions)
             {
-                case "MainHeadquarters":
-                    _mainHeadquartersButton.SetActive(true);
-                    _buttonsUsed.Add(_mainHeadquartersButton);
-                    break;
+                switch (buildName)
+                {
+                    case "MainHeadquarters":
+                        _mainHeadquartersButton.SetActive(true);
+                        _buttonsUsed.Add(_mainHeadquartersButton);
+                        break;
 
-                case "TestBuild":
-                    _testBuildingButton.SetActive(true);
-                    _buttonsUsed.Add(_testBuildingButton);
-                    break;
+                    case "TestBuild":
+                        _testBuildingButton.SetActive(true);
+                        _buttonsUsed.Add(_testBuildingButton);
+                        break;
+                }
             }
         }
 

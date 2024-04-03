@@ -11,8 +11,6 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
     [SerializeField] public Transform _target;
     [SerializeField] private CircleCollider2D _mainCollider;
 
-    public readonly List<string> ListOfConstructions = new List<string>() { "MainHeadquarters", "TestBuild" };
-
     private void Start()
     {
         if (!isOwned)
@@ -20,14 +18,15 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
             _mainCollider.isTrigger = false;
             return;
         }
-        UnitControl.Instance.AllUnits.Add(this.gameObject);
+
+        UnitControl.Instance.AddUnitInAllUnit(this.gameObject);
         thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.ClassicUnit, this.gameObject);
     }
 
     public void Interaction()
     {
         UnitControl.Instance.AddUnitInSelectedList(this.gameObject);
-        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitSpecifications(), ListOfConstructions);
+        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitSpecifications());
 
         transform.GetChild(0).gameObject.SetActive(true);
         UnitControl.s_cancelingUnitSelection += Deselect;
@@ -59,16 +58,11 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
 
     [ClientRpc]
     private void RpcDestroyThisUnit()
-    { 
+    {
         if (UnitControl.Instance.SelectedUnits.Contains(this.gameObject))
         {
             Deselect();
-            UnitControl.Instance.SelectedUnits.Remove(this.gameObject);
-
-            if (UnitControl.Instance.SelectedUnits.Count > 0)
-                CanvasControl.Instance.UsingTheUnitsCanvas(UnitControl.Instance.SelectedUnits);
-            else
-                CanvasControl.Instance.CloseAllCanvasMenu();
+            UnitControl.Instance.RemoveUnitFromSelectedUnits(this.gameObject);
         }
 
         UnitControl.Instance.RemoveUnitFromAllUnits(this.gameObject);

@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 public class WaitingForEnergy : NetworkBehaviour, BuildInterface
@@ -64,16 +65,23 @@ public class WaitingForEnergy : NetworkBehaviour, BuildInterface
         switch (_buildType)
         {
             case "MainHeadquarters":
+                if (CanvasControl.Instance.UsedWaitingForEnergyCanvas && CanvasControl.Instance.UsedWaitingForEnergyCanvasGO == this.gameObject)
+                    CanvasControl.Instance.CloseAllCanvasMenu();
+
                 gameObject.AddComponent<MainHeadquarters>();
                 break;
 
             case "TestBuild":
+                if (CanvasControl.Instance.UsedWaitingForEnergyCanvas && CanvasControl.Instance.UsedWaitingForEnergyCanvasGO == this.gameObject)
+                    CanvasControl.Instance.CloseAllCanvasMenu();
+
                 gameObject.AddComponent<MainHeadquarters>();
                 break;
         }
 
 
         _isReady = true;
+
         Destroy(this.GetComponent<WaitingForEnergy>());
     }
 
@@ -87,12 +95,12 @@ public class WaitingForEnergy : NetworkBehaviour, BuildInterface
                 unitInterface.DestroyThisUnit();
                 GetUnit();
 
-                if (CanvasControl.Instance.usedWaitingForEnergyCanvas)
-                    Interaction();
+                if (CanvasControl.Instance.UsedWaitingForEnergyCanvas && CanvasControl.Instance.UsedWaitingForEnergyCanvasGO == this.gameObject)
+                    TriggerInteraction();
             }
         }
     }
 
-
-    public void Interaction() => CanvasControl.Instance.UsingWaitingForEnergyCanvas(_buildType, _currentUnits, _requiredUnits);
+    private void TriggerInteraction() => CanvasControl.Instance.UsingWaitingForEnergyCanvas(_buildType, _currentUnits, _requiredUnits);
+    public void Interaction() => CanvasControl.Instance.UsingWaitingForEnergyCanvas(_buildType, _currentUnits, _requiredUnits, this.gameObject);
 }
