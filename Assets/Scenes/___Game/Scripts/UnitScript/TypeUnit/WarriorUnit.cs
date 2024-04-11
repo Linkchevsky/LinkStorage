@@ -37,6 +37,7 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
         UnitControl.s_cancelingUnitSelection -= Deselect;
     }
 
+
     public void UnitSetDestination(Vector3 coordinate) => CmdUnitSetDestination(coordinate);
 
     [Command]
@@ -52,7 +53,7 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
 
     public void DestroyThisUnit() => CmdDestroyThisUnit();
 
-    [Command]
+    [Command(requiresAuthority = false)]
     private void CmdDestroyThisUnit() => RpcDestroyThisUnit();
 
     [ClientRpc]

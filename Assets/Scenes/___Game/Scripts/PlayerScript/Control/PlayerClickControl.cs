@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -34,6 +36,7 @@ public class PlayerClickControl : MonoCache
     private List<Vector3> _unitsFuturePositions = new List<Vector3>();
     private List<Transform> _unitTargetTransforms = new List<Transform>();
     private Vector3 _theCenterOfTheFormation;
+    private Vector3 _thePreviousCenterOfTheFormation;
 
     public string CurrentMode = "Movement"; // Movement , Construction
     public Transform BuildTransform;
@@ -107,7 +110,7 @@ public class PlayerClickControl : MonoCache
                    );
 
             Texture2D texture = new Texture2D(1, 1);
-            texture.SetPixel(0, 0, new Color(0f, 1f, 0f, 0.5f)); //установка зелёного цвета
+            texture.SetPixel(0, 0, new UnityEngine.Color(0f, 1f, 0f, 0.5f)); //установка зелёного цвета
             texture.Apply();
 
             GUI.Box(_selectionRect, texture);
@@ -146,6 +149,7 @@ public class PlayerClickControl : MonoCache
                     foreach (GameObject unit in UnitControl.Instance.SelectedUnits)
                         _unitTargetTransforms.Add(unit.GetComponent<UnitInterface>().GetUnitTarget());
 
+                    _thePreviousCenterOfTheFormation = _theCenterOfTheFormation;
                     _theCenterOfTheFormation = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     if (UnitControl.Instance.SelectedUnits.Count == 1)
                     {
@@ -159,14 +163,18 @@ public class PlayerClickControl : MonoCache
                         {
                             foreach (RaycastHit2D hit in hits)
                             {
-                                if (!hit.collider.isTrigger && hit.collider.tag == "Build")
+                                if (!hit.collider.isTrigger && hit.collider.tag == "Build") //попадание по зданию
                                 {
-                                    List<Vector3> temporaryList = new List<Vector3>();
+                                    Vector3 closestPoint = hit.transform.GetComponent<BuildInterface>().GetBoxCollider().ClosestPoint(_thePreviousCenterOfTheFormation);
+                                    Vector3 newPosition = closestPoint - (closestPoint - hit.transform.position).normalized * 0.1f;
+
+                                    _thePreviousCenterOfTheFormation = closestPoint;
+
+                                    List<Vector3> temporaryListForFuturePositions = new List<Vector3>();
                                     for (int i = 0; i < UnitControl.Instance.SelectedUnits.Count; i++)
-                                        temporaryList.Add(new Vector3(_theCenterOfTheFormation.x, _theCenterOfTheFormation.y, 0));
+                                        temporaryListForFuturePositions.Add(new Vector3(newPosition.x, newPosition.y, 0));
 
-                                    _unitsFuturePositions = temporaryList;
-
+                                    _unitsFuturePositions = temporaryListForFuturePositions;
                                     return;
                                 }
                             }

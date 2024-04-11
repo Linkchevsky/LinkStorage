@@ -1,10 +1,12 @@
 using Mirror;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public class MainHeadquarters : NetworkBehaviour, BuildInterface
 {
     private SpecificationsBuild _thisBuildSpecifications;
+    private BoxCollider2D _boxCollider => this.GetComponent<BoxCollider2D>();
 
     private Transform _buildSpawnPoint;
 
@@ -17,4 +19,6 @@ public class MainHeadquarters : NetworkBehaviour, BuildInterface
     }
 
     public void Interaction() => CanvasControl.Instance.UsingTheBuildCanvas(_thisBuildSpecifications, ListOfSpawnUnits, _buildSpawnPoint);
+
+    public BoxCollider2D GetBoxCollider() { return _boxCollider; }
 }

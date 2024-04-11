@@ -11,7 +11,7 @@ public class WaitingForEnergy : NetworkBehaviour, BuildInterface
     [SyncVar]
     private int _requiredUnits;
 
-    [SerializeField] private BoxCollider2D _boxCollider;
+    private BoxCollider2D _boxCollider => this.GetComponent<BoxCollider2D>();
 
 
     private bool _owned = false;
@@ -101,6 +101,8 @@ public class WaitingForEnergy : NetworkBehaviour, BuildInterface
         }
     }
 
-    private void TriggerInteraction() => CanvasControl.Instance.UsingWaitingForEnergyCanvas(_buildType, _currentUnits, _requiredUnits);
+    private void TriggerInteraction() => CanvasControl.Instance.UsingWaitingForEnergyCanvas(_buildType, _currentUnits, _requiredUnits, this.gameObject);
     public void Interaction() => CanvasControl.Instance.UsingWaitingForEnergyCanvas(_buildType, _currentUnits, _requiredUnits, this.gameObject);
+
+    public BoxCollider2D GetBoxCollider() { return _boxCollider; }
 }
