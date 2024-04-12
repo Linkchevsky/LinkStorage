@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 5458207274407014543}
   - component: {fileID: 6796534311562144235}
   - component: {fileID: 5878762678195047941}
+  - component: {fileID: 2804927957602794217}
   m_Layer: 3
   m_Name: MainHeadquarters
   m_TagString: Build
@@ -271,5 +272,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _currentUnits: 0
-  _boxCollider: {fileID: 6582367446421008586}
   _isReady: 0
+--- !u!114 &2804927957602794217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9131755322731065389}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caacc8346a17ed14896e9bd060325700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  BuildCurrentEnergy: 0
+  BuildMaxEnergy: 0

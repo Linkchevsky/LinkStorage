@@ -134,7 +134,7 @@ public class PlayerClickControl : MonoCache
 
     private void PerformingAHitOnAUnit(Transform _hitTransform) => _hitTransform.GetComponent<UnitInterface>().Interaction(); 
 
-    private void PerformingAHitOnABuilding(Transform _hitTransform) => _hitTransform.GetComponent<BuildInterface>().Interaction();
+    private void PerformingAHitOnABuilding(Transform _hitTransform) => _hitTransform.GetComponent<BuildingInterface>().Interaction();
 
 
     public void OnRightClick(InputAction.CallbackContext context) 
@@ -165,7 +165,7 @@ public class PlayerClickControl : MonoCache
                             {
                                 if (!hit.collider.isTrigger && hit.collider.tag == "Build") //попадание по зданию
                                 {
-                                    Vector3 closestPoint = hit.transform.GetComponent<BuildInterface>().GetBoxCollider().ClosestPoint(_thePreviousCenterOfTheFormation);
+                                    Vector3 closestPoint = hit.transform.GetComponent<BuildingInterface>().GetBoxCollider().ClosestPoint(_thePreviousCenterOfTheFormation);
                                     Vector3 newPosition = closestPoint - (closestPoint - hit.transform.position).normalized * 0.1f;
 
                                     _thePreviousCenterOfTheFormation = closestPoint;

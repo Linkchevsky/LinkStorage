@@ -6,6 +6,10 @@ using UnityEngine;
 public class ClassicUnit : NetworkBehaviour, UnitInterface
 {
     private SpecificationsUnit thisUnitSpecifications;
+    [SyncVar] public int UnitCurrentEnergy;
+    public int UnitMaxEnergy;
+
+    private UnitInterface _thisUnitInterface => GetComponent<UnitInterface>();
 
     [SerializeField] private AIDestinationSetter _AIDestinationSetter;
     [SerializeField] public Transform _target;
@@ -21,12 +25,16 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
 
         UnitControl.Instance.AddUnitInAllUnit(this.gameObject);
         thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.ClassicUnit, this.gameObject);
+
+        UnitMaxEnergy = thisUnitSpecifications.UnitMaxEnergy;
+        if (UnitCurrentEnergy == 0)
+            UnitCurrentEnergy = UnitMaxEnergy;
     }
 
     public void Interaction()
     {
         UnitControl.Instance.AddUnitInSelectedList(this.gameObject);
-        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitSpecifications());
+        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitStats(), _thisUnitInterface);
 
         transform.GetChild(0).gameObject.SetActive(true);
         UnitControl.s_cancelingUnitSelection += Deselect;
@@ -62,7 +70,7 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
         if (UnitControl.Instance.SelectedUnits.Contains(this.gameObject))
         {
             Deselect();
-            UnitControl.Instance.RemoveUnitFromSelectedUnits(this.gameObject);
+            UnitControl.Instance.RemoveUnitFromSelectedUnits(this.gameObject, _thisUnitInterface);
         }
 
         UnitControl.Instance.RemoveUnitFromAllUnits(this.gameObject);
@@ -72,9 +80,17 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
 
 
 
-    public SpecificationsUnit GetUnitSpecifications()
+    public SpecificationsUnit GetUnitStats()
     {
         return thisUnitSpecifications;
+    }
+    public UnitInterface GetUnitInterface()
+    {
+        return _thisUnitInterface;
+    }
+    public int GetCurrentUnitEnergy()
+    {
+        return UnitCurrentEnergy;
     }
     public Transform GetUnitTarget()
     {

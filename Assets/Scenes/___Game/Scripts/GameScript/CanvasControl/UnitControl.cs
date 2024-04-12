@@ -42,7 +42,7 @@ public class UnitControl : MonoBehaviour
             CanvasControl.Instance.UsingTheUnitsCanvas(_selectedUnits);
     }
 
-    public void RemoveUnitFromSelectedUnits(GameObject unit)
+    public void RemoveUnitFromSelectedUnits(GameObject unit, UnitInterface unitInterface)
     {
         _selectedUnits.Remove(unit);
         CanvasControl.Instance.CloseAllCanvasMenu();
@@ -50,7 +50,7 @@ public class UnitControl : MonoBehaviour
         if (_selectedUnits.Count > 1)
             CanvasControl.Instance.UsingTheUnitsCanvas(_selectedUnits);
         else if (_selectedUnits.Count == 1)
-            CanvasControl.Instance.UsingTheUnitCanvas(_selectedUnits[0].GetComponent<UnitInterface>().GetUnitSpecifications());
+            CanvasControl.Instance.UsingTheUnitCanvas(_selectedUnits[0].GetComponent<UnitInterface>().GetUnitStats(), unitInterface);
     }
 
     public void ClearSelectedUnitList()

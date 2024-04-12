@@ -1,17 +1,17 @@
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.ShaderKeywordFilter;
+using System;
 using UnityEngine;
 
-public class WaitingForEnergy : NetworkBehaviour, BuildInterface
+public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
 {
     [SyncVar]
     public int _currentUnits;
     [SyncVar]
     private int _requiredUnits;
 
+    private SpecificationsBuilding _thisBuildingStats;
     private BoxCollider2D _boxCollider => this.GetComponent<BoxCollider2D>();
+    private BuildingInterface _thisBuildingInterface => GetComponent<BuildingInterface>();
 
 
     private bool _owned = false;
@@ -44,11 +44,11 @@ public class WaitingForEnergy : NetworkBehaviour, BuildInterface
         switch (_buildType)
         {
             case "MainHeadquarters":
-                _requiredUnits = SpecificationsBuild.GetBuildData(BuildTypeEnum.mainHeadquarters, gameObject).BuildMaxEnergy / 100;
+                _requiredUnits = SpecificationsBuilding.GetBuildingData(BuildingTypeEnum.mainHeadquarters, gameObject).NumberOfUnitsToBuild;
                 break;
 
             case "TestBuild":
-                _requiredUnits = SpecificationsBuild.GetBuildData(BuildTypeEnum.mainHeadquarters, gameObject).BuildMaxEnergy / 100;
+                _requiredUnits = SpecificationsBuilding.GetBuildingData(BuildingTypeEnum.mainHeadquarters, gameObject).NumberOfUnitsToBuild;
                 break;
         }
     }
@@ -68,14 +68,14 @@ public class WaitingForEnergy : NetworkBehaviour, BuildInterface
                 if (CanvasControl.Instance.UsedWaitingForEnergyCanvas && CanvasControl.Instance.UsedWaitingForEnergyCanvasGO == this.gameObject)
                     CanvasControl.Instance.CloseAllCanvasMenu();
 
-                gameObject.AddComponent<MainHeadquarters>();
+                gameObject.GetComponent<MainHeadquarters>().enabled = true;
                 break;
 
             case "TestBuild":
                 if (CanvasControl.Instance.UsedWaitingForEnergyCanvas && CanvasControl.Instance.UsedWaitingForEnergyCanvasGO == this.gameObject)
                     CanvasControl.Instance.CloseAllCanvasMenu();
 
-                gameObject.AddComponent<MainHeadquarters>();
+                gameObject.GetComponent<MainHeadquarters>().enabled = true;
                 break;
         }
 
@@ -105,4 +105,9 @@ public class WaitingForEnergy : NetworkBehaviour, BuildInterface
     public void Interaction() => CanvasControl.Instance.UsingWaitingForEnergyCanvas(_buildType, _currentUnits, _requiredUnits, this.gameObject);
 
     public BoxCollider2D GetBoxCollider() { return _boxCollider; }
+    public BuildingInterface GetBuildingInterface() { return _thisBuildingInterface; }
+    public SpecificationsBuilding GetBuildingStats() { return _thisBuildingStats; }
+    public int GetCurrentBuildingEnergy() { throw new ArgumentException("У заготовки не может быть энергии!"); }
+
+    public void RemoveEnergy(int amountOfEnergy) => throw new ArgumentException("У заготовки не может быть энергии!");
 }

@@ -33,19 +33,20 @@ public class CanvasControl : MonoBehaviour
 
     #region[build]
     [HideInInspector] public bool UsedTheBuildCanvas = false;
-    public void UsingTheBuildCanvas(SpecificationsBuild buildStats, List<string> listOfSpawnUnits = null, Transform buildSpawnPoint = null)
+    public void UsingTheBuildCanvas(BuildingInterface buildInterface, List<string> listOfSpawnUnits = null, Transform buildSpawnPoint = null)
     {
         UsedTheBuildCanvas = true;
-
         _mainPanelGO.SetActive(true);
 
+        SpecificationsBuilding buildStats = buildInterface.GetBuildingStats();
+
         _objectNameText.text = buildStats.buildType.ToString();
-        _infoText.text = $"Energy = {buildStats.BuildCurrentEnergy}/{buildStats.BuildMaxEnergy}";
+        _infoText.text = $"Energy = {buildInterface.GetCurrentBuildingEnergy()}/{buildStats.BuildMaxEnergy}";
 
         if (listOfSpawnUnits != null)
         {
             _spawnMenuButton.SetActive(true);
-            _spawnMenuScript.ButtonPlacement(listOfSpawnUnits, buildSpawnPoint);
+            _spawnMenuScript.ButtonPlacement(buildInterface, listOfSpawnUnits, buildSpawnPoint);
         }
     }
 
@@ -68,14 +69,14 @@ public class CanvasControl : MonoBehaviour
 
     #region[unit]
     [HideInInspector] public bool UsedTheUnitCanvas = false;
-    public void UsingTheUnitCanvas(SpecificationsUnit unitStats)
+    public void UsingTheUnitCanvas(SpecificationsUnit unitStats, UnitInterface unitInterface)
     {
         UsedTheUnitCanvas = true;
 
         _mainPanelGO.SetActive(true);
 
         _objectNameText.text = unitStats.UnitType.ToString();
-        _infoText.text = $"Energy = {unitStats.UnitCurrentEnergy}/{unitStats.UnitMaxEnergy}";
+        _infoText.text = $"Energy = {unitInterface.GetCurrentUnitEnergy()}/{unitStats.UnitMaxEnergy}";
 
         switch(unitStats.UnitType.ToString())
         {

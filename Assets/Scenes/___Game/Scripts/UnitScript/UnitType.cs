@@ -12,8 +12,7 @@ public struct SpecificationsUnit
     #region[Инф поля]
     public UnitTypeEnum UnitType;
 
-    public float UnitMaxEnergy;
-    public float UnitCurrentEnergy;
+    public int UnitMaxEnergy;
 
     public float UnitSpeed;
     #endregion
@@ -21,11 +20,10 @@ public struct SpecificationsUnit
     public static readonly SpecificationsUnit StaticClassicUnit = new SpecificationsUnit(UnitTypeEnum.ClassicUnit, 100, 5);
     public static readonly SpecificationsUnit StaticWarriorUnit = new SpecificationsUnit(UnitTypeEnum.WarriorUnit, 125, 4);
 
-    public SpecificationsUnit(UnitTypeEnum unitType, float MaxEnergy, float Speed)
+    public SpecificationsUnit(UnitTypeEnum unitType, int MaxEnergy, float Speed)
     {
         this.UnitType = unitType;
         UnitMaxEnergy = MaxEnergy;
-        UnitCurrentEnergy = MaxEnergy;
         UnitSpeed = Speed;
     }
 

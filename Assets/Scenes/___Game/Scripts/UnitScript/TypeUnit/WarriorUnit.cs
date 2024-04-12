@@ -5,6 +5,10 @@ using UnityEngine;
 public class WarriorUnit : NetworkBehaviour, UnitInterface
 {
     private SpecificationsUnit thisUnitSpecifications;
+    [SyncVar] public int UnitCurrentEnergy;
+    public int UnitMaxEnergy;
+
+    private UnitInterface _thisUnitInterface => GetComponent<UnitInterface>();
 
     [SerializeField] private AIDestinationSetter _AIDestinationSetter;
     [SerializeField] private BoxCollider2D _mainCollider;
@@ -26,7 +30,7 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
     public void Interaction()
     {
         UnitControl.Instance.AddUnitInSelectedList(this.gameObject);
-        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitSpecifications());
+        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitStats(), _thisUnitInterface);
 
         transform.GetChild(0).gameObject.SetActive(true);
         UnitControl.s_cancelingUnitSelection += Deselect;
@@ -62,7 +66,7 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
         if (UnitControl.Instance.SelectedUnits.Contains(this.gameObject))
         {
             Deselect();
-            UnitControl.Instance.RemoveUnitFromSelectedUnits(this.gameObject);
+            UnitControl.Instance.RemoveUnitFromSelectedUnits(this.gameObject, _thisUnitInterface);
         }
 
         UnitControl.Instance.RemoveUnitFromAllUnits(this.gameObject);
@@ -72,9 +76,17 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
 
 
 
-    public SpecificationsUnit GetUnitSpecifications()
+    public SpecificationsUnit GetUnitStats()
     {
         return thisUnitSpecifications;
+    }
+    public UnitInterface GetUnitInterface()
+    {
+        return _thisUnitInterface;
+    }
+    public int GetCurrentUnitEnergy()
+    {
+        return UnitCurrentEnergy;
     }
     public Transform GetUnitTarget()
     {

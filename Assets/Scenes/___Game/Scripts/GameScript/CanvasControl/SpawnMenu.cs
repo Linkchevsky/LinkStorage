@@ -12,10 +12,16 @@ public class SpawnMenu : NetworkBehaviour
     private List<GameObject> _buttonsUsed = new List<GameObject>();
 
     private Transform _buildingSpawnPoint;
+    private BuildingInterface _buildingInterface;
+    private List<string> _listOfSpawnUnits;
 
-    public void ButtonPlacement(List<string> listOfSpawnUnits, Transform spawnPoint)
+    public void ButtonPlacement(BuildingInterface buildingInterface, List<string> listOfSpawnUnits, Transform spawnPoint)
     {
         _buildingSpawnPoint = spawnPoint;
+        _buildingInterface = buildingInterface;
+        _listOfSpawnUnits = listOfSpawnUnits;
+
+
         _buttonsUsed.Clear();
         TurningOffAllButtons();
 
@@ -50,14 +56,28 @@ public class SpawnMenu : NetworkBehaviour
     #region[спавн]
     private void UnitSpawning(UnitTypeEnum typeUnit)
     {
+        SpecificationsBuilding buildingStats = _buildingInterface.GetBuildingStats();
+
         switch (typeUnit)
         {
             case UnitTypeEnum.ClassicUnit:
-                CmdClassicUnitSpawnedInNetwork(_buildingSpawnPoint.position);
+                if (_buildingInterface.GetCurrentBuildingEnergy() - 10 >= 0)
+                {
+                    _buildingInterface.RemoveEnergy(10);
+                    CanvasControl.Instance.UsingTheBuildCanvas(_buildingInterface, _listOfSpawnUnits, _buildingSpawnPoint);
+
+                    CmdClassicUnitSpawnedInNetwork(_buildingSpawnPoint.position);
+                }
                 break;
 
             case UnitTypeEnum.WarriorUnit:
-                CmdWarriorUnitSpawnedInNetwork(_buildingSpawnPoint.position);
+                if (_buildingInterface.GetCurrentBuildingEnergy() - 20 >= 0)
+                {
+                    _buildingInterface.RemoveEnergy(20);
+                    CanvasControl.Instance.UsingTheBuildCanvas(_buildingInterface, _listOfSpawnUnits, _buildingSpawnPoint);
+
+                    CmdWarriorUnitSpawnedInNetwork(_buildingSpawnPoint.position);
+                }
                 break;
         }
     }
