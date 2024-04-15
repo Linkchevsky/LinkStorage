@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,5 +23,16 @@ public class Storage : MonoBehaviour
         }
 
         Instance = this;
+    }
+
+    public static Action s_energyTick;
+    private void Start() => StartCoroutine(ExecuteAfterTime());
+    private IEnumerator ExecuteAfterTime()
+    {
+        while (true)
+        {
+            s_energyTick?.Invoke();
+            yield return new WaitForSeconds(1);
+        }
     }
 }

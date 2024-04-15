@@ -17,18 +17,16 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
 
     private void Start()
     {
+        UnitControl.Instance.AddUnitInAllUnit(this.gameObject);
+        thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.ClassicUnit, this.gameObject);
+
         if (!isOwned)
         {
             _mainCollider.isTrigger = false;
             return;
         }
 
-        UnitControl.Instance.AddUnitInAllUnit(this.gameObject);
-        thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.ClassicUnit, this.gameObject);
-
         UnitMaxEnergy = thisUnitSpecifications.UnitMaxEnergy;
-        if (UnitCurrentEnergy == 0)
-            UnitCurrentEnergy = UnitMaxEnergy;
     }
 
     public void Interaction()

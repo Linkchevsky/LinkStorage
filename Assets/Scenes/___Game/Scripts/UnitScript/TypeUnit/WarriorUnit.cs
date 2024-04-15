@@ -17,14 +17,16 @@ public class WarriorUnit : NetworkBehaviour, UnitInterface
 
     private void Start()
     {
+        UnitControl.Instance.AddUnitInAllUnit(this.gameObject);
+        thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.WarriorUnit, this.gameObject);
+
         if (!isOwned)
         {
             _mainCollider.isTrigger = false;
             return; 
         }
 
-        UnitControl.Instance.AddUnitInAllUnit(this.gameObject);
-        thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.WarriorUnit, this.gameObject);
+        UnitMaxEnergy = thisUnitSpecifications.UnitMaxEnergy;
     }
 
     public void Interaction()

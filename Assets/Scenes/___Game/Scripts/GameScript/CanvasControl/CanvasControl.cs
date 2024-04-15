@@ -33,9 +33,12 @@ public class CanvasControl : MonoBehaviour
 
     #region[build]
     [HideInInspector] public bool UsedTheBuildCanvas = false;
-    public void UsingTheBuildCanvas(BuildingInterface buildInterface, List<string> listOfSpawnUnits = null, Transform buildSpawnPoint = null)
+    [HideInInspector] public GameObject UsedTheBuildCanvasGO = null;
+    public void UsingTheBuildCanvas(BuildingInterface buildInterface, GameObject buildGO, List<string> listOfSpawnUnits = null, Transform buildSpawnPoint = null)
     {
         UsedTheBuildCanvas = true;
+        UsedTheBuildCanvasGO = buildGO;
+
         _mainPanelGO.SetActive(true);
 
         SpecificationsBuilding buildStats = buildInterface.GetBuildingStats();

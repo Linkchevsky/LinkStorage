@@ -25,7 +25,7 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
     private void IsReadyChange(bool oldValue, bool newValue) 
     {
         if (!_owned)
-            AddComponent(); 
+            EnableComponent(); 
     }
 
     public void Started(string buildType, bool isReady = false)
@@ -37,7 +37,7 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
 
         if (isReady)
         {
-            AddComponent();
+            EnableComponent();
             return;
         }
 
@@ -57,10 +57,10 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
     {
         _currentUnits++;
         if (_currentUnits >= _requiredUnits)
-            AddComponent();
+            EnableComponent();
     }
 
-    private void AddComponent()
+    private void EnableComponent()
     {
         switch (_buildType)
         {
@@ -109,5 +109,5 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
     public SpecificationsBuilding GetBuildingStats() { return _thisBuildingStats; }
     public int GetCurrentBuildingEnergy() { throw new ArgumentException("У заготовки не может быть энергии!"); }
 
-    public void RemoveEnergy(int amountOfEnergy) => throw new ArgumentException("У заготовки не может быть энергии!");
+    public void UsedEnergy(int amountOfEnergy) => throw new ArgumentException("У заготовки не может быть энергии!");
 }

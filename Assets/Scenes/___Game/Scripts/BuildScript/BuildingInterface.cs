@@ -7,7 +7,7 @@ public interface BuildingInterface
     void Interaction();
 
 
-    void RemoveEnergy(int amountOfEnergy);
+    void UsedEnergy(int amountOfEnergy);
 
 
     BoxCollider2D GetBoxCollider();

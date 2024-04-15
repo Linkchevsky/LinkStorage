@@ -63,8 +63,7 @@ public class SpawnMenu : NetworkBehaviour
             case UnitTypeEnum.ClassicUnit:
                 if (_buildingInterface.GetCurrentBuildingEnergy() - 10 >= 0)
                 {
-                    _buildingInterface.RemoveEnergy(10);
-                    CanvasControl.Instance.UsingTheBuildCanvas(_buildingInterface, _listOfSpawnUnits, _buildingSpawnPoint);
+                    _buildingInterface.UsedEnergy(-10);
 
                     CmdClassicUnitSpawnedInNetwork(_buildingSpawnPoint.position);
                 }
@@ -73,8 +72,7 @@ public class SpawnMenu : NetworkBehaviour
             case UnitTypeEnum.WarriorUnit:
                 if (_buildingInterface.GetCurrentBuildingEnergy() - 20 >= 0)
                 {
-                    _buildingInterface.RemoveEnergy(20);
-                    CanvasControl.Instance.UsingTheBuildCanvas(_buildingInterface, _listOfSpawnUnits, _buildingSpawnPoint);
+                    _buildingInterface.UsedEnergy(-20);
 
                     CmdWarriorUnitSpawnedInNetwork(_buildingSpawnPoint.position);
                 }

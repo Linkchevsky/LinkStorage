@@ -5,8 +5,17 @@ using UnityEngine;
 
 public class MainHeadquarters : NetworkBehaviour, BuildingInterface
 {
+    private void OnEnable() => Storage.s_energyTick += EnergyTick;
+    private void OnDisable() => Storage.s_energyTick -= EnergyTick;
+    private void EnergyTick()
+    {
+        if (BuildCurrentEnergy > 0)
+            UsedEnergy(-1);
+    }
+
+
     private SpecificationsBuilding _thisBuildingStats;
-    [SyncVar] public int BuildCurrentEnergy;
+    [SyncVar(hook = nameof(EnergyChange))] public int BuildCurrentEnergy;
     public int BuildMaxEnergy;
 
     private BoxCollider2D _boxCollider => this.GetComponent<BoxCollider2D>();
@@ -24,12 +33,16 @@ public class MainHeadquarters : NetworkBehaviour, BuildingInterface
             BuildCurrentEnergy = _thisBuildingStats.BuildMaxEnergy;
     }
 
+    private void EnergyChange(int oldValue, int newValue) => UsedEnergy(0);
 
+    public void Interaction() => CanvasControl.Instance.UsingTheBuildCanvas(_thisBuildingInterface, this.gameObject, ListOfSpawnUnits, _buildingSpawnPoint);
 
-    public void Interaction() => CanvasControl.Instance.UsingTheBuildCanvas(_thisBuildingInterface, ListOfSpawnUnits, _buildingSpawnPoint);
-
-    public void AddEnergy(int amountOfEnergy) => BuildCurrentEnergy += amountOfEnergy;
-    public void RemoveEnergy(int amountOfEnergy) => BuildCurrentEnergy -= amountOfEnergy;
+    public void UsedEnergy(int amountOfEnergy) 
+    { 
+        BuildCurrentEnergy += amountOfEnergy;
+        if (CanvasControl.Instance.UsedTheBuildCanvas && CanvasControl.Instance.UsedTheBuildCanvasGO == this.gameObject)
+            CanvasControl.Instance.UsingTheBuildCanvas(_thisBuildingInterface, this.gameObject, ListOfSpawnUnits, _buildingSpawnPoint);
+    }
 
  
     public BoxCollider2D GetBoxCollider() { return _boxCollider; }
