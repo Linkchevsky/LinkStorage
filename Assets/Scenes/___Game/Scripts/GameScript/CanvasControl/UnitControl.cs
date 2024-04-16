@@ -50,7 +50,7 @@ public class UnitControl : MonoBehaviour
         if (_selectedUnits.Count > 1)
             CanvasControl.Instance.UsingTheUnitsCanvas(_selectedUnits);
         else if (_selectedUnits.Count == 1)
-            CanvasControl.Instance.UsingTheUnitCanvas(_selectedUnits[0].GetComponent<UnitInterface>().GetUnitStats(), unitInterface);
+            CanvasControl.Instance.UsingTheUnitCanvas(_selectedUnits[0].GetComponent<UnitInterface>().GetUnitStats(), unitInterface, _selectedUnits[0]);
     }
 
     public void ClearSelectedUnitList()

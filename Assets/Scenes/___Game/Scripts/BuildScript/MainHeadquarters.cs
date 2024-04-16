@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class MainHeadquarters : NetworkBehaviour, BuildingInterface
 {
-    private void OnEnable() => Storage.s_energyTick += EnergyTick;
-    private void OnDisable() => Storage.s_energyTick -= EnergyTick;
+    private void OnEnable() => GlobalUpdate.s_energyTick += EnergyTick;
+    private void OnDisable() => GlobalUpdate.s_energyTick -= EnergyTick;
     private void EnergyTick()
     {
         if (BuildCurrentEnergy > 0)
@@ -15,7 +15,7 @@ public class MainHeadquarters : NetworkBehaviour, BuildingInterface
 
 
     private SpecificationsBuilding _thisBuildingStats;
-    [SyncVar(hook = nameof(EnergyChange))] public int BuildCurrentEnergy;
+    [SyncVar] public int BuildCurrentEnergy;
     public int BuildMaxEnergy;
 
     private BoxCollider2D _boxCollider => this.GetComponent<BoxCollider2D>();
@@ -32,8 +32,6 @@ public class MainHeadquarters : NetworkBehaviour, BuildingInterface
         if (BuildCurrentEnergy == 0)
             BuildCurrentEnergy = _thisBuildingStats.BuildMaxEnergy;
     }
-
-    private void EnergyChange(int oldValue, int newValue) => UsedEnergy(0);
 
     public void Interaction() => CanvasControl.Instance.UsingTheBuildCanvas(_thisBuildingInterface, this.gameObject, ListOfSpawnUnits, _buildingSpawnPoint);
 

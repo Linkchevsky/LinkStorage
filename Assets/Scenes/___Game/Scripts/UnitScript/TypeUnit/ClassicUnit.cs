@@ -1,6 +1,5 @@
 using Mirror;
 using Pathfinding;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ClassicUnit : NetworkBehaviour, UnitInterface
@@ -12,8 +11,18 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
     private UnitInterface _thisUnitInterface => GetComponent<UnitInterface>();
 
     [SerializeField] private AIDestinationSetter _AIDestinationSetter;
-    [SerializeField] public Transform _target;
     [SerializeField] private CircleCollider2D _mainCollider;
+
+    [SerializeField] public Transform _target;
+
+
+    private void OnEnable() => GlobalUpdate.s_energyTick += EnergyTick;
+    private void OnDisable() => GlobalUpdate.s_energyTick -= EnergyTick;
+    private void EnergyTick()
+    {
+        if (UnitCurrentEnergy > 0)
+            UsedEnergy(-1);
+    }
 
     private void Start()
     {
@@ -27,12 +36,13 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
         }
 
         UnitMaxEnergy = thisUnitSpecifications.UnitMaxEnergy;
+        UnitCurrentEnergy = UnitMaxEnergy;
     }
 
     public void Interaction()
     {
         UnitControl.Instance.AddUnitInSelectedList(this.gameObject);
-        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitStats(), _thisUnitInterface);
+        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitStats(), _thisUnitInterface, this.gameObject);
 
         transform.GetChild(0).gameObject.SetActive(true);
         UnitControl.s_cancelingUnitSelection += Deselect;
@@ -76,6 +86,13 @@ public class ClassicUnit : NetworkBehaviour, UnitInterface
         Destroy(this.gameObject);
     }
 
+
+    public void UsedEnergy(int amountOfEnergy)
+    {
+        UnitCurrentEnergy += amountOfEnergy;
+        if (CanvasControl.Instance.UsedTheUnitCanvas && CanvasControl.Instance.UsedTheUnitCanvasGO == this.gameObject)
+            CanvasControl.Instance.UsingTheUnitCanvas(GetUnitStats(), _thisUnitInterface, this.gameObject);
+    }
 
 
     public SpecificationsUnit GetUnitStats()

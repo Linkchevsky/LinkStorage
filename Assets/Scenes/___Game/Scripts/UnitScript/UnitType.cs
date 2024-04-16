@@ -17,8 +17,8 @@ public struct SpecificationsUnit
     public float UnitSpeed;
     #endregion
 
-    public static readonly SpecificationsUnit StaticClassicUnit = new SpecificationsUnit(UnitTypeEnum.ClassicUnit, 100, 5);
-    public static readonly SpecificationsUnit StaticWarriorUnit = new SpecificationsUnit(UnitTypeEnum.WarriorUnit, 125, 4);
+    public static readonly SpecificationsUnit StaticClassicUnit = new SpecificationsUnit(UnitTypeEnum.ClassicUnit, 10, 5);
+    public static readonly SpecificationsUnit StaticWarriorUnit = new SpecificationsUnit(UnitTypeEnum.WarriorUnit, 12, 4);
 
     public SpecificationsUnit(UnitTypeEnum unitType, int MaxEnergy, float Speed)
     {

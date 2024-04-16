@@ -72,9 +72,11 @@ public class CanvasControl : MonoBehaviour
 
     #region[unit]
     [HideInInspector] public bool UsedTheUnitCanvas = false;
-    public void UsingTheUnitCanvas(SpecificationsUnit unitStats, UnitInterface unitInterface)
+    [HideInInspector] public GameObject UsedTheUnitCanvasGO = null;
+    public void UsingTheUnitCanvas(SpecificationsUnit unitStats, UnitInterface unitInterface, GameObject unitGO)
     {
         UsedTheUnitCanvas = true;
+        UsedTheUnitCanvasGO = unitGO;
 
         _mainPanelGO.SetActive(true);
 

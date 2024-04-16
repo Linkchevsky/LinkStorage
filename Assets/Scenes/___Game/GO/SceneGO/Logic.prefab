@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4002279152096422522}
   - component: {fileID: 160302991249239070}
   - component: {fileID: 8234363382998636226}
+  - component: {fileID: -7226862900512164234}
   m_Layer: 0
   m_Name: Logic
   m_TagString: Untagged
@@ -152,3 +153,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22dee12a0c6488340be1903bacdab616, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!114 &-7226862900512164234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7227489207555635950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 2114616137
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
