@@ -129,7 +129,10 @@ public class PlayerClickControl : MonoCache
         }
 
         if (UnitControl.Instance.SelectedUnits.Count > 1)
+        {
+            CanvasControl.Instance.CloseAllCanvasMenu();
             CanvasControl.Instance.UsingTheUnitsCanvas(UnitControl.Instance.SelectedUnits);
+        }
     }
 
     private void PerformingAHitOnAUnit(Transform _hitTransform) => _hitTransform.GetComponent<UnitInterface>().Interaction(); 

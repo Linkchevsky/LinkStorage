@@ -1,4 +1,3 @@
-using Mirror;
 using System;
 using UnityEngine;
 
@@ -12,7 +11,7 @@ public struct SpecificationsBuilding
     #region[Инф поля]
     public BuildingTypeEnum buildType;
 
-    public int BuildMaxEnergy; //главное чтобы делилось на 100
+    public int BuildingMaxEnergy; //главное чтобы делилось на 100
 
     public int NumberOfUnitsToBuild;
     #endregion
@@ -22,7 +21,7 @@ public struct SpecificationsBuilding
     public SpecificationsBuilding(BuildingTypeEnum buildingTypeName, int maxEnergy, int numberOfUnitsToConstruction)
     {
         buildType = buildingTypeName;
-        BuildMaxEnergy = maxEnergy;
+        BuildingMaxEnergy = maxEnergy;
         NumberOfUnitsToBuild = numberOfUnitsToConstruction;
     }
 

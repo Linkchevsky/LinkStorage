@@ -44,7 +44,7 @@ public class CanvasControl : MonoBehaviour
         SpecificationsBuilding buildStats = buildInterface.GetBuildingStats();
 
         _objectNameText.text = buildStats.buildType.ToString();
-        _infoText.text = $"Energy = {buildInterface.GetCurrentBuildingEnergy()}/{buildStats.BuildMaxEnergy}";
+        _infoText.text = $"Energy = {buildInterface.GetCurrentBuildingEnergy()}/{buildStats.BuildingMaxEnergy}";
 
         if (listOfSpawnUnits != null)
         {
