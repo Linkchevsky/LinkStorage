@@ -92,7 +92,7 @@ public class PlayerClickControl : MonoCache
     private RaycastHit2D[] ReturnOfTheHits()
     {
         Vector2 _MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D[] Hits = Physics2D.RaycastAll(_MousePosition, Vector2.zero);
+        RaycastHit2D[] Hits = Physics2D.RaycastAll(_MousePosition, Vector2.zero.normalized);
 
         return Hits;
     }
@@ -129,10 +129,7 @@ public class PlayerClickControl : MonoCache
         }
 
         if (UnitControl.Instance.SelectedUnits.Count > 1)
-        {
-            CanvasControl.Instance.CloseAllCanvasMenu();
-            CanvasControl.Instance.UsingTheUnitsCanvas(UnitControl.Instance.SelectedUnits);
-        }
+            CanvasControl.Instance.UsingCanvas("Группа юнитов", $"Количество юнитов: {UnitControl.Instance.SelectedUnits.Count}", null, new List<string> { "formation" });
     }
 
     private void PerformingAHitOnAUnit(Transform _hitTransform) => _hitTransform.GetComponent<UnitInterface>().Interaction(); 
@@ -166,7 +163,7 @@ public class PlayerClickControl : MonoCache
                         {
                             foreach (RaycastHit2D hit in hits)
                             {
-                                if (!hit.collider.isTrigger && hit.collider.tag == "Build") //попадание по зданию
+                                if (!hit.collider.isTrigger && hit.transform.CompareTag("Build")) //попадание по зданию
                                 {
                                     Vector3 closestPoint = hit.transform.GetComponent<BuildingInterface>().GetBoxCollider().ClosestPoint(_thePreviousCenterOfTheFormation);
                                     Vector3 newPosition = closestPoint - (closestPoint - hit.transform.position).normalized * 0.1f;
@@ -213,7 +210,7 @@ public class PlayerClickControl : MonoCache
             {
                 case "Canceled":
                     Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    Construction.Instance.UnitSpawning(new Vector3(mousePosition.x, mousePosition.y, 0));
+                    ConstructionCanvas.Instance.UnitSpawning(new Vector3(mousePosition.x, mousePosition.y, 0));
                     return;
             }
             return;
@@ -286,7 +283,7 @@ public class PlayerClickControl : MonoCache
         CanvasControl.Instance.CloseAllCanvasMenu();
         UnitControl.Instance.ClearSelectedUnitList();
 
-        Construction.Instance.OnCloseClick();
+        ConstructionCanvas.Instance.OnCloseClick();
         CurrentMode = "Movement";
     }
 }

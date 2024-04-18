@@ -8,7 +8,7 @@ public class Storage : MonoBehaviour
     public GameObject WarriorUnitPrefab;
     [Space]
     public GameObject MainHeadquartersPrefab;
-    public GameObject TestBuildingPrefab;
+    public GameObject ElectricPolePrefab;
 
 
     private void Awake() //объявляю синглтон

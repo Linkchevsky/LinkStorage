@@ -1,4 +1,5 @@
 using Mirror;
+using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 
@@ -10,8 +11,10 @@ public interface BuildingInterface
     void UsedEnergy(int amountOfEnergy);
 
 
+    List<string> GetListOfSpawnUnits();
+    GameObject GetGameobject();
     BoxCollider2D GetBoxCollider();
     BuildingInterface GetBuildingInterface();
-    SpecificationsBuilding GetBuildingStats();
+    BuildingInfo GetBuildingInfo();
     int GetCurrentBuildingEnergy();
 }

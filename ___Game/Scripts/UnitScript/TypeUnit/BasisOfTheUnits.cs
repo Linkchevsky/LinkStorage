@@ -7,9 +7,8 @@ using UnityEngine;
 
 public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
 {
-    protected SpecificationsUnit thisUnitSpecifications;
+    protected UnitInfo _thisUnitInfo;
     [SyncVar] public int UnitCurrentEnergy;
-    public int UnitMaxEnergy;
 
     protected UnitInterface _thisUnitInterface => GetComponent<UnitInterface>();
 
@@ -27,25 +26,14 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
             UsedEnergy(-1);
     }
 
-    private void Start()
-    {
-        UnitControl.Instance.AddUnitInAllUnit(this.gameObject);
-        thisUnitSpecifications = SpecificationsUnit.GetUnitData(UnitTypeEnum.ClassicUnit, this.gameObject);
-
-        if (!isOwned)
-        {
-            _mainCollider.isTrigger = false;
-            return;
-        }
-
-        UnitMaxEnergy = thisUnitSpecifications.UnitMaxEnergy;
-        UnitCurrentEnergy = UnitMaxEnergy;
-    }
-
     public void Interaction()
     {
         UnitControl.Instance.AddUnitInSelectedList(this.gameObject);
-        CanvasControl.Instance.UsingTheUnitCanvas(GetUnitStats(), _thisUnitInterface, this.gameObject);
+
+        if (_thisUnitInfo.Id == "Classic Unit")
+            CanvasControl.Instance.UsingCanvas(_thisUnitInfo.Id, $"{UnitCurrentEnergy}/{_thisUnitInfo.MaxUnitEnergy}", null, new List<string> { "construction" });
+        else
+            CanvasControl.Instance.UsingCanvas(_thisUnitInfo.Id, $"{UnitCurrentEnergy}/{_thisUnitInfo.MaxUnitEnergy}", null);
 
         transform.GetChild(0).gameObject.SetActive(true);
         UnitControl.s_cancelingUnitSelection += Deselect;
@@ -81,7 +69,7 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
         if (UnitControl.Instance.SelectedUnits.Contains(this.gameObject))
         {
             Deselect();
-            UnitControl.Instance.RemoveUnitFromSelectedUnits(this.gameObject, _thisUnitInterface);
+            UnitControl.Instance.RemoveUnitFromSelectedUnits(this.gameObject);
         }
 
         UnitControl.Instance.RemoveUnitFromAllUnits(this.gameObject);
@@ -93,14 +81,12 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
     public void UsedEnergy(int amountOfEnergy)
     {
         UnitCurrentEnergy += amountOfEnergy;
-        if (CanvasControl.Instance.UsedTheUnitCanvas && CanvasControl.Instance.UsedTheUnitCanvasGO == this.gameObject)
-            CanvasControl.Instance.UsingTheUnitCanvas(GetUnitStats(), _thisUnitInterface, this.gameObject);
     }
 
 
-    public SpecificationsUnit GetUnitStats()
+    public UnitInfo GetUnitInfo()
     {
-        return thisUnitSpecifications;
+        return _thisUnitInfo;
     }
     public UnitInterface GetUnitInterface()
     {

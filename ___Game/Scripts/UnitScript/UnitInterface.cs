@@ -10,6 +10,6 @@ public interface UnitInterface
 
     Transform GetUnitTarget();
     UnitInterface GetUnitInterface();
-    SpecificationsUnit GetUnitStats();
+    UnitInfo GetUnitInfo();
     int GetCurrentUnitEnergy();
 }

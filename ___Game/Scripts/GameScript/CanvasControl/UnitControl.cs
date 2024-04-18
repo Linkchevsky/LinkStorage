@@ -34,31 +34,15 @@ public class UnitControl : MonoBehaviour
 
 
     #region[Selected]
-    public void AddUnitInSelectedList(GameObject _unitGO) 
-    { 
-        _selectedUnits.Add(_unitGO);
+    public void AddUnitInSelectedList(GameObject _unitGO) =>  _selectedUnits.Add(_unitGO);
 
-        if (CanvasControl.Instance.UsedTheUnitsCanvas)
-            CanvasControl.Instance.UsingTheUnitsCanvas(_selectedUnits);
-    }
+    public void RemoveUnitFromSelectedUnits(GameObject unit) => _selectedUnits.Remove(unit);
 
-    public void RemoveUnitFromSelectedUnits(GameObject unit, UnitInterface unitInterface)
-    {
-        _selectedUnits.Remove(unit);
-        CanvasControl.Instance.CloseAllCanvasMenu();
-
-        if (_selectedUnits.Count > 1)
-            CanvasControl.Instance.UsingTheUnitsCanvas(_selectedUnits);
-        else if (_selectedUnits.Count == 1)
-            CanvasControl.Instance.UsingTheUnitCanvas(_selectedUnits[0].GetComponent<UnitInterface>().GetUnitStats(), unitInterface, _selectedUnits[0]);
-    }
 
     public void ClearSelectedUnitList()
     {
         s_cancelingUnitSelection?.Invoke();
         _selectedUnits.Clear();
-
-        CanvasControl.Instance.CloseAllCanvasMenu();
     }
     #endregion
 

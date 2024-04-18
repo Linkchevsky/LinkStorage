@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,18 +8,19 @@ public class CanvasControl : MonoBehaviour
     [SerializeField] private GameObject _mainPanelGO;
     [Space]
     [SerializeField] private TextMeshProUGUI _objectNameText;
+    [SerializeField] private TextMeshProUGUI _energyText;
     [SerializeField] private TextMeshProUGUI _infoText;
     [Space]
-    [SerializeField] private GameObject _spawnMenuButton;
+    [SerializeField] private SpawnCanvas _spawnMenuScript;
     [SerializeField] private GameObject _spawnMenuButtonGOList;
-    [SerializeField] private SpawnMenu _spawnMenuScript;
     [Space]
-    [SerializeField] private GameObject _formationsButtonGOList;
     [SerializeField] private UnitControl _unitControlScript;
+    [SerializeField] private GameObject _formationsButtonGOList;
     [Space]
-    [SerializeField] private Construction _constructionScript;
+    [SerializeField] private ConstructionCanvas _constructionScript;
     [SerializeField] private GameObject _constructionsButtonGOList;
 
+    [HideInInspector] public bool CanvasUsed = false;
     public static CanvasControl Instance;
     private void Awake()
     {
@@ -31,95 +33,104 @@ public class CanvasControl : MonoBehaviour
         Instance = this;
     }
 
-    #region[build]
-    [HideInInspector] public bool UsedTheBuildCanvas = false;
-    [HideInInspector] public GameObject UsedTheBuildCanvasGO = null;
-    public void UsingTheBuildCanvas(BuildingInterface buildInterface, GameObject buildGO, List<string> listOfSpawnUnits = null, Transform buildSpawnPoint = null)
+    //additionalFunctionality - formation, construction, spawnUnits
+    public void UsingCanvas(string objectNameText, string energyText = null, string infoText = null, List<string> listOfAdditionalFunctionality = null, 
+                            BuildingInterface buildInterface = null, UnitInterface unitInterface = null)
     {
-        UsedTheBuildCanvas = true;
-        UsedTheBuildCanvasGO = buildGO;
+        CanvasUsed = true;
 
         _mainPanelGO.SetActive(true);
 
-        SpecificationsBuilding buildStats = buildInterface.GetBuildingStats();
+        _objectNameText.text = objectNameText;
+        _energyText.text = energyText;
+        _infoText.text = infoText;
 
-        _objectNameText.text = buildStats.buildType.ToString();
-        _infoText.text = $"Energy = {buildInterface.GetCurrentBuildingEnergy()}/{buildStats.BuildingMaxEnergy}";
+        if (listOfAdditionalFunctionality != null)
+            foreach (string additionalFunctionality in listOfAdditionalFunctionality)
+            {
+                switch (additionalFunctionality)
+                {
+                    case "formation":
+                        _formationsButtonGOList.SetActive(true);
+                        break;
 
-        if (listOfSpawnUnits != null)
-        {
-            _spawnMenuButton.SetActive(true);
-            _spawnMenuScript.ButtonPlacement(buildInterface, listOfSpawnUnits, buildSpawnPoint);
-        }
+                    case "construction":
+                        _constructionScript.ButtonPlacement();
+                        _constructionsButtonGOList.SetActive(true);
+                        break;
+
+                    case "spawnUnits":
+                        _spawnMenuScript.ButtonPlacement(buildInterface);
+                        _spawnMenuButtonGOList.SetActive(true);
+                        break;
+                }
+            }
     }
-
-
-    [HideInInspector] public bool UsedWaitingForEnergyCanvas = false;
-    [HideInInspector] public GameObject UsedWaitingForEnergyCanvasGO = null;
-    public void UsingWaitingForEnergyCanvas(string buildType, int currentUnitsCount, int requiredQuantityUnits, GameObject buildGO = null)
-    {
-        UsedWaitingForEnergyCanvasGO = buildGO;
-        UsedWaitingForEnergyCanvas = true;
-
-        _mainPanelGO.SetActive(true);
-
-        _objectNameText.text = buildType;
-        _infoText.text = $"В процессе постройки\nКол-во юнитов = {currentUnitsCount}/{requiredQuantityUnits}";
-    }
-
-    public void UsingTheSpawnMenuButton() => _spawnMenuButtonGOList.SetActive(!_spawnMenuButtonGOList.activeSelf);
-    #endregion
-
-    #region[unit]
-    [HideInInspector] public bool UsedTheUnitCanvas = false;
-    [HideInInspector] public GameObject UsedTheUnitCanvasGO = null;
-    public void UsingTheUnitCanvas(SpecificationsUnit unitStats, UnitInterface unitInterface, GameObject unitGO)
-    {
-        UsedTheUnitCanvas = true;
-        UsedTheUnitCanvasGO = unitGO;
-
-        _mainPanelGO.SetActive(true);
-
-        _objectNameText.text = unitStats.UnitType.ToString();
-        _infoText.text = $"Energy = {unitInterface.GetCurrentUnitEnergy()}/{unitStats.UnitMaxEnergy}";
-
-        switch(unitStats.UnitType.ToString())
-        {
-            case "ClassicUnit":
-                _constructionScript.ButtonPlacement(unitStats.UnitType.ToString());
-                _constructionsButtonGOList.SetActive(true);
-                return;
-        }
-    }
-
-    [HideInInspector] public bool UsedTheUnitsCanvas = false;
-    public void UsingTheUnitsCanvas(List<GameObject> selectedUnits)
-    {
-        UsedTheUnitsCanvas = true;
-
-        _mainPanelGO.SetActive(true);
-
-        _objectNameText.text = "Выделена группа";
-        _infoText.text = $"Кол-во юнитов = {selectedUnits.Count}";
-
-        _formationsButtonGOList.SetActive(true);
-    }
-
-    #endregion
 
     public void CloseAllCanvasMenu()
     {
-        UsedTheBuildCanvas = false;
-        UsedWaitingForEnergyCanvas = false;
-        UsedTheUnitCanvas = false;
-        UsedTheUnitsCanvas = false;
-
-        _spawnMenuButton.SetActive(false);
-        _spawnMenuButtonGOList.SetActive(false);
-
-        _formationsButtonGOList.SetActive(false);
-        _constructionsButtonGOList.SetActive(false);
+        CanvasUsed = false;
 
         _mainPanelGO.SetActive(false);
+
+        _spawnMenuButtonGOList.SetActive(false);
+        _formationsButtonGOList.SetActive(false);
+        _constructionsButtonGOList.SetActive(false);
     }
+    /*
+       public void UsingTheBuildCanvas(BuildingInterface buildInterface, GameObject buildGO, List<string> listOfSpawnUnits = null, Transform buildSpawnPoint = null)
+       {
+           _mainPanelGO.SetActive(true);
+
+           BuildingInfo buildStats = buildInterface.GetBuildingInfo();
+
+           _objectNameText.text = buildStats.Id;
+           _infoText.text = $"Energy = {buildInterface.GetCurrentBuildingEnergy()}/{buildStats.MaxBuildingEnergy}";
+
+           if (listOfSpawnUnits != null)
+           {
+               _spawnMenuButton.SetActive(true);
+               _spawnMenuScript.ButtonPlacement(buildInterface, listOfSpawnUnits, buildSpawnPoint);
+           }
+       }
+
+
+       public void UsingWaitingForEnergyCanvas(string buildType, int currentUnitsCount, int requiredQuantityUnits, GameObject buildGO = null)
+       {
+           _mainPanelGO.SetActive(true);
+
+           _objectNameText.text = buildType;
+           _infoText.text = $"В процессе постройки\nКол-во юнитов = {currentUnitsCount}/{requiredQuantityUnits}";
+       }
+       #endregion
+
+       #region[unit]
+       public void UsingTheUnitCanvas(UnitInfo unitInfo, UnitInterface unitInterface, GameObject unitGO)
+       {
+           _mainPanelGO.SetActive(true);
+
+           _objectNameText.text = unitInfo.Id;
+           _infoText.text = $"Energy = {unitInterface.GetCurrentUnitEnergy()}/{unitInfo.MaxUnitEnergy}";
+
+           switch(unitInfo.Id)
+           {
+               case "Classic Unit":
+                   _constructionScript.ButtonPlacement();
+                   _constructionsButtonGOList.SetActive(true);
+                   return;
+           }
+       }
+
+       public void UsingTheUnitsCanvas(List<GameObject> selectedUnits)
+       {
+           _mainPanelGO.SetActive(true);
+
+           _objectNameText.text = "Выделена группа юнитов";
+           _infoText.text = $"Кол-во юнитов = {selectedUnits.Count}";
+
+           _formationsButtonGOList.SetActive(true);
+       }
+
+       #endregion
+    */
 }

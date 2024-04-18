@@ -14,29 +14,26 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     }
 
 
-    protected SpecificationsBuilding _thisBuildingStats;
+    protected BuildingInfo _thisBuildingInfo;
     [SyncVar] public int BuildCurrentEnergy;
-    public int BuildMaxEnergy;
 
     protected BoxCollider2D _boxCollider => this.GetComponent<BoxCollider2D>();
     protected BuildingInterface _thisBuildingInterface => GetComponent<BuildingInterface>();
-    protected Transform _buildingSpawnPoint;
 
-    public readonly List<string> ListOfSpawnUnits = new List<string>() { "ClassicUnit", "WarriorUnit" };
+    protected List<string> ListOfSpawnUnits = null;
 
 
-    public void Interaction() => CanvasControl.Instance.UsingTheBuildCanvas(_thisBuildingInterface, this.gameObject, ListOfSpawnUnits, _buildingSpawnPoint);
+    public void Interaction() => CanvasControl.Instance.UsingCanvas(_thisBuildingInfo.Id, $"{BuildCurrentEnergy}/{_thisBuildingInfo.MaxBuildingEnergy}", null, new List<string> { "spawnUnits" }, _thisBuildingInterface);
 
     public void UsedEnergy(int amountOfEnergy)
     {
         BuildCurrentEnergy += amountOfEnergy;
-        if (CanvasControl.Instance.UsedTheBuildCanvas && CanvasControl.Instance.UsedTheBuildCanvasGO == this.gameObject)
-            CanvasControl.Instance.UsingTheBuildCanvas(_thisBuildingInterface, this.gameObject, ListOfSpawnUnits, _buildingSpawnPoint);
     }
 
-
+    public List<string> GetListOfSpawnUnits() { return ListOfSpawnUnits; }
+    public GameObject GetGameobject() { return this.gameObject; }
     public BoxCollider2D GetBoxCollider() { return _boxCollider; }
     public BuildingInterface GetBuildingInterface() { return _thisBuildingInterface; }
-    public SpecificationsBuilding GetBuildingStats() { return _thisBuildingStats; }
+    public BuildingInfo GetBuildingInfo() { return _thisBuildingInfo; }
     public int GetCurrentBuildingEnergy() { return BuildCurrentEnergy; }
 }

@@ -19,7 +19,7 @@ public class StartPlayer : NetworkBehaviour
         CameraGO.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
         CameraGO.GetComponent<CinemachineVirtualCamera>().Follow = this.transform;
 
-        Construction.Instance._playerClickControl = this.GetComponent<PlayerClickControl>();
+        ConstructionCanvas.Instance._playerClickControl = this.GetComponent<PlayerClickControl>();
 
         CmdStartSpawnBuilds();
     }
@@ -36,7 +36,7 @@ public class StartPlayer : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcStartSpawnBuilds(GameObject TheCreatedGO) => TheCreatedGO.GetComponent<WaitingForEnergy>().Started("MainHeadquarters", true);
+    private void RpcStartSpawnBuilds(GameObject TheCreatedGO) => TheCreatedGO.GetComponent<WaitingForEnergy>().Started("Main Headquarters", true);
 
     private void StartSpawnBuilds() => AstarPath.active.Scan();
 }
