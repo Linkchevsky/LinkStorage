@@ -81,6 +81,7 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
     public void UsedEnergy(int amountOfEnergy)
     {
         UnitCurrentEnergy += amountOfEnergy;
+        CanvasControl.Instance.EnergyChangeAction?.Invoke($"{UnitCurrentEnergy}/{_thisUnitInfo.MaxUnitEnergy}");
     }
 
 

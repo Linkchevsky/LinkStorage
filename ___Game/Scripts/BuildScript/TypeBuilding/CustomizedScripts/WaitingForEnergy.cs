@@ -57,6 +57,8 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
     public void GetUnit()
     {
         _currentUnits++;
+        CanvasControl.Instance.EnergyChangeAction?.Invoke($"{_currentUnits}/{_requiredUnits}");
+
         if (_currentUnits >= _requiredUnits)
             EnableComponent();
     }

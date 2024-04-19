@@ -28,6 +28,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     public void UsedEnergy(int amountOfEnergy)
     {
         BuildCurrentEnergy += amountOfEnergy;
+        CanvasControl.Instance.EnergyChangeAction?.Invoke($"{BuildCurrentEnergy}/{_thisBuildingInfo.MaxBuildingEnergy}");
     }
 
     public List<string> GetListOfSpawnUnits() { return ListOfSpawnUnits; }

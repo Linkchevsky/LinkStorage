@@ -33,6 +33,9 @@ public class CanvasControl : MonoBehaviour
         Instance = this;
     }
 
+    public Action<string> EnergyChangeAction;
+    public Action<string> InfoChangeChange;
+
     //additionalFunctionality - formation, construction, spawnUnits
     public void UsingCanvas(string objectNameText, string energyText = null, string infoText = null, List<string> listOfAdditionalFunctionality = null, 
                             BuildingInterface buildInterface = null, UnitInterface unitInterface = null)
@@ -65,11 +68,19 @@ public class CanvasControl : MonoBehaviour
                         break;
                 }
             }
+
+        EnergyChangeAction += EneryChange;
+        InfoChangeChange += InfoChange;
     }
+    private void EneryChange(string newValue) => _energyText.text = newValue;
+    private void InfoChange(string newValue) => _energyText.text = newValue;
 
     public void CloseAllCanvasMenu()
     {
         CanvasUsed = false;
+
+        EnergyChangeAction -= EneryChange;
+        InfoChangeChange -= InfoChange;
 
         _mainPanelGO.SetActive(false);
 
@@ -77,60 +88,4 @@ public class CanvasControl : MonoBehaviour
         _formationsButtonGOList.SetActive(false);
         _constructionsButtonGOList.SetActive(false);
     }
-    /*
-       public void UsingTheBuildCanvas(BuildingInterface buildInterface, GameObject buildGO, List<string> listOfSpawnUnits = null, Transform buildSpawnPoint = null)
-       {
-           _mainPanelGO.SetActive(true);
-
-           BuildingInfo buildStats = buildInterface.GetBuildingInfo();
-
-           _objectNameText.text = buildStats.Id;
-           _infoText.text = $"Energy = {buildInterface.GetCurrentBuildingEnergy()}/{buildStats.MaxBuildingEnergy}";
-
-           if (listOfSpawnUnits != null)
-           {
-               _spawnMenuButton.SetActive(true);
-               _spawnMenuScript.ButtonPlacement(buildInterface, listOfSpawnUnits, buildSpawnPoint);
-           }
-       }
-
-
-       public void UsingWaitingForEnergyCanvas(string buildType, int currentUnitsCount, int requiredQuantityUnits, GameObject buildGO = null)
-       {
-           _mainPanelGO.SetActive(true);
-
-           _objectNameText.text = buildType;
-           _infoText.text = $"В процессе постройки\nКол-во юнитов = {currentUnitsCount}/{requiredQuantityUnits}";
-       }
-       #endregion
-
-       #region[unit]
-       public void UsingTheUnitCanvas(UnitInfo unitInfo, UnitInterface unitInterface, GameObject unitGO)
-       {
-           _mainPanelGO.SetActive(true);
-
-           _objectNameText.text = unitInfo.Id;
-           _infoText.text = $"Energy = {unitInterface.GetCurrentUnitEnergy()}/{unitInfo.MaxUnitEnergy}";
-
-           switch(unitInfo.Id)
-           {
-               case "Classic Unit":
-                   _constructionScript.ButtonPlacement();
-                   _constructionsButtonGOList.SetActive(true);
-                   return;
-           }
-       }
-
-       public void UsingTheUnitsCanvas(List<GameObject> selectedUnits)
-       {
-           _mainPanelGO.SetActive(true);
-
-           _objectNameText.text = "Выделена группа юнитов";
-           _infoText.text = $"Кол-во юнитов = {selectedUnits.Count}";
-
-           _formationsButtonGOList.SetActive(true);
-       }
-
-       #endregion
-    */
 }
