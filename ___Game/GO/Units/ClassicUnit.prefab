@@ -252,9 +252,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  UnitCurrentEnergy: 0
   _AIDestinationSetter: {fileID: -2339536997410508519}
-  _target: {fileID: 8071564425556144483}
+  _AIPath: {fileID: 8421072957966752962}
   _mainCollider: {fileID: 2996856617411390758}
+  _target: {fileID: 8071564425556144483}
 --- !u!114 &-2339536997410508519
 MonoBehaviour:
   m_ObjectHideFlags: 0

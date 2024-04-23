@@ -1,12 +1,9 @@
 fileFormatVersion: 2
-guid: 83c68937509d96147b6345c2b34de5ee
+guid: d60e57e3a3d6d184ba15af7099b1dd2e
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 6141764469275603734
-    second: ClassicUnit_0
+  internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 13
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -37,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 2
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -96,11 +93,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ClassicUnit_0
+      name: Grid_0
       rect:
         serializedVersion: 2
         x: 0
@@ -112,10 +122,10 @@ TextureImporter:
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 613b94d8e3eeb3550800000000000000
-      internalID: 6141764469275603734
+      spriteID: 261247ffcefa4384c85679269cb9b499
+      internalID: -1515364957
       vertices: []
       indices: 
       edges: []
@@ -123,7 +133,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -131,7 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ClassicUnit_0: 6141764469275603734
+      Grid_0: -1515364957
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -13,6 +13,7 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
     protected UnitInterface _thisUnitInterface => GetComponent<UnitInterface>();
 
     [SerializeField] protected AIDestinationSetter _AIDestinationSetter;
+    [SerializeField] protected AIPath _AIPath;
     [SerializeField] protected CircleCollider2D _mainCollider;
 
     [SerializeField] protected Transform _target;
@@ -22,8 +23,13 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
     private void OnDisable() => GlobalUpdate.s_energyTick -= EnergyTick;
     private void EnergyTick()
     {
-        if (UnitCurrentEnergy > 0)
+        if (UnitCurrentEnergy > 1)
             UsedEnergy(-1);
+        else
+        {
+            UsedEnergy(-1);
+            _AIPath.canMove = false;
+        }
     }
 
     public void Interaction()
@@ -80,7 +86,8 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
 
     public void UsedEnergy(int amountOfEnergy)
     {
-        UnitCurrentEnergy += amountOfEnergy;
+        if ((UnitCurrentEnergy += amountOfEnergy) > 0)
+            _AIPath.canMove = true;
         CanvasControl.Instance.EnergyChangeAction?.Invoke($"{UnitCurrentEnergy}/{_thisUnitInfo.MaxUnitEnergy}");
     }
 
