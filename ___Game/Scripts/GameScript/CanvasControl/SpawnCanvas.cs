@@ -16,9 +16,11 @@ public class SpawnCanvas : NetworkBehaviour
 
     public void ButtonPlacement(BuildingInterface buildingInterface)
     {
+        if ((_listOfSpawnUnits = buildingInterface.GetListOfSpawnUnits()) == null)
+            return;
+
         _buildingInterface = buildingInterface;
         _listOfSpawnUnits = buildingInterface.GetListOfSpawnUnits();
-
 
         _buttonsUsed.Clear();
         TurningOffAllButtons();

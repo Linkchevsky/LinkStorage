@@ -18,6 +18,8 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
 
     [SerializeField] protected Transform _target;
 
+    protected bool canvasUsed = false;
+
 
     private void OnEnable() => GlobalUpdate.s_energyTick += EnergyTick;
     private void OnDisable() => GlobalUpdate.s_energyTick -= EnergyTick;
@@ -34,6 +36,9 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
 
     public void Interaction()
     {
+        canvasUsed = true;
+        CanvasControl.Instance.deselectFromCanvas += DeselectFromCanvas;
+
         UnitControl.Instance.AddUnitInSelectedList(this.gameObject);
 
         if (_thisUnitInfo.Id == "Classic Unit")
@@ -48,6 +53,11 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
     {
         transform.GetChild(0).gameObject.SetActive(false);
         UnitControl.s_cancelingUnitSelection -= Deselect;
+    }
+    private void DeselectFromCanvas()
+    {
+        canvasUsed = false;
+        CanvasControl.Instance.deselectFromCanvas -= DeselectFromCanvas;
     }
 
 
@@ -88,7 +98,8 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
     {
         if ((UnitCurrentEnergy += amountOfEnergy) > 0)
             _AIPath.canMove = true;
-        CanvasControl.Instance.EnergyChangeAction?.Invoke($"{UnitCurrentEnergy}/{_thisUnitInfo.MaxUnitEnergy}");
+        if (canvasUsed)
+            CanvasControl.Instance.EnergyChangeAction?.Invoke($"{UnitCurrentEnergy}/{_thisUnitInfo.MaxUnitEnergy}");
     }
 
 

@@ -36,7 +36,7 @@ public class StartPlayer : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcStartSpawnBuilds(GameObject TheCreatedGO) => TheCreatedGO.GetComponent<WaitingForEnergy>().Started("Main Headquarters", true);
+    private void RpcStartSpawnBuilds(GameObject TheCreatedGO) => TheCreatedGO.GetComponent<WaitingForEnergy>().Started(true);
 
     private void StartSpawnBuilds() => AstarPath.active.Scan();
 }

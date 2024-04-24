@@ -240,6 +240,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _currentUnits: 0
+  _buildType: Main Headquarters
   _isReady: 0
 --- !u!114 &2804927957602794217
 MonoBehaviour:
@@ -257,4 +258,3 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   BuildCurrentEnergy: 0
-  _buildingSpawnPoint: {fileID: 0}

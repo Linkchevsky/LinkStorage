@@ -20,7 +20,6 @@ public class CanvasControl : MonoBehaviour
     [SerializeField] private ConstructionCanvas _constructionScript;
     [SerializeField] private GameObject _constructionsButtonGOList;
 
-    [HideInInspector] public bool CanvasUsed = false;
     public static CanvasControl Instance;
     private void Awake()
     {
@@ -36,12 +35,12 @@ public class CanvasControl : MonoBehaviour
     public Action<string> EnergyChangeAction;
     public Action<string> InfoChangeChange;
 
+    public Action deselectFromCanvas;
+
     //additionalFunctionality - formation, construction, spawnUnits
     public void UsingCanvas(string objectNameText, string energyText = null, string infoText = null, List<string> listOfAdditionalFunctionality = null, 
                             BuildingInterface buildInterface = null, UnitInterface unitInterface = null)
     {
-        CanvasUsed = true;
-
         _mainPanelGO.SetActive(true);
 
         _objectNameText.text = objectNameText;
@@ -77,7 +76,7 @@ public class CanvasControl : MonoBehaviour
 
     public void CloseAllCanvasMenu()
     {
-        CanvasUsed = false;
+        deselectFromCanvas?.Invoke();
 
         EnergyChangeAction -= EneryChange;
         InfoChangeChange -= InfoChange;

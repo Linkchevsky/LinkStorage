@@ -9,6 +9,7 @@ public class Storage : MonoBehaviour
     [Space]
     public GameObject MainHeadquartersPrefab;
     public GameObject ElectricPolePrefab;
+    public GameObject GeneratorPrefab;
 
 
     private void Awake() //объявляю синглтон

@@ -17,8 +17,7 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
 
     private bool _owned = false;
 
-    [SyncVar]
-    private string _buildType;
+    [SerializeField] private string _buildType;
 
     [SyncVar(hook = nameof(IsReadyChange))]
     public bool _isReady = false;
@@ -29,11 +28,9 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
             EnableComponent(); 
     }
 
-    public void Started(string buildType, bool isReady = false)
+    public void Started(bool isReady = false)
     {
         _owned = true;
-
-        _buildType = buildType;
         _isReady = isReady;
 
         if (isReady)
@@ -50,6 +47,10 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
 
             case "Electric Pole":
                 _requiredUnits = Resources.Load<BuildingInfo>("Builds/ElectricPole").NumberOfUnitsToBuild;
+                break;
+
+            case "Generator":
+                _requiredUnits = Resources.Load<BuildingInfo>("Builds/Generator").NumberOfUnitsToBuild;
                 break;
         }
     }
@@ -68,20 +69,17 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
         switch (_buildType)
         {
             case "Main Headquarters":
-                if (CanvasControl.Instance.CanvasUsed)
-                    CanvasControl.Instance.CloseAllCanvasMenu();
-
                 gameObject.GetComponent<MainHeadquarters>().enabled = true;
                 break;
 
             case "Electric Pole":
-                if (CanvasControl.Instance.CanvasUsed)
-                    CanvasControl.Instance.CloseAllCanvasMenu();
+                gameObject.GetComponent<ElectricPole>().enabled = true;
+                break;
 
-                gameObject.GetComponent<MainHeadquarters>().enabled = true;
+            case "Generator":
+                gameObject.GetComponent<Generator>().enabled = true;
                 break;
         }
-
 
         _isReady = true;
 
