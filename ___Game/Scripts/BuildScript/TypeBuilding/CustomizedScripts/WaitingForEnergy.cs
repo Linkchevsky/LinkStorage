@@ -55,15 +55,6 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
         }
     }
 
-    public void GetUnit()
-    {
-        _currentUnits++;
-        CanvasControl.Instance.EnergyChangeAction?.Invoke($"{_currentUnits}/{_requiredUnits}");
-
-        if (_currentUnits >= _requiredUnits)
-            EnableComponent();
-    }
-
     private void EnableComponent()
     {
         switch (_buildType)
@@ -99,7 +90,33 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
         }
     }
 
-    public void Interaction() => CanvasControl.Instance.UsingCanvas("Место строительства", $"{_currentUnits}/{_requiredUnits}", $"Идёт строительство над: \n{_buildType}");
+    private bool canvasUsed;
+
+    public void Interaction()
+    {
+        canvasUsed = true;
+        CanvasControl.Instance.deselectFromCanvas += Deselect;
+
+        CanvasControl.Instance.UsingCanvas("Место строительства", $"{_currentUnits}/{_requiredUnits}", $"Идёт строительство над: \n{_buildType}");
+    }
+    public void Deselect()
+    {
+        canvasUsed = false;
+        CanvasControl.Instance.deselectFromCanvas -= Deselect;
+    }
+
+    public void GetUnit()
+    {
+        _currentUnits++;
+        CanvasControl.Instance.EnergyChangeAction?.Invoke($"{_currentUnits}/{_requiredUnits}");
+
+        if (_currentUnits >= _requiredUnits)
+        {
+            if (canvasUsed)
+                CanvasControl.Instance.CloseAllCanvasMenu();
+            EnableComponent();
+        }
+    }
 
 
     public List<string> GetListOfSpawnUnits() { return null; }

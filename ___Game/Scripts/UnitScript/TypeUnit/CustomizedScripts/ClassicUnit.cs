@@ -8,6 +8,7 @@ public class ClassicUnit : BasisOfTheUnits, UnitInterface
     {
         UnitControl.Instance.AddUnitInAllUnit(this.gameObject);
         _thisUnitInfo = Resources.Load<UnitInfo>("Units/ClassicUnit");
+        this.GetComponent<AIPath>().maxSpeed = _thisUnitInfo.UnitSpeed;
 
         if (!isOwned)
         {
@@ -16,6 +17,5 @@ public class ClassicUnit : BasisOfTheUnits, UnitInterface
         }
 
         UnitCurrentEnergy = _thisUnitInfo.MaxUnitEnergy;
-        this.GetComponent<AIPath>().maxSpeed = _thisUnitInfo.UnitSpeed;
     }
 }

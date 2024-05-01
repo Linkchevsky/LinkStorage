@@ -8,6 +8,7 @@ public class MainHeadquarters : BasisOfTheBuilding
     private void Start()
     {
         ListOfSpawnUnits = new List<string>() { "ClassicUnit", "WarriorUnit" };
+        listOfAdditionalFunctionality = new List<string> { "spawnUnits" };
 
         _thisBuildingInfo = Resources.Load<BuildingInfo>("Builds/MainHeadquarters");
 

@@ -19,7 +19,9 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     protected BoxCollider2D _boxCollider => this.GetComponent<BoxCollider2D>();
     protected BuildingInterface _thisBuildingInterface => GetComponent<BuildingInterface>();
+
     protected List<string> ListOfSpawnUnits = null;
+    protected List<string> listOfAdditionalFunctionality = null;
 
     protected bool canvasUsed;
 
@@ -28,7 +30,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         canvasUsed = true;
         CanvasControl.Instance.deselectFromCanvas += Deselect;
 
-        CanvasControl.Instance.UsingCanvas(_thisBuildingInfo.Id, $"{BuildCurrentEnergy}/{_thisBuildingInfo.MaxBuildingEnergy}", null, new List<string> { "spawnUnits" }, _thisBuildingInterface); 
+        CanvasControl.Instance.UsingCanvas(_thisBuildingInfo.Id, $"{BuildCurrentEnergy}/{_thisBuildingInfo.MaxBuildingEnergy}", null, listOfAdditionalFunctionality, _thisBuildingInterface); 
     }
     public void Deselect()
     {
