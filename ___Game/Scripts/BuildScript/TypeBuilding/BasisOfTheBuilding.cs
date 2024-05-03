@@ -1,5 +1,4 @@
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,7 +14,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
 
     protected BuildingInfo _thisBuildingInfo;
-    [SyncVar] public int BuildCurrentEnergy;
+    [SyncVar(hook = nameof(AfterTheEnergyChange))] public int BuildCurrentEnergy;
 
     protected BoxCollider2D _boxCollider => this.GetComponent<BoxCollider2D>();
     protected BuildingInterface _thisBuildingInterface => GetComponent<BuildingInterface>();
@@ -40,7 +39,15 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     public void UsedEnergy(int amountOfEnergy)
     {
-        BuildCurrentEnergy += amountOfEnergy;
+        if (isOwned)
+            CmdUsedEnergy(amountOfEnergy);
+    }
+
+    [Command]
+    private void CmdUsedEnergy(int amountOfEnergy) => BuildCurrentEnergy += amountOfEnergy;
+
+    private void AfterTheEnergyChange(int oldValue, int newValue)
+    {
         if (canvasUsed)
             CanvasControl.Instance.EnergyChangeAction?.Invoke($"{BuildCurrentEnergy}/{_thisBuildingInfo.MaxBuildingEnergy}");
     }

@@ -8,7 +8,7 @@ using UnityEngine;
 public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
 {
     protected UnitInfo _thisUnitInfo;
-    [SyncVar] public int UnitCurrentEnergy;
+    [SyncVar(hook = nameof(AfterTheEnergyChange))] public int UnitCurrentEnergy;
 
     protected UnitInterface _thisUnitInterface => GetComponent<UnitInterface>();
 
@@ -21,8 +21,8 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
     protected bool canvasUsed = false;
 
 
-    private void OnEnable() => GlobalUpdate.s_energyTick += EnergyTick;
-    private void OnDisable() => GlobalUpdate.s_energyTick -= EnergyTick;
+    private void OnEnable() {  GlobalUpdate.s_energyTick += EnergyTick; }
+    private void OnDisable() { GlobalUpdate.s_energyTick -= EnergyTick; }
     private void EnergyTick()
     {
         if (UnitCurrentEnergy > 1)
@@ -93,15 +93,23 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
         Destroy(this.gameObject);
     }
 
-
     public void UsedEnergy(int amountOfEnergy)
     {
-        if ((UnitCurrentEnergy += amountOfEnergy) > 0)
+        if (isOwned) 
+            CmdUsedEnergy(amountOfEnergy);
+    }
+
+    [Command]
+    private void CmdUsedEnergy(int amountOfEnergy) => UnitCurrentEnergy += amountOfEnergy;
+
+    private void AfterTheEnergyChange(int oldValue, int newValue)
+    {
+        if (newValue > 0)
             _AIPath.canMove = true;
+
         if (canvasUsed)
             CanvasControl.Instance.EnergyChangeAction?.Invoke($"{UnitCurrentEnergy}/{_thisUnitInfo.MaxUnitEnergy}");
     }
-
 
     public UnitInfo GetUnitInfo()
     {

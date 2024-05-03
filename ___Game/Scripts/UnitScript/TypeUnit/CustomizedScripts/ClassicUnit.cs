@@ -10,12 +10,13 @@ public class ClassicUnit : BasisOfTheUnits, UnitInterface
         _thisUnitInfo = Resources.Load<UnitInfo>("Units/ClassicUnit");
         this.GetComponent<AIPath>().maxSpeed = _thisUnitInfo.UnitSpeed;
 
+        if (UnitCurrentEnergy == 0)
+            UnitCurrentEnergy = _thisUnitInfo.MaxUnitEnergy;
+
         if (!isOwned)
         {
             _mainCollider.isTrigger = false;
             return;
         }
-
-        UnitCurrentEnergy = _thisUnitInfo.MaxUnitEnergy;
     }
 }
