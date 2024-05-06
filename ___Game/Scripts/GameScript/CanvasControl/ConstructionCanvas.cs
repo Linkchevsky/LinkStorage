@@ -31,7 +31,7 @@ public class ConstructionCanvas : NetworkBehaviour
     [SerializeField] private GameObject _electricPoleBuildingButton;
     [SerializeField] private GameObject _generatorBuildingButton;
     [Space]
-    [SerializeField] private SpriteRenderer _workPieceSpriteRenderer;
+    [SerializeField] private WorkPiece _workPieceScript;
 
     public readonly List<string> ListOfConstructions = new List<string>() { "Main Headquarters", "Electric Pole", "Generator" };
 
@@ -81,33 +81,18 @@ public class ConstructionCanvas : NetworkBehaviour
 
     private void UseWorkPiece(string workPieceType)
     {
-        _workPieceSpriteRenderer.gameObject.SetActive(true);
+        _workPieceScript.gameObject.SetActive(true);
 
-        switch (workPieceType)
-        {
-            case "Main Headquarters":
-                _buildType = "Main Headquarters";
-                _workPieceSpriteRenderer.transform.localScale = new Vector3(2, 2, 0);
-                break;
-            case "Electric Pole":
-                _buildType = "Electric Pole";
-                _workPieceSpriteRenderer.transform.localScale = new Vector3(1, 1, 0);
-                break;
-            case "Generator":
-                _buildType = "Generator";
-                _workPieceSpriteRenderer.transform.localScale = new Vector3(2, 1, 0);
-                break;
-        }
+        _workPieceScript.Used(workPieceType);
+        _buildType = workPieceType;
 
-        _workPieceSpriteRenderer.color = Color.green;
-
-        _playerClickControl.BuildTransform = _workPieceSpriteRenderer.transform;
+        _playerClickControl.BuildTransform = _workPieceScript.transform;
         _playerClickControl.CurrentMode = "Construction";
     }
 
-    public void UnitSpawning(Vector3 spawnPoint) 
+    public void BuildSpawning(Vector3 spawnPoint) 
     {
-        if (_workPieceSpriteRenderer.color == Color.green)
+        if (_workPieceScript.SpriteRendererReturn().color == Color.green)
         {
             _playerClickControl.CurrentMode = "Movement";
 
@@ -144,5 +129,5 @@ public class ConstructionCanvas : NetworkBehaviour
     [ClientRpc]
     private void UpdateMovemedMap() => AstarPath.active.Scan();
 
-    public void OnCloseClick() => _workPieceSpriteRenderer.gameObject.SetActive(false);
+    public void OnCloseClick() => _workPieceScript.gameObject.SetActive(false);
 }

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
+public class WaitingForEnergy : MonoCache, BuildingInterface
 {
     [SyncVar]
     public int _currentUnits;
@@ -77,15 +77,23 @@ public class WaitingForEnergy : NetworkBehaviour, BuildingInterface
         Destroy(this.GetComponent<WaitingForEnergy>());
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    public override void OnTick() => Allocation();
+    private void Allocation()
     {
-        if (collision.transform.CompareTag("Unit"))
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, transform.localScale * 1.5f, 0f, LayerMask.GetMask("Unit"));
+        Debug.Log(colliders.Length);
+
+        if (colliders.Length != 0)
         {
-            UnitInterface unitInterface = collision.GetComponent<UnitInterface>();
-            if (_boxCollider.bounds.Contains(unitInterface.GetUnitTarget().position))
+            foreach (Collider2D collider in colliders)
             {
-                unitInterface.DestroyThisUnit();
-                GetUnit();
+                UnitInterface unitInterface = collider.GetComponent<UnitInterface>();
+                if (_boxCollider.bounds.Contains(unitInterface.GetUnitTarget().position))
+                {
+                    unitInterface.DestroyThisUnit();
+                    GetUnit();
+                }
             }
         }
     }

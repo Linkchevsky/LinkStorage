@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2334930532741304653}
   - component: {fileID: 6828009426872522995}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SelectionSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 7914058382537074378}
   - component: {fileID: 5677385145885973786}
   - component: {fileID: 9058373444032320783}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: -412699269653581136}
   - component: {fileID: 6969262095175000902}
   - component: {fileID: -4309267260208330914}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WarriorUnit
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -370,7 +370,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

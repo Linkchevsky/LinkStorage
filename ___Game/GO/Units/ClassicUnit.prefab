@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2532041563118307244}
   - component: {fileID: 2304017345132876507}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SelectionSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 8071564425556144483}
   - component: {fileID: 125133599346270839}
   - component: {fileID: 1532582211656910724}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: -1915684766094589377}
   - component: {fileID: 6374464321724006621}
   - component: {fileID: 7267228167548883829}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ClassicUnit
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -370,7 +370,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

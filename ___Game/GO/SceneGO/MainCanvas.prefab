@@ -766,7 +766,7 @@ MonoBehaviour:
   _mainHeadquartersBuildingButton: {fileID: 5961294792583571954}
   _electricPoleBuildingButton: {fileID: 9093658211340170643}
   _generatorBuildingButton: {fileID: 4421649777110208672}
-  _workPieceSpriteRenderer: {fileID: 1049951227836781973}
+  _workPieceScript: {fileID: 9034922549826843625}
 --- !u!1 &2903561281110106628
 GameObject:
   m_ObjectHideFlags: 0
@@ -2096,7 +2096,6 @@ MonoBehaviour:
   _formationsButtonGOList: {fileID: 1843522936216327141}
   _constructionScript: {fileID: 4290231416193314153}
   _constructionsButtonGOList: {fileID: 4353576388145240106}
-  CanvasUsed: 0
 --- !u!114 &890175797288704177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2257,6 +2256,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01e74b5807b303046989a2f1814427c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _spriteRenderer: {fileID: 1049951227836781973}
 --- !u!1 &5961294792583571954
 GameObject:

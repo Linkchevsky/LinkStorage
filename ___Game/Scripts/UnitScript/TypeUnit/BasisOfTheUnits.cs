@@ -74,7 +74,11 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
     }
 
 
-    public void DestroyThisUnit() => CmdDestroyThisUnit();
+    public void DestroyThisUnit()
+    {
+        gameObject.SetActive(false);
+        CmdDestroyThisUnit(); 
+    }
 
     [Command(requiresAuthority = false)]
     private void CmdDestroyThisUnit() => RpcDestroyThisUnit();

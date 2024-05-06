@@ -210,7 +210,7 @@ public class PlayerClickControl : MonoCache
             {
                 case "Canceled":
                     Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    ConstructionCanvas.Instance.UnitSpawning(new Vector3(mousePosition.x, mousePosition.y, 0));
+                    ConstructionCanvas.Instance.BuildSpawning(new Vector3(mousePosition.x, mousePosition.y, 0));
                     return;
             }
             return;
