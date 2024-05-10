@@ -1,12 +1,14 @@
 fileFormatVersion: 2
-guid: 4468d1b8d1f349640b2985a472467f44
+guid: caacc8346a17ed14896e9bd060325700
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
   - _collider2D: {instanceID: 0}
   - _linePrefab: {fileID: 1695165996422581778, guid: 97e9522b3e30b3b4584567452d8219f3, type: 3}
-  - _thisBuildingInfo: {fileID: 11400000, guid: 6abca3ce7ca8d0e459f69cd79a5c9ee3, type: 2}
+  - _thisBuildingInfo: {fileID: 11400000, guid: 1a56d6190e5be4c479f5864ae2bd04ad, type: 2}
+  - _thisScriptFromInspector: {instanceID: 0}
+  - _thisBuildingScriptFromInspector: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

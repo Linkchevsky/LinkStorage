@@ -27,7 +27,7 @@ public class StartPlayer : NetworkBehaviour
     [Command]
     private void CmdStartSpawnBuilds()
     {
-        GameObject TheCreatedGO = Instantiate(Storage.Instance.MainHeadquartersPrefab, transform.position, Quaternion.identity);
+        GameObject TheCreatedGO = Instantiate(Storage.Instance.MainHeadquartersPrefab, new Vector3(transform.position.x, transform.position.y, 0), Quaternion.identity);
         NetworkServer.Spawn(TheCreatedGO, _networkIdentity.connectionToClient);
 
         RpcStartSpawnBuilds(TheCreatedGO);

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e758c606f7a18c43aafaa0d271339ae, type: 3}
-  m_Name: MainHeadquarters
+  m_Name: MainHeadquarter
   m_EditorClassIdentifier: 
-  _id: Main Headquarters
+  _id: Main Headquarter
   _prefab: {fileID: 9131755322731065389, guid: 8b08764d371db8d478500cbdc052c7fc, type: 3}
   _maxBuildingEnergy: 100
   _numberOfUnitsToBuild: 6

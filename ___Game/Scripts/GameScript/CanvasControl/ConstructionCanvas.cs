@@ -27,13 +27,13 @@ public class ConstructionCanvas : NetworkBehaviour
 
     [HideInInspector] public PlayerClickControl _playerClickControl;
 
-    [SerializeField] private GameObject _mainHeadquartersBuildingButton;
+    [SerializeField] private GameObject _mainHeadquarterBuildingButton;
     [SerializeField] private GameObject _electricPoleBuildingButton;
     [SerializeField] private GameObject _generatorBuildingButton;
     [Space]
     [SerializeField] private WorkPiece _workPieceScript;
 
-    public readonly List<string> ListOfConstructions = new List<string>() { "Main Headquarters", "Electric Pole", "Generator" };
+    public readonly List<string> ListOfConstructions = new List<string>() { "Main Headquarter", "Electric Pole", "Generator" };
 
     public void ButtonPlacement()
     {
@@ -44,9 +44,9 @@ public class ConstructionCanvas : NetworkBehaviour
         {
             switch (buildName)
             {
-                case "Main Headquarters":
-                    _mainHeadquartersBuildingButton.SetActive(true);
-                    _buttonsUsed.Add(_mainHeadquartersBuildingButton);
+                case "Main Headquarter":
+                    _mainHeadquarterBuildingButton.SetActive(true);
+                    _buttonsUsed.Add(_mainHeadquarterBuildingButton);
                     break;
 
                 case "Electric Pole":
@@ -69,13 +69,13 @@ public class ConstructionCanvas : NetworkBehaviour
 
     private void TurningOffAllButtons()
     {
-        _mainHeadquartersBuildingButton.SetActive(false);
+        _mainHeadquarterBuildingButton.SetActive(false);
         _electricPoleBuildingButton.SetActive(false);
         _generatorBuildingButton.SetActive(false);
     }
 
 
-    public void MainHeadquartersButtonClick() => UseWorkPiece("Main Headquarters");
+    public void MainHeadquartersButtonClick() => UseWorkPiece("Main Headquarter");
     public void ElectricPoleButtonClick() => UseWorkPiece("Electric Pole");
     public void GeneratorButtonClick() => UseWorkPiece("Generator");
 
@@ -106,7 +106,7 @@ public class ConstructionCanvas : NetworkBehaviour
         GameObject _createdBuild = null;
         switch (buildType)
         {
-            case "Main Headquarters":
+            case "Main Headquarter":
                 _createdBuild = Instantiate(Storage.Instance.MainHeadquartersPrefab, spawnPoint, Quaternion.identity);
                 _createdBuild.GetComponent<WaitingForEnergy>().Started();
                 break;

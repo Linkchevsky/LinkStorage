@@ -763,7 +763,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerClickControl: {fileID: 0}
-  _mainHeadquartersBuildingButton: {fileID: 5961294792583571954}
+  _mainHeadquarterBuildingButton: {fileID: 5961294792583571954}
   _electricPoleBuildingButton: {fileID: 9093658211340170643}
   _generatorBuildingButton: {fileID: 4421649777110208672}
   _workPieceScript: {fileID: 9034922549826843625}

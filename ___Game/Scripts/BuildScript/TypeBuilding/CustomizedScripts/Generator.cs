@@ -6,8 +6,6 @@ public class Generator : BasisOfTheBuilding
 {
     private void Start()
     {
-        _thisBuildingInfo = Resources.Load<BuildingInfo>("Builds/Generator");
-
         if (BuildCurrentEnergy == 0)
             BuildCurrentEnergy = _thisBuildingInfo.MaxBuildingEnergy;
     }

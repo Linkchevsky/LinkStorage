@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class WaitingForEnergy : MonoCache, BuildingInterface
@@ -11,7 +12,9 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
     private int _requiredUnits;
 
     private BuildingInfo _thisBuildingInfo;
-    private BoxCollider2D _boxCollider => this.GetComponent<BoxCollider2D>();
+
+    [SerializeField] private WaitingForEnergy _thisScript;
+    [SerializeField] private Collider2D _collider2D;
     private BuildingInterface _thisBuildingInterface => GetComponent<BuildingInterface>();
 
 
@@ -41,8 +44,8 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
 
         switch (_buildType)
         {
-            case "Main Headquarters":
-                _requiredUnits = Resources.Load<BuildingInfo>("Builds/MainHeadquarters").NumberOfUnitsToBuild;
+            case "Main Headquarter":
+                _requiredUnits = Resources.Load<BuildingInfo>("Builds/MainHeadquarter").NumberOfUnitsToBuild;
                 break;
 
             case "Electric Pole":
@@ -59,8 +62,8 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
     {
         switch (_buildType)
         {
-            case "Main Headquarters":
-                gameObject.GetComponent<MainHeadquarters>().enabled = true;
+            case "Main Headquarter":
+                gameObject.GetComponent<MainHeadquarter>().enabled = true;
                 break;
 
             case "Electric Pole":
@@ -77,19 +80,18 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
         Destroy(this.GetComponent<WaitingForEnergy>());
     }
 
-
+    public void AddInElectricalSystem(List<GameObject> electricalSystemList) { } //заглушка
     public override void OnTick() => Allocation();
     private void Allocation()
     {
         Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, transform.localScale * 1.5f, 0f, LayerMask.GetMask("Unit"));
-        Debug.Log(colliders.Length);
 
         if (colliders.Length != 0)
         {
             foreach (Collider2D collider in colliders)
             {
                 UnitInterface unitInterface = collider.GetComponent<UnitInterface>();
-                if (_boxCollider.bounds.Contains(unitInterface.GetUnitTarget().position))
+                if (_collider2D.bounds.Contains(unitInterface.GetUnitTarget().position))
                 {
                     unitInterface.DestroyThisUnit();
                     GetUnit();
@@ -129,10 +131,13 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
 
     public List<string> GetListOfSpawnUnits() { return null; }
     public GameObject GetGameobject() { return this.gameObject; }
-    public BoxCollider2D GetBoxCollider() { return _boxCollider; }
+    public Collider2D GetBoxCollider() { return _collider2D; }
     public BuildingInterface GetBuildingInterface() { return _thisBuildingInterface; }
     public BuildingInfo GetBuildingInfo() { return _thisBuildingInfo; }
     public int GetCurrentBuildingEnergy() { throw new ArgumentException("У заготовки не может быть энергии!"); }
-
     public void UsedEnergy(int amountOfEnergy) => throw new ArgumentException("У заготовки не может быть энергии!");
+    public MainHeadquarter ReturnTheMainScriptOfTheElectricalNetwork() => throw new ArgumentException("У заготовки не может быть энергии!");
+    public void CheckingElectricalNetwork() { return; }
+    public List<BuildingInterface> GetBuildingNeighbors()  { return null; }
+    public int GetBuildingNumberInElectricalNetwork() => throw new ArgumentException("У заготовки не может быть номера!");
 }

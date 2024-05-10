@@ -14,7 +14,7 @@ public class WorkPiece : MonoCache
 
         switch (buildingType)
         {
-            case "Main Headquarters":
+            case "Main Headquarter":
                 transform.localScale = new Vector3(2, 2, 0);
                 break;
             case "Electric Pole":
