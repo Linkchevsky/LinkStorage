@@ -12,7 +12,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     [SerializeField] protected GameObject _linePrefab;
 
     protected MainHeadquarter _theMainScriptOfTheElectricalNetwork = null;
-    [SerializeField] protected int _numberInTheElectricalSystem;
+    protected int _numberInTheElectricalSystem;
     protected List<BuildingInterface> _buildingNeighborsInterface = new List<BuildingInterface>();
 
     [SerializeField] protected BuildingInfo _thisBuildingInfo;
@@ -25,6 +25,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     protected bool _canvasUsed;
     protected bool _inElectricalSystem;
 
+    protected int ChargingPower = 0;
 
     private void OnEnable() 
     { 
@@ -36,8 +37,11 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     private void EnergyTick()
     {
-        if (BuildCurrentEnergy > 0)
+        Debug.Log(ChargingPower);
+        if (BuildCurrentEnergy > 0 && ChargingPower == 0)
             UsedEnergy(-1);
+        else
+            UsedEnergy(ChargingPower);
     }
 
 

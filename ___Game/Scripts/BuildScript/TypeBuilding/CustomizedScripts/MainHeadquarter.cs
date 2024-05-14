@@ -98,19 +98,11 @@ public class MainHeadquarter : BasisOfTheBuilding
                     b = usedPath[i].id;
                     k = usedPath[i + 1].id;
 
-                    Debug.Log(usedPath[i].id);
-                    Debug.Log(usedPath[i + 1].id);
-
-                    // Проверяем, что индексы корректны
                     if (b < objList.Count && k < objList[b].ConnectedObjects.Count)
                     {
                         Debug.Log(objList[b].id);
                         Debug.Log(objList[b].ConnectedObjects[k].id);
-                        objList[b].ConnectedObjects.Remove(objList[k]); // Исправлено удаление объектов из списка ConnectedObjects
-                    }
-                    else
-                    {
-                        Debug.LogError("Ошибка при удалении связи: неправильные индексы.");
+                        objList[b].ConnectedObjects.Remove(objList[k]);
                     }
                 }
             }
@@ -123,8 +115,9 @@ public class MainHeadquarter : BasisOfTheBuilding
                 Debug.Log($"{_theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[node.id].GetGameobject().name}  +  {node.id}");
             }
 
-            Debug.Log(path.Count);
             currentPaths.Add(path);
+
+            ChargingPower += 3;
         }
         else
             Debug.Log("Путь не найден!");
