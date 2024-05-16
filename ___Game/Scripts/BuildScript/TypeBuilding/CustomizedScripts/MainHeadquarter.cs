@@ -110,9 +110,12 @@ public class MainHeadquarter : BasisOfTheBuilding
         List<GameObjectInfo> path = PathFinder.FindPath(objList[startIndex], objList[endIndex]);
         if (path != null)
         {
-            foreach (GameObjectInfo node in path)
+            for (int i = 0; i < path.Count - 1; i++)
             {
-                Debug.Log($"{_theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[node.id].GetGameobject().name}  +  {node.id}");
+                Debug.Log($"{_theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].GetGameobject().name}  +  {path[i].id}");
+
+                List<GameObject> listOfBuildingsGO = new List<GameObject>() { _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].GetGameobject(), _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i + 1].id].GetGameobject() };
+                _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].InstallationOfWires(listOfBuildingsGO, true);
             }
 
             currentPaths.Add(path);

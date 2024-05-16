@@ -87,19 +87,34 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
                 else
                     notAddedInList.Add(colliders[i]);
             }
-
-            for (int i = 0; i < addedInList.Count; i++) 
-            {
-                GameObject line = Instantiate(_linePrefab, transform.GetChild(0));
-
-                Vector3 dir = addedInList[i].transform.position - transform.position;
-                line.transform.position = transform.position + dir / 2;
-                line.transform.localScale = new Vector3(dir.magnitude, line.transform.localScale.y, line.transform.localScale.z);
-                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-                line.transform.rotation = Quaternion.Euler(0, 0, angle);
-            }
+             
+            List<GameObject> listOfBuildingsGO = new List<GameObject>();
+            foreach (Collider2D collider in addedInList)
+                listOfBuildingsGO.Add(collider.gameObject);
+            InstallationOfWires(listOfBuildingsGO);
 
             StartCoroutine(CheckingTheNeighbors(notAddedInList));
+        }
+    }
+
+    public void InstallationOfWires(List<GameObject> listOfBuildingsGO, bool theWireUsed = false)
+    {
+        for (int i = 0; i < listOfBuildingsGO.Count; i++)
+        {
+            GameObject line = Instantiate(_linePrefab, transform.GetChild(0));
+
+            if (theWireUsed)
+            {
+                SpriteRenderer spriteRenderer = line.GetComponent<SpriteRenderer>();
+                spriteRenderer.color = Color.red;
+                spriteRenderer.sortingOrder = 10;
+            }
+
+            Vector3 dir = listOfBuildingsGO[i].transform.position - transform.position;
+
+            line.transform.position = transform.position + dir / 2;
+            line.transform.localScale = new Vector3(dir.magnitude, line.transform.localScale.y, line.transform.localScale.z);
+            line.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
         }
     }
 

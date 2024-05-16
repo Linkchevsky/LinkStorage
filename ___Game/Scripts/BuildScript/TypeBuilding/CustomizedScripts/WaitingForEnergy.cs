@@ -129,6 +129,7 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
     }
 
 
+    public void InstallationOfWires(List<GameObject> listOfBuildingsGO, bool theWireUsed = false) => throw new ArgumentException("” заготовки не может быть св€зи с сетью!");
     public List<string> GetListOfSpawnUnits() { return null; }
     public GameObject GetGameobject() { return this.gameObject; }
     public Collider2D GetBoxCollider() { return _collider2D; }

@@ -8,6 +8,7 @@ public interface BuildingInterface
     void Interaction();
     void UsedEnergy(int amountOfEnergy);
     void CheckingElectricalNetwork();
+    void InstallationOfWires(List<GameObject> listOfBuildingsGO, bool theWireUsed = false);
 
 
     List<string> GetListOfSpawnUnits();
