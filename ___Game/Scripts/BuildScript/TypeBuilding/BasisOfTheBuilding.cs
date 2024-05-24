@@ -31,6 +31,10 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     { 
         GlobalUpdate.s_energyTick += EnergyTick;
 
+        Storage.Instance.AllBuildingsGO.Add(this.gameObject);
+        Storage.Instance.AllBuildingsInterface.Add(this);
+        Storage.Instance.AllBuildingsColliders.Add(_collider2D);
+
         CheckingElectricalNetwork();
     }
     private void OnDisable() => GlobalUpdate.s_energyTick -= EnergyTick;
@@ -58,7 +62,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
             List<Collider2D> addedInList = new List<Collider2D>();
             for (int i = 0; i < colliders.Count; i++)
             {
-                BuildingInterface colliderInterface = colliders[i].GetComponent<BuildingInterface>();
+                BuildingInterface colliderInterface = Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsColliders.IndexOf(colliders[i])];
 
                 MainHeadquarter mainGOScript;
                 try
@@ -93,7 +97,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
                 listOfBuildingsGO.Add(collider.gameObject);
             InstallationOfWires(listOfBuildingsGO);
 
-            StartCoroutine(CheckingTheNeighbors(notAddedInList));
+            CheckingTheNeighbors(notAddedInList);
         }
     }
 
@@ -116,14 +120,13 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
             line.transform.localScale = new Vector3(dir.magnitude, line.transform.localScale.y, line.transform.localScale.z);
             line.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
         }
+
     }
 
-    private IEnumerator CheckingTheNeighbors(List<Collider2D> notAddedInList)
+    private void CheckingTheNeighbors(List<Collider2D> notAddedInList)
     {
-        yield return new WaitForSeconds(0.1f);
-
         foreach (Collider2D collider in notAddedInList)
-            collider.GetComponent<BuildingInterface>().CheckingElectricalNetwork();
+            Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsColliders.IndexOf(collider)].CheckingElectricalNetwork();
     }
 
 

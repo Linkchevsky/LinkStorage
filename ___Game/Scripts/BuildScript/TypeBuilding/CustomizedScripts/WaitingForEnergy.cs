@@ -15,7 +15,7 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
 
     [SerializeField] private WaitingForEnergy _thisScript;
     [SerializeField] private Collider2D _collider2D;
-    private BuildingInterface _thisBuildingInterface => GetComponent<BuildingInterface>();
+    private BuildingInterface _thisBuildingInterface => this;
 
 
     private bool _owned = false;
@@ -77,7 +77,7 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
 
         _isReady = true;
 
-        Destroy(this.GetComponent<WaitingForEnergy>());
+        Destroy(this);
     }
 
     public void AddInElectricalSystem(List<GameObject> electricalSystemList) { } //заглушка
@@ -90,7 +90,7 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
         {
             foreach (Collider2D collider in colliders)
             {
-                UnitInterface unitInterface = collider.GetComponent<UnitInterface>();
+                UnitInterface unitInterface = Storage.Instance.AllUnitsInterface[Storage.Instance.AllUnitsColliders.IndexOf(collider)];
                 if (_collider2D.bounds.Contains(unitInterface.GetUnitTarget().position))
                 {
                     unitInterface.DestroyThisUnit();

@@ -125,7 +125,7 @@ public class PlayerClickControl : MonoCache
             Vector2 tmp = new Vector2(Camera.main.WorldToScreenPoint(UnitControl.Instance.AllUnits[j].transform.position).x, Screen.height - Camera.main.WorldToScreenPoint(UnitControl.Instance.AllUnits[j].transform.position).y);
 
             if (_selectionRect.Contains(tmp))
-                UnitControl.Instance.AllUnits[j].GetComponent<UnitInterface>().Interaction();
+                Storage.Instance.AllUnitsInterface[Storage.Instance.AllUnitsGO.IndexOf(UnitControl.Instance.AllUnits[j])].Interaction();
         }
 
         if (UnitControl.Instance.SelectedUnits.Count > 1)

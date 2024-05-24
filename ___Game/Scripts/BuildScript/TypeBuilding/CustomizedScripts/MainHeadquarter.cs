@@ -13,7 +13,6 @@ public class MainHeadquarter : BasisOfTheBuilding
     [Space]
     [SerializeField] private MainHeadquarter _thisBuildingScriptFromInspector;
 
-
     public class ElectricalSystem
     {
         public List<BuildingInterface> ElectricalSystemList = new List<BuildingInterface>();

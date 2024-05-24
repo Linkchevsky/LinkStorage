@@ -21,7 +21,14 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
     protected bool canvasUsed = false;
 
 
-    private void OnEnable() {  GlobalUpdate.s_energyTick += EnergyTick; }
+    private void OnEnable() 
+    {  
+        GlobalUpdate.s_energyTick += EnergyTick;
+
+        Storage.Instance.AllUnitsColliders.Add(_mainCollider);
+        Storage.Instance.AllUnitsInterface.Add(this);
+        Storage.Instance.AllUnitsGO.Add(gameObject);
+    }
     private void OnDisable() { GlobalUpdate.s_energyTick -= EnergyTick; }
     private void EnergyTick()
     {
@@ -115,18 +122,11 @@ public class BasisOfTheUnits : NetworkBehaviour, UnitInterface
             CanvasControl.Instance.EnergyChangeAction?.Invoke($"{UnitCurrentEnergy}/{_thisUnitInfo.MaxUnitEnergy}");
     }
 
-    public UnitInfo GetUnitInfo()
-    {
-        return _thisUnitInfo;
-    }
-    public UnitInterface GetUnitInterface()
-    {
-        return _thisUnitInterface;
-    }
-    public int GetCurrentUnitEnergy()
-    {
-        return UnitCurrentEnergy;
-    }
+
+
+    public UnitInfo GetUnitInfo() => _thisUnitInfo;
+    public UnitInterface GetUnitInterface() => _thisUnitInterface;
+    public int GetCurrentUnitEnergy() => UnitCurrentEnergy;
     public Transform GetUnitTarget()
     {
         _AIDestinationSetter.target = null;
