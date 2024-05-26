@@ -20,6 +20,8 @@ public class MainHeadquarter : BasisOfTheBuilding
         public List<BuildingInterface> GeneratorsInElectricalList = new List<BuildingInterface>();
         public List<BuildingInterface> ElectricPolesInElectricalList = new List<BuildingInterface>();
 
+        public List<GameObject> AllWiresList = new List<GameObject>();
+
         public int GeneratedEnergy = 0;
     }
     public ElectricalSystem ElectricalSystemInfo = new ElectricalSystem();
@@ -109,12 +111,12 @@ public class MainHeadquarter : BasisOfTheBuilding
         List<GameObjectInfo> path = PathFinder.FindPath(objList[startIndex], objList[endIndex]);
         if (path != null)
         {
-            for (int i = 0; i < path.Count - 1; i++)
+            for (int i = 0; i < path.Count; i++)
             {
                 Debug.Log($"{_theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].GetGameobject().name}  +  {path[i].id}");
 
-                List<GameObject> listOfBuildingsGO = new List<GameObject>() { _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].GetGameobject(), _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i + 1].id].GetGameobject() };
-                _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].InstallationOfWires(listOfBuildingsGO, true);
+                //List<GameObject> listOfBuildingsGO = new List<GameObject>() { _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].GetGameobject(), _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i + 1].id].GetGameobject() };
+                //_theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].InstallationOfWires(listOfBuildingsGO, true); установка цвета для провода
             }
 
             currentPaths.Add(path);

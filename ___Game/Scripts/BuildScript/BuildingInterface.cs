@@ -8,12 +8,11 @@ public interface BuildingInterface
     void Interaction();
     void UsedEnergy(int amountOfEnergy);
     void CheckingElectricalNetwork();
-    void InstallationOfWires(List<GameObject> listOfBuildingsGO, bool theWireUsed = false);
+    void InstallationOfWires(List<GameObject> listOfBuildingsGO);
 
 
     List<string> GetListOfSpawnUnits();
     GameObject GetGameobject();
-    Collider2D GetBoxCollider();
     BuildingInterface GetBuildingInterface();
     BuildingInfo GetBuildingInfo();
     int GetCurrentBuildingEnergy();

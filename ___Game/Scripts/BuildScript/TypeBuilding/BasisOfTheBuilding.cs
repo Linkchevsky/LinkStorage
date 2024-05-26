@@ -41,7 +41,6 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     private void EnergyTick()
     {
-        Debug.Log(ChargingPower);
         if (BuildCurrentEnergy > 0 && ChargingPower == 0)
             UsedEnergy(-1);
         else
@@ -101,18 +100,16 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         }
     }
 
-    public void InstallationOfWires(List<GameObject> listOfBuildingsGO, bool theWireUsed = false)
+    public void InstallationOfWires(List<GameObject> listOfBuildingsGO)
     {
         for (int i = 0; i < listOfBuildingsGO.Count; i++)
         {
             GameObject line = Instantiate(_linePrefab, transform.GetChild(0));
+            line.name = $"{Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(transform.gameObject)].GetBuildingNumberInElectricalNetwork()} - " +
+                $"{Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(listOfBuildingsGO[i])].GetBuildingNumberInElectricalNetwork()}";
 
-            if (theWireUsed)
-            {
-                SpriteRenderer spriteRenderer = line.GetComponent<SpriteRenderer>();
-                spriteRenderer.color = Color.red;
-                spriteRenderer.sortingOrder = 10;
-            }
+            _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.AllWiresList.Add(line);
+            Debug.Log(_theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.AllWiresList.Count);
 
             Vector3 dir = listOfBuildingsGO[i].transform.position - transform.position;
 

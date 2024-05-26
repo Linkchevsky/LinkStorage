@@ -65,13 +65,13 @@ public class PlayerClickControl : MonoCache
                     switch (hit.transform.gameObject.tag)
                     {
                         case "Unit":
-                            PerformingAHitOnAUnit(hit.transform);
+                            Storage.Instance.AllUnitsInterface[Storage.Instance.AllUnitsColliders.IndexOf(hit.collider)].Interaction();
                             return;
                         case "Build":
                             if (!hit.collider.isTrigger)
                             {
                                 _isSelecting = false;
-                                PerformingAHitOnABuilding(hit.transform);
+                                Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsColliders.IndexOf(hit.collider)].Interaction();
                                 return;
                             }
                             break;
@@ -132,10 +132,6 @@ public class PlayerClickControl : MonoCache
             CanvasControl.Instance.UsingCanvas("Группа юнитов", $"Количество юнитов: {UnitControl.Instance.SelectedUnits.Count}", null, new List<string> { "formation" });
     }
 
-    private void PerformingAHitOnAUnit(Transform _hitTransform) => _hitTransform.GetComponent<UnitInterface>().Interaction(); 
-
-    private void PerformingAHitOnABuilding(Transform _hitTransform) => _hitTransform.GetComponent<BuildingInterface>().Interaction();
-
 
     public void OnRightClick(InputAction.CallbackContext context) 
     {
@@ -147,7 +143,7 @@ public class PlayerClickControl : MonoCache
             {
                 case "Started":
                     foreach (GameObject unit in UnitControl.Instance.SelectedUnits)
-                        _unitTargetTransforms.Add(unit.GetComponent<UnitInterface>().GetUnitTarget());
+                        _unitTargetTransforms.Add(Storage.Instance.AllUnitsInterface[Storage.Instance.AllUnitsGO.IndexOf(unit)].GetUnitTarget());
 
                     _thePreviousCenterOfTheFormation = _theCenterOfTheFormation;
                     _theCenterOfTheFormation = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -165,7 +161,9 @@ public class PlayerClickControl : MonoCache
                             {
                                 if (!hit.collider.isTrigger && hit.transform.CompareTag("Build")) //попадание по зданию
                                 {
-                                    Vector3 closestPoint = hit.transform.GetComponent<BuildingInterface>().GetBoxCollider().ClosestPoint(_thePreviousCenterOfTheFormation);
+                                    //Vector3 closestPoint = hit.transform.GetComponent<BuildingInterface>().GetBoxCollider().ClosestPoint(_thePreviousCenterOfTheFormation);
+
+                                    Vector3 closestPoint = hit.collider.ClosestPoint(_thePreviousCenterOfTheFormation);
                                     Vector3 newPosition = closestPoint - (closestPoint - hit.transform.position).normalized * 0.1f;
 
                                     _thePreviousCenterOfTheFormation = closestPoint;
