@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4407267025779760533}
   - component: {fileID: 8774300528924992675}
+  - component: {fileID: -8930751686813341171}
   m_Layer: 0
-  m_Name: Line
+  m_Name: Wire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,3 +85,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-8930751686813341171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1695165996422581778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aa0acaaceb63245ba2d2d709028b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 8774300528924992675}
+  buildingsNumbers: 0000000000000000
+  currentEnergy: 0

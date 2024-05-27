@@ -104,12 +104,11 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     {
         for (int i = 0; i < listOfBuildingsGO.Count; i++)
         {
-            GameObject line = Instantiate(_linePrefab, transform.GetChild(0));
-            line.name = $"{Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(transform.gameObject)].GetBuildingNumberInElectricalNetwork()} - " +
-                $"{Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(listOfBuildingsGO[i])].GetBuildingNumberInElectricalNetwork()}";
+            WireScript line = Instantiate(_linePrefab, transform.GetChild(0)).GetComponent<WireScript>();
+            line.buildingsNumbers = new int[2] { Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(transform.gameObject)].GetBuildingNumberInElectricalNetwork(), 
+                Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(listOfBuildingsGO[i])].GetBuildingNumberInElectricalNetwork() }; //получение номеров зданий
 
             _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.AllWiresList.Add(line);
-            Debug.Log(_theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.AllWiresList.Count);
 
             Vector3 dir = listOfBuildingsGO[i].transform.position - transform.position;
 
