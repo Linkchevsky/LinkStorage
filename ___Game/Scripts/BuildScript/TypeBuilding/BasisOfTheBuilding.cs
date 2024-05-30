@@ -9,7 +9,7 @@ using UnityEngine;
 public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 {
     [SerializeField] protected Collider2D _collider2D;
-    [SerializeField] protected GameObject _linePrefab;
+    [SerializeField] protected GameObject _wirePrefab;
 
     protected MainHeadquarter _theMainScriptOfTheElectricalNetwork = null;
     protected int _numberInTheElectricalSystem;
@@ -104,7 +104,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     {
         for (int i = 0; i < listOfBuildingsGO.Count; i++)
         {
-            WireScript line = Instantiate(_linePrefab, transform.GetChild(0)).GetComponent<WireScript>();
+            Wire line = Instantiate(_wirePrefab, transform.GetChild(0)).GetComponent<Wire>();
             line.buildingsNumbers = new int[2] { Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(transform.gameObject)].GetBuildingNumberInElectricalNetwork(), 
                 Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(listOfBuildingsGO[i])].GetBuildingNumberInElectricalNetwork() }; //получение номеров зданий
 

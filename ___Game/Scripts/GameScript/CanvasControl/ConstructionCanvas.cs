@@ -30,10 +30,11 @@ public class ConstructionCanvas : NetworkBehaviour
     [SerializeField] private GameObject _mainHeadquarterBuildingButton;
     [SerializeField] private GameObject _electricPoleBuildingButton;
     [SerializeField] private GameObject _generatorBuildingButton;
+    [SerializeField] private GameObject _batteryButton;
     [Space]
     [SerializeField] private WorkPiece _workPieceScript;
 
-    public readonly List<string> ListOfConstructions = new List<string>() { "Main Headquarter", "Electric Pole", "Generator" };
+    public readonly List<string> ListOfConstructions = new List<string>() { "Main Headquarter", "Electric Pole", "Generator", "Battery" };
 
     public void ButtonPlacement()
     {
@@ -58,6 +59,11 @@ public class ConstructionCanvas : NetworkBehaviour
                     _generatorBuildingButton.SetActive(true);
                     _buttonsUsed.Add(_generatorBuildingButton);
                     break;
+
+                case "Battery":
+                    _batteryButton.SetActive(true);
+                    _buttonsUsed.Add(_batteryButton);
+                    break;
             }
         }
 
@@ -72,12 +78,14 @@ public class ConstructionCanvas : NetworkBehaviour
         _mainHeadquarterBuildingButton.SetActive(false);
         _electricPoleBuildingButton.SetActive(false);
         _generatorBuildingButton.SetActive(false);
+        _batteryButton.SetActive(false);
     }
 
 
     public void MainHeadquartersButtonClick() => UseWorkPiece("Main Headquarter");
     public void ElectricPoleButtonClick() => UseWorkPiece("Electric Pole");
     public void GeneratorButtonClick() => UseWorkPiece("Generator");
+    public void BatteryButtonClick() => UseWorkPiece("Battery");
 
     private void UseWorkPiece(string workPieceType)
     {
@@ -118,6 +126,11 @@ public class ConstructionCanvas : NetworkBehaviour
 
             case "Generator":
                 _createdBuild = Instantiate(Storage.Instance.GeneratorPrefab, spawnPoint, Quaternion.identity);
+                _createdBuild.GetComponent<WaitingForEnergy>().Started();
+                break;
+
+            case "Battery":
+                _createdBuild = Instantiate(Storage.Instance.BatteryPrefab, spawnPoint, Quaternion.identity);
                 _createdBuild.GetComponent<WaitingForEnergy>().Started();
                 break;
         }

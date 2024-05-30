@@ -23,6 +23,9 @@ public class WorkPiece : MonoCache
             case "Generator":
                 transform.localScale = new Vector3(2, 1, 0);
                 break;
+            case "Battery":
+                transform.localScale = new Vector3(1, 1, 0);
+                break;
         }
     }
 

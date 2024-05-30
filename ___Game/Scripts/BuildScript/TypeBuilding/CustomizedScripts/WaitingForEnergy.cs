@@ -55,6 +55,10 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
             case "Generator":
                 _requiredUnits = Resources.Load<BuildingInfo>("Builds/Generator").NumberOfUnitsToBuild;
                 break;
+
+            case "Battery":
+                _requiredUnits = Resources.Load<BuildingInfo>("Builds/Battery").NumberOfUnitsToBuild;
+                break;
         }
     }
 
@@ -72,6 +76,10 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
 
             case "Generator":
                 gameObject.GetComponent<Generator>().enabled = true;
+                break;
+
+            case "Battery":
+                gameObject.GetComponent<Battery>().enabled = true;
                 break;
         }
 

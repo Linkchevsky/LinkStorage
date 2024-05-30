@@ -246,7 +246,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _collider2D: {fileID: 8697106360708903509}
-  _linePrefab: {fileID: 1695165996422581778, guid: 97e9522b3e30b3b4584567452d8219f3, type: 3}
+  _wirePrefab: {fileID: 1695165996422581778, guid: 97e9522b3e30b3b4584567452d8219f3, type: 3}
   _thisBuildingInfo: {fileID: 11400000, guid: b320e80b3bb1c304a8f57212d9644fd8, type: 2}
   BuildCurrentEnergy: 0
   _thisScriptFromInspector: {fileID: 6981729022322696756}

@@ -49,3 +49,8 @@ MonoBehaviour:
   MainHeadquartersPrefab: {fileID: 9131755322731065389, guid: 8b08764d371db8d478500cbdc052c7fc, type: 3}
   ElectricPolePrefab: {fileID: 3595976157783657195, guid: 1713184b14d836c4589d9d9c58f92ea6, type: 3}
   GeneratorPrefab: {fileID: 1887534300158325764, guid: 64071ca9acedb894890d40bab31fcb2d, type: 3}
+  BatteryPrefab: {fileID: 5606841178481168001, guid: 3770cb1386f5915488bf5e463723bdd9, type: 3}
+  AllBuildingsColliders: []
+  AllBuildingsGO: []
+  AllUnitsColliders: []
+  AllUnitsGO: []

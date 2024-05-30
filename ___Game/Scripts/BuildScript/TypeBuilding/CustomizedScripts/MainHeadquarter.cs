@@ -20,7 +20,7 @@ public class MainHeadquarter : BasisOfTheBuilding
         public List<BuildingInterface> GeneratorsInElectricalList = new List<BuildingInterface>();
         public List<BuildingInterface> ElectricPolesInElectricalList = new List<BuildingInterface>();
 
-        public List<WireScript> AllWiresList = new List<WireScript>();
+        public List<Wire> AllWiresList = new List<Wire>();
 
         public int GeneratedEnergy = 0;
     }
@@ -110,7 +110,7 @@ public class MainHeadquarter : BasisOfTheBuilding
                 int[] listOfBuildingsNumbers = new int[2] { _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].GetBuildingNumberInElectricalNetwork(),
                     _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i + 1].id].GetBuildingNumberInElectricalNetwork() }; //получение номеров закрашиваемых проводов
 
-                foreach(WireScript wireScript in ElectricalSystemInfo.AllWiresList)
+                foreach(Wire wireScript in ElectricalSystemInfo.AllWiresList)
                 {
                     if (wireScript.buildingsNumbers[0] == listOfBuildingsNumbers[0] && wireScript.buildingsNumbers[1] == listOfBuildingsNumbers[1])
                     {
