@@ -226,7 +226,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _currentUnits: 0
-  _thisScript: {fileID: 0}
+  _thisScript: {fileID: 6254940553861705467}
   _collider2D: {fileID: 8697106360708903509}
   _buildType: Generator
   _isReady: 0

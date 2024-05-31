@@ -226,7 +226,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _currentUnits: 0
-  _thisScript: {fileID: 0}
   _collider2D: {fileID: 6582367446421008586}
   _buildType: Main Headquarter
   _isReady: 0
@@ -250,4 +249,6 @@ MonoBehaviour:
   _thisBuildingInfo: {fileID: 11400000, guid: 1a56d6190e5be4c479f5864ae2bd04ad, type: 2}
   BuildCurrentEnergy: 0
   _thisScriptFromInspector: {fileID: 2804927957602794217}
-  _thisBuildingScriptFromInspector: {fileID: 2804927957602794217}
+  _thisMainHeadquarterScriptFromInspector: {fileID: 2804927957602794217}
+  ChargingPower: 0
+  FreeChargingPower: 0

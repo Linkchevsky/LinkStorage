@@ -5,30 +5,42 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static BasisOfTheBuilding;
 
 public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 {
     [SerializeField] protected Collider2D _collider2D;
     [SerializeField] protected GameObject _wirePrefab;
+    [Space]
+    [SerializeField] public BuildingInfo _thisBuildingInfo;
+    [SerializeField] public BasisOfTheBuilding _thisScriptFromInspector; //используется и как ссылка на интерфейс
 
-    protected MainHeadquarter _theMainScriptOfTheElectricalNetwork = null;
-    protected int _numberInTheElectricalSystem;
-    protected List<BuildingInterface> _buildingNeighborsInterface = new List<BuildingInterface>();
-
-    [SerializeField] protected BuildingInfo _thisBuildingInfo;
     [SyncVar(hook = nameof(AfterTheEnergyChange))] public int BuildCurrentEnergy;
-    [SerializeField] protected BasisOfTheBuilding _thisScriptFromInspector; //используется и как ссылка на интерфейс
 
-    protected List<string> ListOfSpawnUnits = null;
-    protected List<string> listOfAdditionalFunctionality = null;
+    public class BuildingCharacteristics
+    {
+        public MainHeadquarter TheMainScriptOfTheElectricalNetwork = null;
+        public int NumberInTheElectricalSystem;
+        public List<BuildingInterface> BuildingNeighborsInterface = new List<BuildingInterface>();
 
-    protected bool _canvasUsed;
-    protected bool _inElectricalSystem;
+        public BuildingInfo ThisBuildingInfo;
+        public BasisOfTheBuilding ThisScriptFromInspector; //используется и как ссылка на интерфейс
 
-    protected int ChargingPower = 0;
+        public List<string> ListOfSpawnUnits = null;
+        public List<string> listOfAdditionalFunctionality = null;
+
+        public bool CanvasUsed;
+        public bool InElectricalSystem;
+
+        public int ChargingTheBuilding = 0;
+    }
+    protected BuildingCharacteristics _buildingCharacteristics = new BuildingCharacteristics();
 
     private void OnEnable() 
-    { 
+    {
+        _buildingCharacteristics.ThisBuildingInfo = _thisBuildingInfo;
+        _buildingCharacteristics.ThisScriptFromInspector = _thisScriptFromInspector;
+
         GlobalUpdate.s_energyTick += EnergyTick;
 
         Storage.Instance.AllBuildingsGO.Add(this.gameObject);
@@ -41,10 +53,18 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     private void EnergyTick()
     {
-        if (BuildCurrentEnergy > 0 && ChargingPower == 0)
+        if (BuildCurrentEnergy > 0)
             UsedEnergy(-1);
-        else
-            UsedEnergy(ChargingPower);
+
+        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ChargingPower != 0)
+        {
+            if (BuildCurrentEnergy <= _buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy)
+            {
+                UsedEnergy(_buildingCharacteristics.ChargingTheBuilding);
+            }
+            else
+                UsedEnergy(_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.BuildCurrentEnergy);
+        }
     }
 
 
@@ -55,7 +75,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
         if (colliders.Count != 0)
         {
-            _buildingNeighborsInterface.Clear();
+            _buildingCharacteristics.BuildingNeighborsInterface.Clear();
 
             List<Collider2D> notAddedInList = new List<Collider2D>();
             List<Collider2D> addedInList = new List<Collider2D>();
@@ -66,25 +86,25 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
                 MainHeadquarter mainGOScript;
                 try
                 {
-                    mainGOScript = colliderInterface.ReturnTheMainScriptOfTheElectricalNetwork();
+                    mainGOScript = colliderInterface.GetBuildingCharacteristics().TheMainScriptOfTheElectricalNetwork;
                 }
                 catch(ArgumentException)
                 {
                     continue;
                 }
 
-                _buildingNeighborsInterface.Add(colliderInterface);
+                _buildingCharacteristics.BuildingNeighborsInterface.Add(colliderInterface);
 
                 if (mainGOScript != null)
                 {
                     addedInList.Add(colliders[i]);
 
-                    if (_theMainScriptOfTheElectricalNetwork == null)
+                    if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
                     {
-                        _inElectricalSystem = true;
-                        _theMainScriptOfTheElectricalNetwork = mainGOScript;
-                        _theMainScriptOfTheElectricalNetwork.AddInElectricalSystemList(_thisScriptFromInspector);
-                        _numberInTheElectricalSystem = _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count - 1;
+                        _buildingCharacteristics.InElectricalSystem = true;
+                        _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork = mainGOScript;
+                        _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.AddInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector);
+                        _buildingCharacteristics.NumberInTheElectricalSystem = _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count - 1;
                     }
                 }
                 else
@@ -105,10 +125,10 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         for (int i = 0; i < listOfBuildingsGO.Count; i++)
         {
             Wire line = Instantiate(_wirePrefab, transform.GetChild(0)).GetComponent<Wire>();
-            line.buildingsNumbers = new int[2] { Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(transform.gameObject)].GetBuildingNumberInElectricalNetwork(), 
-                Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(listOfBuildingsGO[i])].GetBuildingNumberInElectricalNetwork() }; //получение номеров зданий
+            line.buildingsNumbers = new int[2] { Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(transform.gameObject)].GetBuildingCharacteristics().NumberInTheElectricalSystem, 
+                Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(listOfBuildingsGO[i])].GetBuildingCharacteristics().NumberInTheElectricalSystem }; //получение номеров зданий
 
-            _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.AllWiresList.Add(line);
+            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.AllWiresList.Add(line);
 
             Vector3 dir = listOfBuildingsGO[i].transform.position - transform.position;
 
@@ -129,14 +149,15 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     public void Interaction() 
     {
-        _canvasUsed = true;
+        _buildingCharacteristics.CanvasUsed = true;
         CanvasControl.Instance.deselectFromCanvas += Deselect;
 
-        CanvasControl.Instance.UsingCanvas(_thisBuildingInfo.Id, $"{BuildCurrentEnergy}/{_thisBuildingInfo.MaxBuildingEnergy}", null, listOfAdditionalFunctionality, _thisScriptFromInspector); 
+        CanvasControl.Instance.UsingCanvas(_buildingCharacteristics.ThisBuildingInfo.Id, $"{BuildCurrentEnergy}/" +
+            $"{_buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy}", null, _buildingCharacteristics.listOfAdditionalFunctionality, _buildingCharacteristics.ThisScriptFromInspector); 
     }
     public void Deselect()
     {
-        _canvasUsed = false;
+        _buildingCharacteristics.CanvasUsed = false;
         CanvasControl.Instance.deselectFromCanvas -= Deselect;
     }
 
@@ -150,18 +171,22 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     private void AfterTheEnergyChange(int oldValue, int newValue)
     {
-        if (_canvasUsed)
-            CanvasControl.Instance.EnergyChangeAction?.Invoke($"{BuildCurrentEnergy}/{_thisBuildingInfo.MaxBuildingEnergy}");
+        if (_buildingCharacteristics.CanvasUsed)
+            CanvasControl.Instance.EnergyChangeAction?.Invoke($"{BuildCurrentEnergy}/{_buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy}");
     }
 
-    public List<string> GetListOfSpawnUnits() { return ListOfSpawnUnits; }
+
+
     public GameObject GetGameobject() { return this.gameObject; }
     public Collider2D GetBoxCollider() { return _collider2D; }
-    public BuildingInterface GetBuildingInterface() { return _thisScriptFromInspector; }
-    public BuildingInfo GetBuildingInfo() { return _thisBuildingInfo; }
-    public int GetCurrentBuildingEnergy() { return BuildCurrentEnergy; }
-    public MainHeadquarter ReturnTheMainScriptOfTheElectricalNetwork() { return _theMainScriptOfTheElectricalNetwork; }
-    public WaitingForEnergy ReturnTheWaitingForEnergyScript() { return null; }
-    public List<BuildingInterface> GetBuildingNeighbors() { return _buildingNeighborsInterface; }
-    public int GetBuildingNumberInElectricalNetwork() { return _numberInTheElectricalSystem; }
+    public BuildingCharacteristics GetBuildingCharacteristics() { return _buildingCharacteristics; }
+    public void SetBuildingChargingPower(int power) 
+    { 
+        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.FreeChargingPower - power >= 0) 
+        {
+            _buildingCharacteristics.ChargingTheBuilding += power;
+            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.FreeChargingPower -= power; 
+        } 
+    }
+    public int GetEnergy() { return BuildCurrentEnergy; }
 }

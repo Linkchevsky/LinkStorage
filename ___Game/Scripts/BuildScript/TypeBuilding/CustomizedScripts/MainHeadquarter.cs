@@ -11,7 +11,10 @@ using Debug = UnityEngine.Debug;
 public class MainHeadquarter : BasisOfTheBuilding
 {
     [Space]
-    [SerializeField] private MainHeadquarter _thisBuildingScriptFromInspector;
+    [SerializeField] private MainHeadquarter _thisMainHeadquarterScriptFromInspector;
+
+    public int ChargingPower = 0;
+    public int FreeChargingPower = 0;
 
     public class ElectricalSystem
     {
@@ -27,18 +30,26 @@ public class MainHeadquarter : BasisOfTheBuilding
     public ElectricalSystem ElectricalSystemInfo = new ElectricalSystem();
 
 
+    public void SetChargingPower(int power)
+    {
+        ChargingPower += power;
+        FreeChargingPower += power;
+
+        SetBuildingChargingPower(1);
+    }
+
     private void Start()
     {
-        ListOfSpawnUnits = new List<string>() { "ClassicUnit", "WarriorUnit" };
-        listOfAdditionalFunctionality = new List<string> { "spawnUnits" };
+        _buildingCharacteristics.ListOfSpawnUnits = new List<string>() { "ClassicUnit", "WarriorUnit" };
+        _buildingCharacteristics.listOfAdditionalFunctionality = new List<string> { "spawnUnits" };
 
         if (BuildCurrentEnergy == 0)
-            BuildCurrentEnergy = _thisBuildingInfo.MaxBuildingEnergy;
+            BuildCurrentEnergy = _buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy;
 
-        if (_theMainScriptOfTheElectricalNetwork == null)
+        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
         {
-            _theMainScriptOfTheElectricalNetwork = _thisBuildingScriptFromInspector;
-            AddInElectricalSystemList(_thisScriptFromInspector);
+            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork = _thisMainHeadquarterScriptFromInspector;
+            AddInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector);
         }
     }
 
@@ -46,7 +57,7 @@ public class MainHeadquarter : BasisOfTheBuilding
     {
         ElectricalSystemInfo.ElectricalSystemList.Add(buildingInterface);
 
-        switch (buildingInterface.GetBuildingInfo().Id)
+        switch (buildingInterface.GetBuildingCharacteristics().ThisBuildingInfo.Id)
         {
             case "Main Headquarter":
                 ElectricalSystemInfo.MainHeadquartersInElectricalList.Add(buildingInterface);
@@ -78,13 +89,13 @@ public class MainHeadquarter : BasisOfTheBuilding
     public void Path(int startIndex, int endIndex)
     {
         List<GameObjectInfo> objList = new List<GameObjectInfo>();
-        for (int i = 0; i < _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count; i++)
+        for (int i = 0; i < _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count; i++)
             objList.Add(new GameObjectInfo(i));
 
         for (int i = 0; i < objList.Count; i++)
         {
-            foreach (BuildingInterface building in _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[i].GetBuildingNeighbors())
-                objList[i].ConnectedObjects.Add(objList[building.GetBuildingNumberInElectricalNetwork()]);
+            foreach (BuildingInterface building in _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[i].GetBuildingCharacteristics().BuildingNeighborsInterface)
+                objList[i].ConnectedObjects.Add(objList[building.GetBuildingCharacteristics().NumberInTheElectricalSystem]);
         }
 
         if (currentPaths.Count > 0)
@@ -107,8 +118,8 @@ public class MainHeadquarter : BasisOfTheBuilding
         {
             for (int i = 0; i < path.Count - 1; i++)
             {
-                int[] listOfBuildingsNumbers = new int[2] { _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].GetBuildingNumberInElectricalNetwork(),
-                    _theMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i + 1].id].GetBuildingNumberInElectricalNetwork() }; //получение номеров закрашиваемых проводов
+                int[] listOfBuildingsNumbers = new int[2] { _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].GetBuildingCharacteristics().NumberInTheElectricalSystem,
+                    _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i + 1].id].GetBuildingCharacteristics().NumberInTheElectricalSystem }; //получение номеров закрашиваемых проводов
 
                 foreach(Wire wireScript in ElectricalSystemInfo.AllWiresList)
                 {
@@ -122,7 +133,7 @@ public class MainHeadquarter : BasisOfTheBuilding
 
             currentPaths.Add(path);
 
-            ChargingPower += 3;
+            SetChargingPower(3);
         }
         else
             Debug.Log("Путь не найден!");

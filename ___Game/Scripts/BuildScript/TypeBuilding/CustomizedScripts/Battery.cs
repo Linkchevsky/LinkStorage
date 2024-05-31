@@ -7,6 +7,6 @@ public class Battery : BasisOfTheBuilding
     private void Start()
     {
         if (BuildCurrentEnergy == 0)
-            BuildCurrentEnergy = _thisBuildingInfo.MaxBuildingEnergy;
+            BuildCurrentEnergy = _buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy;
     }
 }

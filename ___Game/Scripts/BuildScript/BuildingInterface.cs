@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
+using static BasisOfTheBuilding;
 
 public interface BuildingInterface
 {
@@ -10,13 +11,9 @@ public interface BuildingInterface
     void CheckingElectricalNetwork();
     void InstallationOfWires(List<GameObject> listOfBuildingsGO);
 
-
-    List<string> GetListOfSpawnUnits();
-    GameObject GetGameobject();
-    BuildingInterface GetBuildingInterface();
-    BuildingInfo GetBuildingInfo();
-    int GetCurrentBuildingEnergy();
-    MainHeadquarter ReturnTheMainScriptOfTheElectricalNetwork();
-    List<BuildingInterface> GetBuildingNeighbors();
-    int GetBuildingNumberInElectricalNetwork();
+    public GameObject GetGameobject();
+    public Collider2D GetBoxCollider();
+    public void SetBuildingChargingPower(int power);
+    public BuildingCharacteristics GetBuildingCharacteristics();
+    public int GetEnergy();
 }

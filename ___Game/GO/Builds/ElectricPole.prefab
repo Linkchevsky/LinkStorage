@@ -209,7 +209,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _currentUnits: 0
-  _thisScript: {fileID: 0}
+  _thisScript: {fileID: 4531512351365535291}
   _collider2D: {fileID: 7654796878296829132}
   _buildType: Electric Pole
   _isReady: 0

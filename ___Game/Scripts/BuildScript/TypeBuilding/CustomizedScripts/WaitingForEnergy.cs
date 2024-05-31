@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static BasisOfTheBuilding;
 
 public class WaitingForEnergy : MonoCache, BuildingInterface
 {
@@ -13,7 +14,6 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
 
     private BuildingInfo _thisBuildingInfo;
 
-    [SerializeField] private WaitingForEnergy _thisScript;
     [SerializeField] private Collider2D _collider2D;
     private BuildingInterface _thisBuildingInterface => this;
 
@@ -138,15 +138,11 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
 
 
     public void InstallationOfWires(List<GameObject> listOfBuildingsGO) => throw new ArgumentException("У заготовки не может быть связи с сетью!");
-    public List<string> GetListOfSpawnUnits() { return null; }
     public GameObject GetGameobject() { return this.gameObject; }
     public Collider2D GetBoxCollider() { return _collider2D; }
-    public BuildingInterface GetBuildingInterface() { return _thisBuildingInterface; }
-    public BuildingInfo GetBuildingInfo() { return _thisBuildingInfo; }
-    public int GetCurrentBuildingEnergy() { throw new ArgumentException("У заготовки не может быть энергии!"); }
+    public void SetBuildingChargingPower(int power) { return; }
     public void UsedEnergy(int amountOfEnergy) => throw new ArgumentException("У заготовки не может быть энергии!");
-    public MainHeadquarter ReturnTheMainScriptOfTheElectricalNetwork() => throw new ArgumentException("У заготовки не может быть энергии!");
     public void CheckingElectricalNetwork() { return; }
-    public List<BuildingInterface> GetBuildingNeighbors()  { return null; }
-    public int GetBuildingNumberInElectricalNetwork() => throw new ArgumentException("У заготовки не может быть номера!");
+    public BuildingCharacteristics GetBuildingCharacteristics() { return null; }
+    public int GetEnergy() { return 1; }
 }

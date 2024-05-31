@@ -19,6 +19,9 @@ public class CanvasControl : MonoBehaviour
     [Space]
     [SerializeField] private ConstructionCanvas _constructionScript;
     [SerializeField] private GameObject _constructionsButtonGOList;
+    [Space]
+    [SerializeField] private BuildingChargingControlCanvas _buildingChargingControlScript;
+    [SerializeField] private GameObject _chargingControlElementsListGO;
 
     public static CanvasControl Instance;
     private void Awake()
@@ -68,6 +71,12 @@ public class CanvasControl : MonoBehaviour
                 }
             }
 
+        if (buildInterface != null)
+        {
+            _chargingControlElementsListGO.SetActive(true);
+            _buildingChargingControlScript.Used(buildInterface);
+        }
+
         EnergyChangeAction += EneryChange;
         InfoChangeChange += InfoChange;
     }
@@ -86,5 +95,6 @@ public class CanvasControl : MonoBehaviour
         _spawnMenuButtonGOList.SetActive(false);
         _formationsButtonGOList.SetActive(false);
         _constructionsButtonGOList.SetActive(false);
+        _chargingControlElementsListGO.SetActive(false);
     }
 }

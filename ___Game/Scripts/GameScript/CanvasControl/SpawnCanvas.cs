@@ -16,11 +16,11 @@ public class SpawnCanvas : NetworkBehaviour
 
     public void ButtonPlacement(BuildingInterface buildingInterface)
     {
-        if ((_listOfSpawnUnits = buildingInterface.GetListOfSpawnUnits()) == null)
+        if ((_listOfSpawnUnits = buildingInterface.GetBuildingCharacteristics().ListOfSpawnUnits) == null)
             return;
 
         _buildingInterface = buildingInterface;
-        _listOfSpawnUnits = buildingInterface.GetListOfSpawnUnits();
+        _listOfSpawnUnits = buildingInterface.GetBuildingCharacteristics().ListOfSpawnUnits;
 
         _buttonsUsed.Clear();
         TurningOffAllButtons();
@@ -59,7 +59,7 @@ public class SpawnCanvas : NetworkBehaviour
         switch (unitId)
         {
             case "ClassicUnit":
-                if (_buildingInterface.GetCurrentBuildingEnergy() - 10 >= 0)
+                if (_buildingInterface.GetEnergy() - 10 >= 0)
                 {
                     _buildingInterface.UsedEnergy(-10);
 
@@ -69,7 +69,7 @@ public class SpawnCanvas : NetworkBehaviour
                 break;
 
             case "WarriorUnit":
-                if (_buildingInterface.GetCurrentBuildingEnergy() - 20 >= 0)
+                if (_buildingInterface.GetEnergy() - 20 >= 0)
                 {
                     _buildingInterface.UsedEnergy(-20);
 
