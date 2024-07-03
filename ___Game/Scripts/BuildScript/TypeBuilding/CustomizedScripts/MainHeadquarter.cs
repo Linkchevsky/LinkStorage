@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -22,8 +23,6 @@ public class MainHeadquarter : BasisOfTheBuilding
         public List<BuildingInterface> MainHeadquartersInElectricalList = new List<BuildingInterface>();
         public List<BuildingInterface> GeneratorsInElectricalList = new List<BuildingInterface>();
         public List<BuildingInterface> ElectricPolesInElectricalList = new List<BuildingInterface>();
-
-        public List<Wire> AllWiresList = new List<Wire>();
 
         public int GeneratedEnergy = 0;
     }
@@ -70,120 +69,187 @@ public class MainHeadquarter : BasisOfTheBuilding
             case "Generator":
                 ElectricalSystemInfo.GeneratedEnergy += 3;
                 ElectricalSystemInfo.GeneratorsInElectricalList.Add(buildingInterface);
-                StartCoroutine(Timer(ElectricalSystemInfo.ElectricalSystemList.IndexOf(buildingInterface), 0));
+                TryingToGetPath(ElectricalSystemInfo.ElectricalSystemList.IndexOf(buildingInterface), 0, true);
                 break;
         }
     }
 
 
 
-    private IEnumerator Timer(int startIndex, int endIndex)//не все соседи определ€ютс€ быстрее чем происходит выполнение этого кода
+    private void TryingToGetPath(int startIndex, int endIndex, bool forEnergy = false)//не все соседи определ€ютс€ быстрее чем происходит выполнение этого кода
     {
-        yield return new WaitForSeconds(0.1f);
+        List<Vector3> path;
 
-        Path(startIndex, endIndex);
-    }
-
-    public List<List<GameObjectInfo>> currentPaths = new List<List<GameObjectInfo>>();
-
-    public void Path(int startIndex, int endIndex)
-    {
-        List<GameObjectInfo> objList = new List<GameObjectInfo>();
-        for (int i = 0; i < _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count; i++)
-            objList.Add(new GameObjectInfo(i));
-
-        for (int i = 0; i < objList.Count; i++)
+        try
         {
-            foreach (BuildingInterface building in _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[i].GetBuildingCharacteristics().BuildingNeighborsInterface)
-                objList[i].ConnectedObjects.Add(objList[building.GetBuildingCharacteristics().NumberInTheElectricalSystem]);
+            path = FindPath(InitializeNodes(), Storage.Instance.AllBuildingsGO[0].transform.position, Storage.Instance.AllBuildingsGO[Storage.Instance.AllBuildingsGO.Count - 1].transform.position);
+            path.Insert(0, Storage.Instance.AllBuildingsGO[0].transform.position);
+        }
+        catch
+        {
+            TryingToGetPath(startIndex, endIndex, forEnergy);
+            return;
         }
 
-        if (currentPaths.Count > 0)
-        {
-            foreach (List<GameObjectInfo> usedPath in currentPaths)
-            {
-                for (int i = 0; i < usedPath.Count - 1; i++)
-                {
-                    int b, k;
-                    b = usedPath[i].id;
-                    k = usedPath[i + 1].id;
 
-                    if (b < objList.Count && k < objList[b].ConnectedObjects.Count)
-                        objList[b].ConnectedObjects.Remove(objList[k]);
-                }
-            }
-        }
-        List<GameObjectInfo> path = PathFinder.FindPath(objList[startIndex], objList[endIndex]);
-        if (path != null)
+        if (path != null && forEnergy)
         {
             for (int i = 0; i < path.Count - 1; i++)
             {
-                int[] listOfBuildingsNumbers = new int[2] { _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i].id].GetBuildingCharacteristics().NumberInTheElectricalSystem,
-                    _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList[path[i + 1].id].GetBuildingCharacteristics().NumberInTheElectricalSystem }; //получение номеров закрашиваемых проводов
+                Debug.Log(path[i]);
 
-                foreach(Wire wireScript in ElectricalSystemInfo.AllWiresList)
+                foreach (GameObject go in Storage.Instance.AllBuildingsGO)
                 {
-                    if (wireScript.buildingsNumbers[0] == listOfBuildingsNumbers[0] && wireScript.buildingsNumbers[1] == listOfBuildingsNumbers[1])
+                    if (go.transform.position == path[i])
                     {
-                        wireScript.Used(3);
-                        break;
+                        Debug.Log(1);
+                        List<ConnectedWire> connectedWiresList = Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(go)].GetConnectedWiresList();
+
+                        foreach (ConnectedWire wire in connectedWiresList)
+                        {
+                            if (wire.CoordinatesOfTheTarget == path[i + 1])
+                            {
+                                Debug.Log(2);
+                                Storage.Instance.WiresDictionary[wire.WirePosition].Used(3, "Red");
+                                break;
+                            }
+                        }
+
+                        continue;
                     }
                 }
             }
-
-            currentPaths.Add(path);
-
-            SetChargingPower(3);
-        }
-        else
-            Debug.Log("ѕуть не найден!");
-    }
-
-    public class GameObjectInfo
-    {
-        public int id;
-        public List<GameObjectInfo> ConnectedObjects;
-
-        public GameObjectInfo(int id)
-        {
-            this.id = id;
-            ConnectedObjects = new List<GameObjectInfo>();
         }
     }
 
-    public class PathFinder
+    public List<Vector3> FindPath(List<Node> nodes, Vector3 start, Vector3 target)
     {
-        public static List<GameObjectInfo> FindPath(GameObjectInfo start, GameObjectInfo target)
+        Node startNode = GetClosestNode(nodes, start); // ѕолучаем узел, ближайший к стартовой позиции
+        Node targetNode = GetClosestNode(nodes, target); // ѕолучаем узел, ближайший к целевой позиции
+
+        List<Node> openSet = new List<Node>(); // ќткрытый список узлов дл€ проверки
+        HashSet<Node> closedSet = new HashSet<Node>(); // «акрытый список узлов, которые уже проверены
+
+        openSet.Add(startNode);
+
+        while (openSet.Count > 0)
         {
-            Queue<List<GameObjectInfo>> queue = new Queue<List<GameObjectInfo>>();
-            HashSet<GameObjectInfo> visited = new HashSet<GameObjectInfo>();
-
-            queue.Enqueue(new List<GameObjectInfo> { start });
-
-            while (queue.Count > 0)
+            Node currentNode = openSet[0];
+            for (int i = 1; i < openSet.Count; i++)
             {
-                List<GameObjectInfo> path = queue.Dequeue();
-                GameObjectInfo currentNode = path[path.Count - 1];
-
-                if (currentNode == target)
+                if (openSet[i].FCost < currentNode.FCost || (openSet[i].FCost == currentNode.FCost && openSet[i].HCost < currentNode.HCost))
                 {
-                    return path;
-                }
-
-                if (!visited.Contains(currentNode))
-                {
-                    visited.Add(currentNode);
-
-                    foreach (GameObjectInfo connectedNode in currentNode.ConnectedObjects)
-                    {
-                        List<GameObjectInfo> newPath = new List<GameObjectInfo>(path);
-                        newPath.Add(connectedNode);
-                        queue.Enqueue(newPath);
-                    }
+                    currentNode = openSet[i]; // Ќаходим узел с наименьшей стоимостью F
                 }
             }
 
-            return null;
+            openSet.Remove(currentNode);
+            closedSet.Add(currentNode);
+
+            if (currentNode == targetNode)
+            {
+                return RetracePath(startNode, targetNode); // ≈сли достигли целевого узла, строим путь
+            }
+
+            foreach (Node neighbor in GetNeighbors(nodes, currentNode))
+            {
+                if (!neighbor.Walkable || closedSet.Contains(neighbor))
+                {
+                    continue; // ѕропускаем непроходимые или уже проверенные узлы
+                }
+
+                float newMovementCostToNeighbor = currentNode.GCost + Vector3.Distance(currentNode.Position, neighbor.Position);
+                if (newMovementCostToNeighbor < neighbor.GCost || !openSet.Contains(neighbor))
+                {
+                    neighbor.GCost = newMovementCostToNeighbor;
+                    neighbor.HCost = Vector3.Distance(neighbor.Position, targetNode.Position);
+                    neighbor.Parent = currentNode;
+
+                    if (!openSet.Contains(neighbor))
+                    {
+                        openSet.Add(neighbor); // ƒобавл€ем узел в открытый список дл€ дальнейшей проверки
+                    }
+                }
+            }
         }
+
+        return null; // ¬озвращаем null, если путь не найден
+    }
+
+    // ћетод дл€ получени€ ближайшего узла к заданной позиции
+    private Node GetClosestNode(List<Node> nodes, Vector3 position)
+    {
+        Node closestNode = null;
+        float minDistance = Mathf.Infinity;
+
+        foreach (Node node in nodes)
+        {
+            float distance = Vector3.Distance(position, node.Position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestNode = node;
+            }
+        }
+
+        return closestNode;
+    }
+
+    // ћетод дл€ получени€ соседних узлов
+    private List<Node> GetNeighbors(List<Node> nodes, Node node, float neighborRadius = 5f)
+    {
+        List<Node> neighbors = new List<Node>();
+
+        foreach (var potentialNeighbor in nodes)
+        {
+            if (potentialNeighbor != node && Vector3.Distance(node.Position, potentialNeighbor.Position) <= neighborRadius)
+            {
+                neighbors.Add(potentialNeighbor); // ƒобавл€ем узел в список соседей, если он находитс€ в пределах радиуса
+            }
+        }
+
+        return neighbors;
+    }
+
+    // ћетод дл€ построени€ пути, возвращает список позиций
+    private List<Vector3> RetracePath(Node startNode, Node endNode)
+    {
+        List<Vector3> path = new List<Vector3>();
+        Node currentNode = endNode;
+
+        while (currentNode != startNode)
+        {
+            path.Add(currentNode.Position);
+            currentNode = currentNode.Parent; // ѕереходим к родительскому узлу
+        }
+
+        path.Reverse(); // –азворачиваем путь, чтобы получить его от старта до цели
+        return path;
+    }
+    List<Node> InitializeNodes()
+    {
+        List<Node> nodes = new List<Node>();
+
+        // «аполн€ем список узлов на основе списка позиций
+        foreach (GameObject GO in Storage.Instance.AllBuildingsGO)
+            nodes.Add(new Node(GO.transform.position, true)); // «наем что все узлы проходимы
+
+        return nodes;
+    }
+}
+
+public class Node
+{
+    public Vector3 Position; // ѕозици€ узла в пространстве
+    public bool Walkable; // ћожно ли пройти через этот узел
+    public float GCost; // —тоимость от старта до этого узла
+    public float HCost; // ѕредполагаема€ стоимость от этого узла до цели
+    public float FCost => GCost + HCost; // ќбща€ стоимость (G + H)
+    public Node Parent; // –одительский узел
+
+    public Node(Vector3 position, bool walkable)
+    {
+        Position = position;
+        Walkable = walkable;
     }
 }

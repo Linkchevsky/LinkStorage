@@ -17,11 +17,11 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     [SyncVar(hook = nameof(AfterTheEnergyChange))] public int BuildCurrentEnergy;
 
+    #region[Классы]
     public class BuildingCharacteristics
     {
         public MainHeadquarter TheMainScriptOfTheElectricalNetwork = null;
         public int NumberInTheElectricalSystem;
-        public List<BuildingInterface> BuildingNeighborsInterface = new List<BuildingInterface>();
 
         public BuildingInfo ThisBuildingInfo;
         public BasisOfTheBuilding ThisScriptFromInspector; //используется и как ссылка на интерфейс
@@ -35,6 +35,27 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         public int ChargingTheBuilding = 0;
     }
     protected BuildingCharacteristics _buildingCharacteristics = new BuildingCharacteristics();
+
+
+
+    public struct ConnectedWire
+    {
+        public int WireEnergy;
+
+        public Vector3 CoordinatesOfTheTarget;
+        public Vector3 WirePosition;
+        public ConnectedWire(int wireEnergy, Vector3 coordinatesOfTheTarget = default, Vector3 wirePosition = default)
+        {
+            WireEnergy = wireEnergy;
+
+            CoordinatesOfTheTarget = coordinatesOfTheTarget;
+            WirePosition = wirePosition;
+        }
+    }
+    public List<ConnectedWire> ConnectedWires = new List<ConnectedWire>();
+
+    public void AddedWire(Vector3 coordinatesOfTheTarget, Vector3 wirePosition) => ConnectedWires.Add(new ConnectedWire(0, coordinatesOfTheTarget, wirePosition));
+    #endregion
 
     private void OnEnable() 
     {
@@ -53,7 +74,10 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     private void EnergyTick()
     {
-        if (BuildCurrentEnergy > 0)
+        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
+            return;
+
+        if (BuildCurrentEnergy > 0 )
             UsedEnergy(-1);
 
         if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ChargingPower != 0)
@@ -75,8 +99,6 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
         if (colliders.Count != 0)
         {
-            _buildingCharacteristics.BuildingNeighborsInterface.Clear();
-
             List<Collider2D> notAddedInList = new List<Collider2D>();
             List<Collider2D> addedInList = new List<Collider2D>();
             for (int i = 0; i < colliders.Count; i++)
@@ -88,12 +110,10 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
                 {
                     mainGOScript = colliderInterface.GetBuildingCharacteristics().TheMainScriptOfTheElectricalNetwork;
                 }
-                catch(ArgumentException)
+                catch
                 {
                     continue;
                 }
-
-                _buildingCharacteristics.BuildingNeighborsInterface.Add(colliderInterface);
 
                 if (mainGOScript != null)
                 {
@@ -103,8 +123,6 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
                     {
                         _buildingCharacteristics.InElectricalSystem = true;
                         _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork = mainGOScript;
-                        _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.AddInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector);
-                        _buildingCharacteristics.NumberInTheElectricalSystem = _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count - 1;
                     }
                 }
                 else
@@ -114,7 +132,10 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
             List<GameObject> listOfBuildingsGO = new List<GameObject>();
             foreach (Collider2D collider in addedInList)
                 listOfBuildingsGO.Add(collider.gameObject);
+
             InstallationOfWires(listOfBuildingsGO);
+            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.AddInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector);
+            _buildingCharacteristics.NumberInTheElectricalSystem = _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count - 1;
 
             CheckingTheNeighbors(notAddedInList);
         }
@@ -124,17 +145,17 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     {
         for (int i = 0; i < listOfBuildingsGO.Count; i++)
         {
-            Wire line = Instantiate(_wirePrefab, transform.GetChild(0)).GetComponent<Wire>();
-            line.buildingsNumbers = new int[2] { Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(transform.gameObject)].GetBuildingCharacteristics().NumberInTheElectricalSystem, 
-                Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(listOfBuildingsGO[i])].GetBuildingCharacteristics().NumberInTheElectricalSystem }; //получение номеров зданий
-
-            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.AllWiresList.Add(line);
+            Wire wireScript = Instantiate(_wirePrefab, Storage.Instance.transform).GetComponent<Wire>();
 
             Vector3 dir = listOfBuildingsGO[i].transform.position - transform.position;
 
-            line.transform.position = transform.position + dir / 2;
-            line.transform.localScale = new Vector3(dir.magnitude, line.transform.localScale.y, line.transform.localScale.z);
-            line.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
+            wireScript.transform.position = transform.position + dir / 2;
+            wireScript.transform.localScale = new Vector3(dir.magnitude, wireScript.transform.localScale.y, wireScript.transform.localScale.z);
+            wireScript.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
+
+            Storage.Instance.WiresDictionary.Add(wireScript.transform.position, wireScript);
+            Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(listOfBuildingsGO[i])].AddedWire(transform.position, wireScript.transform.position);
+            ConnectedWires.Add(new ConnectedWire(0, listOfBuildingsGO[i].transform.position, wireScript.transform.position));
         }
 
     }
@@ -189,4 +210,5 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         } 
     }
     public int GetEnergy() { return BuildCurrentEnergy; }
+    public List<ConnectedWire> GetConnectedWiresList() { return ConnectedWires; }
 }

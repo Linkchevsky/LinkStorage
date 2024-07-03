@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1349403766391863396
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4140288055467812928}
-  m_Layer: 0
-  m_Name: Lines
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4140288055467812928
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1349403766391863396}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 251562052917078040}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9131755322731065389
 GameObject:
   m_ObjectHideFlags: 0
@@ -65,8 +34,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4140288055467812928}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1810367078811076562
@@ -247,8 +215,8 @@ MonoBehaviour:
   _collider2D: {fileID: 6582367446421008586}
   _wirePrefab: {fileID: 1695165996422581778, guid: 97e9522b3e30b3b4584567452d8219f3, type: 3}
   _thisBuildingInfo: {fileID: 11400000, guid: 1a56d6190e5be4c479f5864ae2bd04ad, type: 2}
-  BuildCurrentEnergy: 0
   _thisScriptFromInspector: {fileID: 2804927957602794217}
+  BuildCurrentEnergy: 0
   _thisMainHeadquarterScriptFromInspector: {fileID: 2804927957602794217}
   ChargingPower: 0
   FreeChargingPower: 0

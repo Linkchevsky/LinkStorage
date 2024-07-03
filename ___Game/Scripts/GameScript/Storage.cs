@@ -25,6 +25,7 @@ public class Storage : MonoBehaviour
         Instance = this;
     }
 
+    public Dictionary<Vector3, Wire> WiresDictionary = new Dictionary<Vector3, Wire>();
 
     public List<BuildingInterface> AllBuildingsInterface = new List<BuildingInterface>();
     public List<Collider2D> AllBuildingsColliders = new List<Collider2D>();

@@ -34,8 +34,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1731995315535178909}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &683324732353002641
@@ -178,7 +177,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _currentUnits: 0
-  _thisScript: {fileID: 6268151664562615595}
   _collider2D: {fileID: 2741457355603227818}
   _buildType: Battery
   _isReady: 0
@@ -200,8 +198,8 @@ MonoBehaviour:
   _collider2D: {fileID: 2741457355603227818}
   _wirePrefab: {fileID: 1695165996422581778, guid: 97e9522b3e30b3b4584567452d8219f3, type: 3}
   _thisBuildingInfo: {fileID: 11400000, guid: ee1cf22013990754cb6dd0eca5bb6db2, type: 2}
-  BuildCurrentEnergy: 0
   _thisScriptFromInspector: {fileID: 8124915120110959309}
+  BuildCurrentEnergy: 0
 --- !u!114 &4409499954359497784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,34 +217,3 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!1 &7778466529297734201
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1731995315535178909}
-  m_Layer: 0
-  m_Name: Lines
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1731995315535178909
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7778466529297734201}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3723048356596359729}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

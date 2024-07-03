@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 using static BasisOfTheBuilding;
+using Vector3 = UnityEngine.Vector3;
 
 public interface BuildingInterface
 {
@@ -16,4 +17,7 @@ public interface BuildingInterface
     public void SetBuildingChargingPower(int power);
     public BuildingCharacteristics GetBuildingCharacteristics();
     public int GetEnergy();
+
+    public List<ConnectedWire> GetConnectedWiresList();
+    public void AddedWire(Vector3 coordinatesOfTheTarget, Vector3 wirePosition);
 }

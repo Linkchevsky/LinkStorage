@@ -64,23 +64,30 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
 
     private void EnableComponent()
     {
-        switch (_buildType)
+        try
         {
-            case "Main Headquarter":
-                gameObject.GetComponent<MainHeadquarter>().enabled = true;
-                break;
+            switch (_buildType)
+            {
+                case "Main Headquarter":
+                    gameObject.GetComponent<MainHeadquarter>().enabled = true;
+                    break;
 
-            case "Electric Pole":
-                gameObject.GetComponent<ElectricPole>().enabled = true;
-                break;
+                case "Electric Pole":
+                    gameObject.GetComponent<ElectricPole>().enabled = true;
+                    break;
 
-            case "Generator":
-                gameObject.GetComponent<Generator>().enabled = true;
-                break;
+                case "Generator":
+                    gameObject.GetComponent<Generator>().enabled = true;
+                    break;
 
-            case "Battery":
-                gameObject.GetComponent<Battery>().enabled = true;
-                break;
+                case "Battery":
+                    gameObject.GetComponent<Battery>().enabled = true;
+                    break;
+            }
+        }
+        catch
+        {
+            EnableComponent();
         }
 
         _isReady = true;
@@ -145,4 +152,6 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
     public void CheckingElectricalNetwork() { return; }
     public BuildingCharacteristics GetBuildingCharacteristics() { return null; }
     public int GetEnergy() { return 1; }
+    public List<ConnectedWire> GetConnectedWiresList() { return null; }
+    public void AddedWire(Vector3 coordinatesOfTheTarget, Vector3 wirePosition) { return; }
 }
