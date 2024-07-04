@@ -5,12 +5,11 @@ using UnityEngine;
 public class Wire : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
-    public int[] buildingsNumbers = new int[2];
-    public int currentEnergy;
+    public int currentEnergy = 0;
 
     public void Used(int energy, string wireColor) //цвета - Red, Green
     {
-        currentEnergy = energy;
+        currentEnergy += energy;
 
         switch (wireColor)
         {

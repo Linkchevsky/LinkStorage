@@ -152,6 +152,4 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
     public void CheckingElectricalNetwork() { return; }
     public BuildingCharacteristics GetBuildingCharacteristics() { return null; }
     public int GetEnergy() { return 1; }
-    public List<ConnectedWire> GetConnectedWiresList() { return null; }
-    public void AddedWire(Vector3 coordinatesOfTheTarget, Vector3 wirePosition) { return; }
 }

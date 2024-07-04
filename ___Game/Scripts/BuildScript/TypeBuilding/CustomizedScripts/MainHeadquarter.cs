@@ -96,28 +96,14 @@ public class MainHeadquarter : BasisOfTheBuilding
         {
             for (int i = 0; i < path.Count - 1; i++)
             {
-                Debug.Log(path[i]);
+                Vector3 wirePosition = (path[i] + path[i + 1]) / 2f;
 
-                foreach (GameObject go in Storage.Instance.AllBuildingsGO)
+                if (Storage.Instance.WiresDictionary[wirePosition] != null)
                 {
-                    if (go.transform.position == path[i])
-                    {
-                        Debug.Log(1);
-                        List<ConnectedWire> connectedWiresList = Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(go)].GetConnectedWiresList();
-
-                        foreach (ConnectedWire wire in connectedWiresList)
-                        {
-                            if (wire.CoordinatesOfTheTarget == path[i + 1])
-                            {
-                                Debug.Log(2);
-                                Storage.Instance.WiresDictionary[wire.WirePosition].Used(3, "Red");
-                                break;
-                            }
-                        }
-
-                        continue;
-                    }
+                    Storage.Instance.WiresDictionary[wirePosition].Used(3, "Red");
                 }
+
+                continue;
             }
         }
     }
@@ -153,7 +139,8 @@ public class MainHeadquarter : BasisOfTheBuilding
 
             foreach (Node neighbor in GetNeighbors(nodes, currentNode))
             {
-                if (!neighbor.Walkable || closedSet.Contains(neighbor))
+                if (!neighbor.Walkable || closedSet.Contains(neighbor) || 
+                    Storage.Instance.WiresDictionary[(currentNode.Position + neighbor.Position) / 2].currentEnergy != 0) //отсев по использованию провода
                 {
                     continue; // Пропускаем непроходимые или уже проверенные узлы
                 }
@@ -201,12 +188,8 @@ public class MainHeadquarter : BasisOfTheBuilding
         List<Node> neighbors = new List<Node>();
 
         foreach (var potentialNeighbor in nodes)
-        {
             if (potentialNeighbor != node && Vector3.Distance(node.Position, potentialNeighbor.Position) <= neighborRadius)
-            {
                 neighbors.Add(potentialNeighbor); // Добавляем узел в список соседей, если он находится в пределах радиуса
-            }
-        }
 
         return neighbors;
     }

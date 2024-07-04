@@ -35,26 +35,6 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         public int ChargingTheBuilding = 0;
     }
     protected BuildingCharacteristics _buildingCharacteristics = new BuildingCharacteristics();
-
-
-
-    public struct ConnectedWire
-    {
-        public int WireEnergy;
-
-        public Vector3 CoordinatesOfTheTarget;
-        public Vector3 WirePosition;
-        public ConnectedWire(int wireEnergy, Vector3 coordinatesOfTheTarget = default, Vector3 wirePosition = default)
-        {
-            WireEnergy = wireEnergy;
-
-            CoordinatesOfTheTarget = coordinatesOfTheTarget;
-            WirePosition = wirePosition;
-        }
-    }
-    public List<ConnectedWire> ConnectedWires = new List<ConnectedWire>();
-
-    public void AddedWire(Vector3 coordinatesOfTheTarget, Vector3 wirePosition) => ConnectedWires.Add(new ConnectedWire(0, coordinatesOfTheTarget, wirePosition));
     #endregion
 
     private void OnEnable() 
@@ -154,8 +134,6 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
             wireScript.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
 
             Storage.Instance.WiresDictionary.Add(wireScript.transform.position, wireScript);
-            Storage.Instance.AllBuildingsInterface[Storage.Instance.AllBuildingsGO.IndexOf(listOfBuildingsGO[i])].AddedWire(transform.position, wireScript.transform.position);
-            ConnectedWires.Add(new ConnectedWire(0, listOfBuildingsGO[i].transform.position, wireScript.transform.position));
         }
 
     }
@@ -210,5 +188,4 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         } 
     }
     public int GetEnergy() { return BuildCurrentEnergy; }
-    public List<ConnectedWire> GetConnectedWiresList() { return ConnectedWires; }
 }

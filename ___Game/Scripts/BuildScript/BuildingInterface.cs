@@ -17,7 +17,4 @@ public interface BuildingInterface
     public void SetBuildingChargingPower(int power);
     public BuildingCharacteristics GetBuildingCharacteristics();
     public int GetEnergy();
-
-    public List<ConnectedWire> GetConnectedWiresList();
-    public void AddedWire(Vector3 coordinatesOfTheTarget, Vector3 wirePosition);
 }
