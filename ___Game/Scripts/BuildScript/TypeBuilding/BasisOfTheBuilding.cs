@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static BasisOfTheBuilding;
+using static UnityEngine.Rendering.DebugUI;
 
 public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 {
@@ -39,14 +40,14 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     private void OnEnable() 
     {
+        Storage.Instance.AllBuildingsGO.Add(this.gameObject);
+        Storage.Instance.AllBuildingsInterface.Add(this);
+        Storage.Instance.AllBuildingsColliders.Add(_collider2D);
+
         _buildingCharacteristics.ThisBuildingInfo = _thisBuildingInfo;
         _buildingCharacteristics.ThisScriptFromInspector = _thisScriptFromInspector;
 
         GlobalUpdate.s_energyTick += EnergyTick;
-
-        Storage.Instance.AllBuildingsGO.Add(this.gameObject);
-        Storage.Instance.AllBuildingsInterface.Add(this);
-        Storage.Instance.AllBuildingsColliders.Add(_collider2D);
 
         CheckingElectricalNetwork();
     }
@@ -113,15 +114,11 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
             foreach (Collider2D collider in addedInList)
                 listOfBuildingsGO.Add(collider.gameObject);
 
-            InstallationOfWires(listOfBuildingsGO);
-            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.AddInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector);
-            _buildingCharacteristics.NumberInTheElectricalSystem = _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count - 1;
-
-            CheckingTheNeighbors(notAddedInList);
+            InstallationOfWires(listOfBuildingsGO, notAddedInList);
         }
     }
 
-    public void InstallationOfWires(List<GameObject> listOfBuildingsGO)
+    public void InstallationOfWires(List<GameObject> listOfBuildingsGO, List<Collider2D> notAddedInList = null)
     {
         for (int i = 0; i < listOfBuildingsGO.Count; i++)
         {
@@ -130,12 +127,20 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
             Vector3 dir = listOfBuildingsGO[i].transform.position - transform.position;
 
             wireScript.transform.position = transform.position + dir / 2;
+            Vector3 wirePosition = new Vector3((float)Math.Round(wireScript.transform.position.x * 100) / 100, (float)Math.Round(wireScript.transform.position.y * 100) / 100, 0);
+            wireScript.transform.position = wirePosition;
+
             wireScript.transform.localScale = new Vector3(dir.magnitude, wireScript.transform.localScale.y, wireScript.transform.localScale.z);
             wireScript.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
 
-            Storage.Instance.WiresDictionary.Add(wireScript.transform.position, wireScript);
+            Storage.Instance.WiresDictionary.Add(wirePosition, wireScript);
         }
 
+        _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.AddInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector);
+        _buildingCharacteristics.NumberInTheElectricalSystem = _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count - 1;
+
+        if (notAddedInList != null)
+            CheckingTheNeighbors(notAddedInList);
     }
 
     private void CheckingTheNeighbors(List<Collider2D> notAddedInList)

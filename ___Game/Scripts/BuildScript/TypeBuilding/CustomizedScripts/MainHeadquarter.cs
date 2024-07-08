@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 using Debug = UnityEngine.Debug;
 
 public class MainHeadquarter : BasisOfTheBuilding
@@ -69,43 +70,46 @@ public class MainHeadquarter : BasisOfTheBuilding
             case "Generator":
                 ElectricalSystemInfo.GeneratedEnergy += 3;
                 ElectricalSystemInfo.GeneratorsInElectricalList.Add(buildingInterface);
-                TryingToGetPath(ElectricalSystemInfo.ElectricalSystemList.IndexOf(buildingInterface), 0, true);
+                TryingToGetPath(ElectricalSystemInfo.ElectricalSystemList.IndexOf(buildingInterface), 0, 3);
                 break;
         }
     }
 
 
 
-    private void TryingToGetPath(int startIndex, int endIndex, bool forEnergy = false)//не все соседи определяются быстрее чем происходит выполнение этого кода
+    private int _theAmountOfEnergyTransmittedAlongThePath = 0; //количество передаваемой по пути энергии
+    private void TryingToGetPath(int startIndex, int endIndex, int energyCount)
     {
         List<Vector3> path;
+        _theAmountOfEnergyTransmittedAlongThePath = energyCount; 
 
-        try
-        {
-            path = FindPath(InitializeNodes(), Storage.Instance.AllBuildingsGO[0].transform.position, Storage.Instance.AllBuildingsGO[Storage.Instance.AllBuildingsGO.Count - 1].transform.position);
-            path.Insert(0, Storage.Instance.AllBuildingsGO[0].transform.position);
-        }
-        catch
-        {
-            TryingToGetPath(startIndex, endIndex, forEnergy);
+        path = FindPath(InitializeNodes(), Storage.Instance.AllBuildingsGO[0].transform.position, Storage.Instance.AllBuildingsGO[Storage.Instance.AllBuildingsGO.Count - 1].transform.position);
+
+        if (path == null)
             return;
-        }
+
+        path.Insert(0, Storage.Instance.AllBuildingsGO[0].transform.position);
 
 
-        if (path != null && forEnergy)
+        if (path != null)
         {
             for (int i = 0; i < path.Count - 1; i++)
             {
                 Vector3 wirePosition = (path[i] + path[i + 1]) / 2f;
+                wirePosition = new Vector3((float)Math.Round(wirePosition.x * 100) / 100, (float)Math.Round(wirePosition.y * 100) / 100, 0);
 
                 if (Storage.Instance.WiresDictionary[wirePosition] != null)
                 {
-                    Storage.Instance.WiresDictionary[wirePosition].Used(3, "Red");
+                    Storage.Instance.WiresDictionary[wirePosition].Used(_theAmountOfEnergyTransmittedAlongThePath, "Red");
                 }
 
                 continue;
             }
         }
+
+        Debug.Log(energyCount - _theAmountOfEnergyTransmittedAlongThePath);
+        if (energyCount - _theAmountOfEnergyTransmittedAlongThePath != 0)
+            TryingToGetPath(startIndex, endIndex, energyCount - _theAmountOfEnergyTransmittedAlongThePath);
     }
 
     public List<Vector3> FindPath(List<Node> nodes, Vector3 start, Vector3 target)
@@ -139,11 +143,16 @@ public class MainHeadquarter : BasisOfTheBuilding
 
             foreach (Node neighbor in GetNeighbors(nodes, currentNode))
             {
-                if (!neighbor.Walkable || closedSet.Contains(neighbor) || 
-                    Storage.Instance.WiresDictionary[(currentNode.Position + neighbor.Position) / 2].currentEnergy != 0) //отсев по использованию провода
-                {
+                Vector3 wirePosition = (currentNode.Position + neighbor.Position) / 2;
+                wirePosition = new Vector3((float)Math.Round(wirePosition.x * 100) / 100, (float)Math.Round(wirePosition.y * 100) / 100, 0);
+
+                int freeEnergy = Storage.Instance.WiresDictionary[wirePosition].maxEnergy - Storage.Instance.WiresDictionary[wirePosition].currentEnergy;
+
+                if (!neighbor.Walkable || closedSet.Contains(neighbor) || freeEnergy == 0) //отсев по кол-ву свободной энергии в проводе
                     continue; // Пропускаем непроходимые или уже проверенные узлы
-                }
+
+                if (_theAmountOfEnergyTransmittedAlongThePath > freeEnergy)
+                    _theAmountOfEnergyTransmittedAlongThePath = freeEnergy;
 
                 float newMovementCostToNeighbor = currentNode.GCost + Vector3.Distance(currentNode.Position, neighbor.Position);
                 if (newMovementCostToNeighbor < neighbor.GCost || !openSet.Contains(neighbor))
@@ -183,7 +192,7 @@ public class MainHeadquarter : BasisOfTheBuilding
     }
 
     // Метод для получения соседних узлов
-    private List<Node> GetNeighbors(List<Node> nodes, Node node, float neighborRadius = 5f)
+    private List<Node> GetNeighbors(List<Node> nodes, Node node, float neighborRadius = 5.2f)
     {
         List<Node> neighbors = new List<Node>();
 

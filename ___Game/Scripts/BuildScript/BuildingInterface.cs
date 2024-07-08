@@ -10,7 +10,7 @@ public interface BuildingInterface
     void Interaction();
     void UsedEnergy(int amountOfEnergy);
     void CheckingElectricalNetwork();
-    void InstallationOfWires(List<GameObject> listOfBuildingsGO);
+    void InstallationOfWires(List<GameObject> listOfBuildingsGO, List<Collider2D> notAddedInList);
 
     public GameObject GetGameobject();
     public Collider2D GetBoxCollider();

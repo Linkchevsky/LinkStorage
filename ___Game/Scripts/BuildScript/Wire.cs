@@ -5,6 +5,8 @@ using UnityEngine;
 public class Wire : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
+
+    public int maxEnergy = 5;
     public int currentEnergy = 0;
 
     public void Used(int energy, string wireColor) //цвета - Red, Green

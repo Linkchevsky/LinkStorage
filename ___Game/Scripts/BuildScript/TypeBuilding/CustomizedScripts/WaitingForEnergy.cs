@@ -144,7 +144,7 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
     }
 
 
-    public void InstallationOfWires(List<GameObject> listOfBuildingsGO) => throw new ArgumentException("” заготовки не может быть св€зи с сетью!");
+    public void InstallationOfWires(List<GameObject> listOfBuildingsGO, List<Collider2D> notAddedInList) => throw new ArgumentException("” заготовки не может быть св€зи с сетью!");
     public GameObject GetGameobject() { return this.gameObject; }
     public Collider2D GetBoxCollider() { return _collider2D; }
     public void SetBuildingChargingPower(int power) { return; }
