@@ -16,14 +16,16 @@ public class BuildingChargingControlCanvas : MonoBehaviour
     {
         _buildingInterface = buildingInterface;
 
-        _buildingChargingPower = _buildingInterface.GetBuildingCharacteristics().ChargingTheBuilding;
-        Change(0);
+        _buildingChargingPower = _buildingInterface.GetBuildingCharacteristics().ChargingPowerTheBuilding;
     }
 
-    public void Change(int power)
+    public void ChangePower(int power)
     {
-        int freeChargingPower = _buildingInterface.GetBuildingCharacteristics().TheMainScriptOfTheElectricalNetwork.FreeChargingPower;
-        int buildingChargingPower = _buildingInterface.GetBuildingCharacteristics().ChargingTheBuilding;
+        int freeChargingPower = _buildingInterface.GetBuildingCharacteristics().TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.FreeChargingPower;
+        int buildingChargingPower = _buildingInterface.GetBuildingCharacteristics().ChargingPowerTheBuilding;
+
+
+        MainHeadquarter mainHeadquarterScript = _buildingInterface.GetBuildingCharacteristics().TheMainScriptOfTheElectricalNetwork;
 
         if (freeChargingPower - power < 0 || buildingChargingPower + power < 0)
         {
@@ -31,12 +33,14 @@ public class BuildingChargingControlCanvas : MonoBehaviour
             return;
         }
 
+        mainHeadquarterScript.TryingToGetPath(mainHeadquarterScript.ElectricalSystemInfo.ElectricalSystemList.IndexOf(_buildingInterface), 0, power);
+
         _buildingChargingPower += power;
         _buildingInterface.SetBuildingChargingPower(power);
 
         _chargingControlText.text = $"Мощность: {_buildingChargingPower}";
     }
 
-    public void ReduceButtonClick() => Change(-1);
-    public void AddButtonClick() => Change(1);
+    public void ReduceButtonClick() => ChangePower(-1);
+    public void AddButtonClick() => ChangePower(1);
 }

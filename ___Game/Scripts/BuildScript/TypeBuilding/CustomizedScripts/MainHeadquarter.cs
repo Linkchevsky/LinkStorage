@@ -16,27 +16,20 @@ public class MainHeadquarter : BasisOfTheBuilding
     [SerializeField] private MainHeadquarter _thisMainHeadquarterScriptFromInspector;
 
     public int ChargingPower = 0;
-    public int FreeChargingPower = 0;
 
     public class ElectricalSystem
     {
         public List<BuildingInterface> ElectricalSystemList = new List<BuildingInterface>();
-        public List<BuildingInterface> MainHeadquartersInElectricalList = new List<BuildingInterface>();
-        public List<BuildingInterface> GeneratorsInElectricalList = new List<BuildingInterface>();
-        public List<BuildingInterface> ElectricPolesInElectricalList = new List<BuildingInterface>();
+        public List<MainHeadquarter> MainHeadquartersInElectricalList = new List<MainHeadquarter>();
+        public List<Generator> GeneratorsInElectricalList = new List<Generator>();
+        public List<ElectricPole> ElectricPolesInElectricalList = new List<ElectricPole>();
 
-        public int GeneratedEnergy = 0;
+        public int AllGeneratedEnergy = 0;
+        public int FreeChargingPower = 0;
     }
     public ElectricalSystem ElectricalSystemInfo = new ElectricalSystem();
 
 
-    public void SetChargingPower(int power)
-    {
-        ChargingPower += power;
-        FreeChargingPower += power;
-
-        SetBuildingChargingPower(1);
-    }
 
     private void Start()
     {
@@ -47,38 +40,48 @@ public class MainHeadquarter : BasisOfTheBuilding
             BuildCurrentEnergy = _buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy;
 
         if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
-        {
             _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork = _thisMainHeadquarterScriptFromInspector;
-            AddInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector);
-        }
+
+        AddMainHeadquarterInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector, this);
+        _buildingCharacteristics.NumberInTheElectricalSystem = ElectricalSystemInfo.ElectricalSystemList.Count - 1;
+
+        CheckingElectricalNetwork();
     }
 
-    public void AddInElectricalSystemList(BuildingInterface buildingInterface)
+
+
+    public void AddMainHeadquarterInElectricalSystemList(BuildingInterface buildingInterface, MainHeadquarter mainHeadquarterClass) 
     {
         ElectricalSystemInfo.ElectricalSystemList.Add(buildingInterface);
 
-        switch (buildingInterface.GetBuildingCharacteristics().ThisBuildingInfo.Id)
-        {
-            case "Main Headquarter":
-                ElectricalSystemInfo.MainHeadquartersInElectricalList.Add(buildingInterface);
-                break;
-
-            case "Electric Pole":
-                ElectricalSystemInfo.ElectricPolesInElectricalList.Add(buildingInterface);
-                break;
-
-            case "Generator":
-                ElectricalSystemInfo.GeneratedEnergy += 3;
-                ElectricalSystemInfo.GeneratorsInElectricalList.Add(buildingInterface);
-                TryingToGetPath(ElectricalSystemInfo.ElectricalSystemList.IndexOf(buildingInterface), 0, 3);
-                break;
-        }
+        ElectricalSystemInfo.MainHeadquartersInElectricalList.Add(mainHeadquarterClass); 
     }
 
 
 
+    public void AddElectricPoleInElectricalSystemList(BuildingInterface buildingInterface, ElectricPole electricPoleClass)
+    {
+        ElectricalSystemInfo.ElectricalSystemList.Add(buildingInterface);
+
+        ElectricalSystemInfo.ElectricPolesInElectricalList.Add(electricPoleClass);
+    }
+
+
+
+    public void AddGeneratorInElectricalSystemList(BuildingInterface buildingInterface, Generator generatorClass)
+    {
+        ElectricalSystemInfo.ElectricalSystemList.Add(buildingInterface);
+
+        ElectricalSystemInfo.AllGeneratedEnergy += 3;
+        ElectricalSystemInfo.FreeChargingPower += 3;
+        ElectricalSystemInfo.GeneratorsInElectricalList.Add(generatorClass);
+    }
+
+
+
+    #region[поиск пути]
     private int _theAmountOfEnergyTransmittedAlongThePath = 0; //количество передаваемой по пути энергии
-    private void TryingToGetPath(int startIndex, int endIndex, int energyCount)
+    public void TryingToGetPath(int startIndex, int endIndex, int energyCount)
     {
         List<Vector3> path;
         _theAmountOfEnergyTransmittedAlongThePath = energyCount; 
@@ -107,7 +110,6 @@ public class MainHeadquarter : BasisOfTheBuilding
             }
         }
 
-        Debug.Log(energyCount - _theAmountOfEnergyTransmittedAlongThePath);
         if (energyCount - _theAmountOfEnergyTransmittedAlongThePath != 0)
             TryingToGetPath(startIndex, endIndex, energyCount - _theAmountOfEnergyTransmittedAlongThePath);
     }
@@ -244,4 +246,5 @@ public class Node
         Position = position;
         Walkable = walkable;
     }
+    #endregion
 }

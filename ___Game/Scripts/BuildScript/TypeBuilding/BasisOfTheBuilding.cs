@@ -33,7 +33,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         public bool CanvasUsed;
         public bool InElectricalSystem;
 
-        public int ChargingTheBuilding = 0;
+        public int ChargingPowerTheBuilding = 0;
     }
     protected BuildingCharacteristics _buildingCharacteristics = new BuildingCharacteristics();
     #endregion
@@ -48,8 +48,6 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         _buildingCharacteristics.ThisScriptFromInspector = _thisScriptFromInspector;
 
         GlobalUpdate.s_energyTick += EnergyTick;
-
-        CheckingElectricalNetwork();
     }
     private void OnDisable() => GlobalUpdate.s_energyTick -= EnergyTick;
 
@@ -61,15 +59,8 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         if (BuildCurrentEnergy > 0 )
             UsedEnergy(-1);
 
-        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ChargingPower != 0)
-        {
-            if (BuildCurrentEnergy <= _buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy)
-            {
-                UsedEnergy(_buildingCharacteristics.ChargingTheBuilding);
-            }
-            else
-                UsedEnergy(_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.BuildCurrentEnergy);
-        }
+        if (_buildingCharacteristics.ChargingPowerTheBuilding != 0 && BuildCurrentEnergy < _buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy)
+            UsedEnergy(_buildingCharacteristics.ChargingPowerTheBuilding);
     }
 
 
@@ -136,9 +127,6 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
             Storage.Instance.WiresDictionary.Add(wirePosition, wireScript);
         }
 
-        _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.AddInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector);
-        _buildingCharacteristics.NumberInTheElectricalSystem = _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.ElectricalSystemList.Count - 1;
-
         if (notAddedInList != null)
             CheckingTheNeighbors(notAddedInList);
     }
@@ -186,10 +174,10 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     public BuildingCharacteristics GetBuildingCharacteristics() { return _buildingCharacteristics; }
     public void SetBuildingChargingPower(int power) 
     { 
-        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.FreeChargingPower - power >= 0) 
+        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.FreeChargingPower - power >= 0) 
         {
-            _buildingCharacteristics.ChargingTheBuilding += power;
-            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.FreeChargingPower -= power; 
+            _buildingCharacteristics.ChargingPowerTheBuilding += power;
+            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.FreeChargingPower -= power; 
         } 
     }
     public int GetEnergy() { return BuildCurrentEnergy; }
