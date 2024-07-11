@@ -15,6 +15,6 @@ public interface BuildingInterface
     public GameObject GetGameobject();
     public Collider2D GetBoxCollider();
     public void SetBuildingChargingPower(int power);
-    public BuildingCharacteristics GetBuildingCharacteristics();
+    public BuildingCharacteristicsClass GetBuildingCharacteristics();
     public int GetEnergy();
 }

@@ -33,17 +33,17 @@ public class MainHeadquarter : BasisOfTheBuilding
 
     private void Start()
     {
-        _buildingCharacteristics.ListOfSpawnUnits = new List<string>() { "ClassicUnit", "WarriorUnit" };
-        _buildingCharacteristics.listOfAdditionalFunctionality = new List<string> { "spawnUnits" };
+        BuildingCharacteristics.ListOfSpawnUnits = new List<string>() { "ClassicUnit", "WarriorUnit" };
+        BuildingCharacteristics.listOfAdditionalFunctionality = new List<string> { "spawnUnits" };
 
         if (BuildCurrentEnergy == 0)
-            BuildCurrentEnergy = _buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy;
+            BuildCurrentEnergy = BuildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy;
 
-        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
-            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork = _thisMainHeadquarterScriptFromInspector;
+        if (BuildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
+            BuildingCharacteristics.TheMainScriptOfTheElectricalNetwork = _thisMainHeadquarterScriptFromInspector;
 
-        AddMainHeadquarterInElectricalSystemList(_buildingCharacteristics.ThisScriptFromInspector, this);
-        _buildingCharacteristics.NumberInTheElectricalSystem = ElectricalSystemInfo.ElectricalSystemList.Count - 1;
+        AddMainHeadquarterInElectricalSystemList(BuildingCharacteristics.ThisScriptFromInspector, this);
+        BuildingCharacteristics.NumberInTheElectricalSystem = ElectricalSystemInfo.ElectricalSystemList.Count - 1;
 
         CheckingElectricalNetwork();
     }
@@ -79,20 +79,52 @@ public class MainHeadquarter : BasisOfTheBuilding
 
 
 
+    //передача энергии от любого свободного генератора (startIndex ,будет использоваться для выбора кокретного генератора)
+    public bool EnergyTransfer(int startIndex, int endIndex, int energyCount)
+    {
+        List<Generator> usedGeneratorsScriptList = new List<Generator>();
+        int unallocatedEnergy = energyCount;
+
+        foreach (Generator generatorScript in ElectricalSystemInfo.GeneratorsInElectricalList)
+        {
+            if (generatorScript.EnergyGenerated - generatorScript.EnergyOutput != 0)
+            {
+                usedGeneratorsScriptList.Add(generatorScript);
+                unallocatedEnergy -= generatorScript.EnergyGenerated - generatorScript.EnergyOutput;
+                if (unallocatedEnergy <= 0)
+                    break;
+            }
+        }
+
+        if (unallocatedEnergy > 0)
+            return false;
+
+        foreach (Generator generatorScript in usedGeneratorsScriptList)
+        {
+            if (!TryingToGetPath(generatorScript.BuildingCharacteristics.NumberInTheElectricalSystem, endIndex, energyCount, generatorScript))
+                return false;
+        }
+
+        return true;
+    }
+
+
+
     #region[поиск пути]
     private int _theAmountOfEnergyTransmittedAlongThePath = 0; //количество передаваемой по пути энергии
-    public void TryingToGetPath(int startIndex, int endIndex, int energyCount)
+    public bool TryingToGetPath(int startIndex, int endIndex, int energyCount, Generator usedGeneratorScript)
     {
         List<Vector3> path;
-        _theAmountOfEnergyTransmittedAlongThePath = energyCount; 
+        _theAmountOfEnergyTransmittedAlongThePath = energyCount;
 
-        path = FindPath(InitializeNodes(), Storage.Instance.AllBuildingsGO[0].transform.position, Storage.Instance.AllBuildingsGO[Storage.Instance.AllBuildingsGO.Count - 1].transform.position);
+        path = FindPath(InitializeNodes(), _thisMainHeadquarterScriptFromInspector.transform.position, ElectricalSystemInfo.ElectricalSystemList[startIndex].GetGameobject().transform.position);
 
         if (path == null)
-            return;
+            return false;
 
         path.Insert(0, Storage.Instance.AllBuildingsGO[0].transform.position);
 
+        usedGeneratorScript.EnergyOutput += _theAmountOfEnergyTransmittedAlongThePath;
 
         if (path != null)
         {
@@ -111,7 +143,9 @@ public class MainHeadquarter : BasisOfTheBuilding
         }
 
         if (energyCount - _theAmountOfEnergyTransmittedAlongThePath != 0)
-            TryingToGetPath(startIndex, endIndex, energyCount - _theAmountOfEnergyTransmittedAlongThePath);
+            TryingToGetPath(startIndex, endIndex, energyCount - _theAmountOfEnergyTransmittedAlongThePath, usedGeneratorScript);
+
+        return true;
     }
 
     public List<Vector3> FindPath(List<Node> nodes, Vector3 start, Vector3 target)
@@ -150,8 +184,8 @@ public class MainHeadquarter : BasisOfTheBuilding
 
                 int freeEnergy = Storage.Instance.WiresDictionary[wirePosition].maxEnergy - Storage.Instance.WiresDictionary[wirePosition].currentEnergy;
 
-                if (!neighbor.Walkable || closedSet.Contains(neighbor) || freeEnergy == 0) //отсев по кол-ву свободной энергии в проводе
-                    continue; // Пропускаем непроходимые или уже проверенные узлы
+                if (!neighbor.Walkable || closedSet.Contains(neighbor) || freeEnergy == 0) //Пропускаем по кол-ву свободной энергии в проводе и непроходимые или уже проверенные узлы
+                    continue;
 
                 if (_theAmountOfEnergyTransmittedAlongThePath > freeEnergy)
                     _theAmountOfEnergyTransmittedAlongThePath = freeEnergy;

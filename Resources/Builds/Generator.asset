@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Generator
   m_EditorClassIdentifier: 
   _id: Generator
-  _prefab: {fileID: 9131755322731065389, guid: 8b08764d371db8d478500cbdc052c7fc, type: 3}
+  _prefab: {fileID: 1887534300158325764, guid: 64071ca9acedb894890d40bab31fcb2d, type: 3}
   _maxBuildingEnergy: 0
   _numberOfUnitsToBuild: 4

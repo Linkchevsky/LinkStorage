@@ -150,6 +150,6 @@ public class WaitingForEnergy : MonoCache, BuildingInterface
     public void SetBuildingChargingPower(int power) { return; }
     public void UsedEnergy(int amountOfEnergy) => throw new ArgumentException("У заготовки не может быть энергии!");
     public void CheckingElectricalNetwork() { return; }
-    public BuildingCharacteristics GetBuildingCharacteristics() { return null; }
+    public BuildingCharacteristicsClass GetBuildingCharacteristics() { return null; }
     public int GetEnergy() { return 1; }
 }

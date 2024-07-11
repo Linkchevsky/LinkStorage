@@ -19,7 +19,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
     [SyncVar(hook = nameof(AfterTheEnergyChange))] public int BuildCurrentEnergy;
 
     #region[Классы]
-    public class BuildingCharacteristics
+    public class BuildingCharacteristicsClass
     {
         public MainHeadquarter TheMainScriptOfTheElectricalNetwork = null;
         public int NumberInTheElectricalSystem;
@@ -35,7 +35,7 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
         public int ChargingPowerTheBuilding = 0;
     }
-    protected BuildingCharacteristics _buildingCharacteristics = new BuildingCharacteristics();
+    public BuildingCharacteristicsClass BuildingCharacteristics = new BuildingCharacteristicsClass();
     #endregion
 
     private void OnEnable() 
@@ -44,8 +44,8 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         Storage.Instance.AllBuildingsInterface.Add(this);
         Storage.Instance.AllBuildingsColliders.Add(_collider2D);
 
-        _buildingCharacteristics.ThisBuildingInfo = _thisBuildingInfo;
-        _buildingCharacteristics.ThisScriptFromInspector = _thisScriptFromInspector;
+        BuildingCharacteristics.ThisBuildingInfo = _thisBuildingInfo;
+        BuildingCharacteristics.ThisScriptFromInspector = _thisScriptFromInspector;
 
         GlobalUpdate.s_energyTick += EnergyTick;
     }
@@ -53,14 +53,14 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     private void EnergyTick()
     {
-        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
+        if (BuildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
             return;
 
         if (BuildCurrentEnergy > 0 )
             UsedEnergy(-1);
 
-        if (_buildingCharacteristics.ChargingPowerTheBuilding != 0 && BuildCurrentEnergy < _buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy)
-            UsedEnergy(_buildingCharacteristics.ChargingPowerTheBuilding);
+        if (BuildingCharacteristics.ChargingPowerTheBuilding != 0 && BuildCurrentEnergy < BuildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy)
+            UsedEnergy(BuildingCharacteristics.ChargingPowerTheBuilding);
     }
 
 
@@ -91,10 +91,10 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
                 {
                     addedInList.Add(colliders[i]);
 
-                    if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
+                    if (BuildingCharacteristics.TheMainScriptOfTheElectricalNetwork == null)
                     {
-                        _buildingCharacteristics.InElectricalSystem = true;
-                        _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork = mainGOScript;
+                        BuildingCharacteristics.InElectricalSystem = true;
+                        BuildingCharacteristics.TheMainScriptOfTheElectricalNetwork = mainGOScript;
                     }
                 }
                 else
@@ -141,15 +141,15 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     public void Interaction() 
     {
-        _buildingCharacteristics.CanvasUsed = true;
+        BuildingCharacteristics.CanvasUsed = true;
         CanvasControl.Instance.deselectFromCanvas += Deselect;
 
-        CanvasControl.Instance.UsingCanvas(_buildingCharacteristics.ThisBuildingInfo.Id, $"{BuildCurrentEnergy}/" +
-            $"{_buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy}", null, _buildingCharacteristics.listOfAdditionalFunctionality, _buildingCharacteristics.ThisScriptFromInspector); 
+        CanvasControl.Instance.UsingCanvas(BuildingCharacteristics.ThisBuildingInfo.Id, $"{BuildCurrentEnergy}/" +
+            $"{BuildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy}", null, BuildingCharacteristics.listOfAdditionalFunctionality, BuildingCharacteristics.ThisScriptFromInspector); 
     }
     public void Deselect()
     {
-        _buildingCharacteristics.CanvasUsed = false;
+        BuildingCharacteristics.CanvasUsed = false;
         CanvasControl.Instance.deselectFromCanvas -= Deselect;
     }
 
@@ -163,21 +163,21 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
 
     private void AfterTheEnergyChange(int oldValue, int newValue)
     {
-        if (_buildingCharacteristics.CanvasUsed)
-            CanvasControl.Instance.EnergyChangeAction?.Invoke($"{BuildCurrentEnergy}/{_buildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy}");
+        if (BuildingCharacteristics.CanvasUsed)
+            CanvasControl.Instance.EnergyChangeAction?.Invoke($"{BuildCurrentEnergy}/{BuildingCharacteristics.ThisBuildingInfo.MaxBuildingEnergy}");
     }
 
 
 
     public GameObject GetGameobject() { return this.gameObject; }
     public Collider2D GetBoxCollider() { return _collider2D; }
-    public BuildingCharacteristics GetBuildingCharacteristics() { return _buildingCharacteristics; }
+    public BuildingCharacteristicsClass GetBuildingCharacteristics() { return BuildingCharacteristics; }
     public void SetBuildingChargingPower(int power) 
     { 
-        if (_buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.FreeChargingPower - power >= 0) 
+        if (BuildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.FreeChargingPower - power >= 0) 
         {
-            _buildingCharacteristics.ChargingPowerTheBuilding += power;
-            _buildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.FreeChargingPower -= power; 
+            BuildingCharacteristics.ChargingPowerTheBuilding += power;
+            BuildingCharacteristics.TheMainScriptOfTheElectricalNetwork.ElectricalSystemInfo.FreeChargingPower -= power; 
         } 
     }
     public int GetEnergy() { return BuildCurrentEnergy; }

@@ -33,7 +33,11 @@ public class BuildingChargingControlCanvas : MonoBehaviour
             return;
         }
 
-        mainHeadquarterScript.TryingToGetPath(mainHeadquarterScript.ElectricalSystemInfo.ElectricalSystemList.IndexOf(_buildingInterface), 0, power);
+        if (!mainHeadquarterScript.EnergyTransfer(0, 0, power))
+        {
+            Debug.LogError("Ошибка поиска пути!");
+            return;
+        }
 
         _buildingChargingPower += power;
         _buildingInterface.SetBuildingChargingPower(power);
