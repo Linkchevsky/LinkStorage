@@ -34,6 +34,8 @@ public class BasisOfTheBuilding : NetworkBehaviour, BuildingInterface
         public bool InElectricalSystem;
 
         public int ChargingPowerTheBuilding = 0;
+
+        public List<List<Vector3>> EnergyPaths = new List<List<Vector3>>();
     }
     public BuildingCharacteristicsClass BuildingCharacteristics = new BuildingCharacteristicsClass();
     #endregion

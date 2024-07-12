@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.Search;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 using Debug = UnityEngine.Debug;
@@ -21,7 +22,7 @@ public class MainHeadquarter : BasisOfTheBuilding
     {
         public List<BuildingInterface> ElectricalSystemList = new List<BuildingInterface>();
         public List<MainHeadquarter> MainHeadquartersInElectricalList = new List<MainHeadquarter>();
-        public List<Generator> GeneratorsInElectricalList = new List<Generator>();
+        public Dictionary<Vector3, Generator> GeneratorsInElectricalList = new Dictionary<Vector3, Generator>();
         public List<ElectricPole> ElectricPolesInElectricalList = new List<ElectricPole>();
 
         public int AllGeneratedEnergy = 0;
@@ -74,7 +75,7 @@ public class MainHeadquarter : BasisOfTheBuilding
 
         ElectricalSystemInfo.AllGeneratedEnergy += 3;
         ElectricalSystemInfo.FreeChargingPower += 3;
-        ElectricalSystemInfo.GeneratorsInElectricalList.Add(generatorClass);
+        ElectricalSystemInfo.GeneratorsInElectricalList.Add(generatorClass.transform.position, generatorClass);
     }
 
 
@@ -85,7 +86,7 @@ public class MainHeadquarter : BasisOfTheBuilding
         List<Generator> usedGeneratorsScriptList = new List<Generator>();
         int unallocatedEnergy = energyCount;
 
-        foreach (Generator generatorScript in ElectricalSystemInfo.GeneratorsInElectricalList)
+        foreach (Generator generatorScript in ElectricalSystemInfo.GeneratorsInElectricalList.Values)
         {
             if (generatorScript.EnergyGenerated - generatorScript.EnergyOutput != 0)
             {
@@ -114,7 +115,7 @@ public class MainHeadquarter : BasisOfTheBuilding
     private int _theAmountOfEnergyTransmittedAlongThePath = 0; //количество передаваемой по пути энергии
     public bool TryingToGetPath(int startIndex, int endIndex, int energyCount, Generator usedGeneratorScript)
     {
-        List<Vector3> path;
+        List<Vector3> path = new List<Vector3>();
         _theAmountOfEnergyTransmittedAlongThePath = energyCount;
 
         path = FindPath(InitializeNodes(), _thisMainHeadquarterScriptFromInspector.transform.position, ElectricalSystemInfo.ElectricalSystemList[startIndex].GetGameobject().transform.position);
@@ -134,13 +135,14 @@ public class MainHeadquarter : BasisOfTheBuilding
                 wirePosition = new Vector3((float)Math.Round(wirePosition.x * 100) / 100, (float)Math.Round(wirePosition.y * 100) / 100, 0);
 
                 if (Storage.Instance.WiresDictionary[wirePosition] != null)
-                {
                     Storage.Instance.WiresDictionary[wirePosition].Used(_theAmountOfEnergyTransmittedAlongThePath, "Red");
-                }
 
                 continue;
             }
         }
+
+        if (!BuildingCharacteristics.EnergyPaths.Any(list => Enumerable.SequenceEqual(list, path)))
+            BuildingCharacteristics.EnergyPaths.Add(path);
 
         if (energyCount - _theAmountOfEnergyTransmittedAlongThePath != 0)
             TryingToGetPath(startIndex, endIndex, energyCount - _theAmountOfEnergyTransmittedAlongThePath, usedGeneratorScript);
